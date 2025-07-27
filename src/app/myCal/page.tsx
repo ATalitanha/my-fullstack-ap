@@ -16,7 +16,7 @@ export default function Ab() {
   async function fetchHistory() {
     setLoading(true);
     try {
-      const res = await fetch("http://my-fullstack-ap.vercel.app/api/history");
+      const res = await fetch("/api/history");
       const data = await res.json();
 
       if (Array.isArray(data)) {

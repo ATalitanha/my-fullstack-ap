@@ -31,7 +31,7 @@ export default function Calculator() {
     async function fetchHistory() {
       setLoading(true);
       try {
-        const res = await fetch("my-fullstack-ap.vercel.app/api/history");
+        const res = await fetch("/api/history");
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const data = await res.json();
@@ -158,7 +158,7 @@ export default function Calculator() {
 
   const saveHistory = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/history", {
+      const res = await fetch("/api/history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -177,7 +177,7 @@ export default function Calculator() {
 
   const deleteServerHistory = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/history", { method: "DELETE" });
+      const res = await fetch("/api/history", { method: "DELETE" });
       if (!res.ok) {
         const err = await res.json();
         console.error("Failed to delete history:", err);
