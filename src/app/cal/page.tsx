@@ -13,13 +13,13 @@ export default function HistoryPanel() {
     const [history, setHistory] = useState<Calculation[]>([]);
 
     async function fetchHistory() {
-        const res = await fetch("http://localhost:3000/api/history");
+        const res = await fetch("http://my-fullstack-ap.vercel.app/api/history");
         const data = await res.json();
         setHistory(data);
     }
 
     async function deleteCalculation(id: string) {
-        await fetch(`http://localhost:3000/api/history/${id}`, {
+        await fetch(`http://my-fullstack-ap.vercel.app/api/history/${id}`, {
             method: "DELETE",
         });
         setHistory(prev => prev.filter(item => item.id !== id));

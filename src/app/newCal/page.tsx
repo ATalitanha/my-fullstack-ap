@@ -31,7 +31,7 @@ export default function Calculator() {
     async function fetchHistory() {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:3000/api/history");
+        const res = await fetch("my-fullstack-ap.vercel.app/api/history");
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const data = await res.json();
