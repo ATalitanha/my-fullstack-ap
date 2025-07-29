@@ -6,6 +6,7 @@ import CalculatorDisplay from "@/components/CalculatorDisplay";
 import HistoryList from "@/components/HistoryList"
 import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Calculator() {
   const [firstOperand, setFirstOperand] = useState("");
@@ -119,33 +120,49 @@ export default function Calculator() {
   }, [handleClearHistory]);
 
   return (
-    <div className="flex flex-col gap-4 container m-auto">
-      <div className="grid grid-cols-4 grid-rows-6 gap-1">
-        <CalculatorDisplay first={firstOperand} op={operation} second={secondOperand} result={result} />
+    <>
+      <header className="fixed w-full flex justify-end p-4 h-16 top-0 bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
+        dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
+        transition-colors duration-500">
+        <ThemeToggle />
+      </header>
 
-        {BUTTONS.map(text => (
-          <button
-            key={text}
-            onClick={() => handleBtnClick(text)}
-            className={`
-    p-5 rounded-lg font-semibold transition-colors duration-200
-    ${text === "="
-                ? "bg-green-600 text-white hover:bg-green-700 active:bg-green-800"
-                : OPERATIONS.includes(text as Operation)
-                  ? "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700"
-                  : "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400"
-              }
-    focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400
-  `}
-          >
-            {text}
-          </button>
+      <div
+        className="min-h-screen mt-16
+        bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
+        dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
+        transition-colors duration-500
+      "
+      >
+        <div className="flex flex-col gap-4 container mx-auto px-4 py-8">
+          <div className="grid grid-cols-4 grid-rows-6 gap-1">
+            <CalculatorDisplay first={firstOperand} op={operation} second={secondOperand} result={result} />
 
-        ))}
+            {BUTTONS.map(text => (
+              <button
+                key={text}
+                onClick={() => handleBtnClick(text)}
+                className={`
+                p-5 rounded-lg font-semibold transition-colors duration-200
+                focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400
+                ${text === "="
+                    ? "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-500 dark:hover:bg-green-600 dark:active:bg-green-700"
+                    : OPERATIONS.includes(text as Operation)
+                      ? "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-500 dark:active:bg-blue-600"
+                      : "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+                  }
+              `}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+
+          <HistoryList history={history} loading={loading} onClear={handleClearHistory} />
+        </div>
       </div>
-
-      <HistoryList history={history} loading={loading} onClear={handleClearHistory} />
-    </div>
+    </>
   );
+
 }
 
