@@ -119,7 +119,7 @@ export default function Calculator() {
   }, [handleClearHistory]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 container m-auto">
       <div className="grid grid-cols-4 grid-rows-6 gap-1">
         <CalculatorDisplay first={firstOperand} op={operation} second={secondOperand} result={result} />
 
@@ -127,10 +127,20 @@ export default function Calculator() {
           <button
             key={text}
             onClick={() => handleBtnClick(text)}
-            className={`p-4 border rounded-md ${text === "=" ? "text-green-500" : ""}`}
+            className={`
+    p-5 rounded-lg font-semibold transition-colors duration-200
+    ${text === "="
+                ? "bg-green-600 text-white hover:bg-green-700 active:bg-green-800"
+                : OPERATIONS.includes(text as Operation)
+                  ? "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700"
+                  : "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400"
+              }
+    focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400
+  `}
           >
             {text}
           </button>
+
         ))}
       </div>
 
@@ -138,3 +148,4 @@ export default function Calculator() {
     </div>
   );
 }
+
