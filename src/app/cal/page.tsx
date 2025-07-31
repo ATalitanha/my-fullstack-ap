@@ -48,7 +48,7 @@ export default function Calculator() {
       setSecondOperand("0");
     } else if (OPERATIONS.includes(op as Operation)) {
       setOperation(op as Operation);
-    }
+    };
   };
 
   const handleBtnClick = (text: OperatorBtn) => {
