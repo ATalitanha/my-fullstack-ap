@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
-import toggleTheme from "./ui/dark";
+import toggleTheme from "@/components/ThemeToggle";
 
 export function ChangeLog() {
   const [isOpen, setIsOpen] = useState(false);
