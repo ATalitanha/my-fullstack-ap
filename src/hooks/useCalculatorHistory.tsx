@@ -1,3 +1,4 @@
+import { reverse } from "dns";
 import { useState, useCallback, useEffect } from "react";
 
 export interface HistoryItem {
@@ -17,7 +18,8 @@ export function useCalculatorHistory(trigger: any) {
     try {
       const res = await fetch("/api/history");
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-      const data = await res.json();
+      const data1 = await res.json();
+      const data = data1.reverse()
       if (Array.isArray(data)) setHistory(data);
       else setHistory([]);
     } catch {
