@@ -17,14 +17,14 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         row-span-1 col-span-4
         bg-black/20 dark:bg-white/10
         border border-white/20
-        rounded-md
+        rounded-xs
         p-3
         min-h-[60px]
         select-text
         overflow-hidden
         whitespace-nowrap
         text-black dark:text-gray-400
-        font-semibold text-lg
+        font-black text-lg
         flex justify-start items-center
         gap-2
       "
@@ -70,7 +70,7 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-green-400 dark:text-green-300 font-semibold"
+        className="text-green-400 dark:text-green-300 font-black"
       >
         {` ${result}`}
       </motion.span>

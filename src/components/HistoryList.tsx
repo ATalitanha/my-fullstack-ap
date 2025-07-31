@@ -30,21 +30,21 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
     <>
       <div
         className="
-          rounded-md
+          rounded-xs
           bg-gradient-to-tr from-gray-800/90 to-gray-900/90
           dark:from-gray-900/90 dark:to-gray-950/90
-          p-3 text-sm
+          p-3 text-sm font-black
           shadow-lg
           transition-colors duration-300
         "
       >
         <div className="flex justify-between mb-2 items-center">
-          <span className="font-semibold text-gray-200 dark:text-gray-300 text-base select-none">
+          <span className="font-black text-gray-200 dark:text-gray-300 text-base select-none">
             تاریخچه
           </span>
           <button
             onClick={requestClear}
-            className="text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-2 py-1 rounded transition-colors"
+            className="font-black text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-2 py-1 rounded-xs transition-colors"
             aria-label="پاک‌کردن تاریخچه"
           >
             پاک‌کردن تاریخچه
@@ -54,10 +54,10 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         <div
           ref={scrollRef}
           className="
-            max-h-44 overflow-auto rounded-b-md pr-3
+            max-h-44 overflow-auto rounded-b-xs pr-3
             scrollbar-thin
             scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70
-            scrollbar-thumb-rounded
+            scrollbar-thumb-rounded-xs
             scrollbar-track-transparent
             hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
             transition-all
@@ -69,7 +69,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
               <LoadingDots />
             </div>
           ) : history.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-24 text-gray-400 dark:text-gray-500 font-medium italic select-none">
+            <div className="flex flex-col items-center justify-center h-24 text-gray-400 dark:text-gray-500 font-black italic select-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 mb-2 opacity-50"
@@ -99,7 +99,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
                     border-b border-white/20 py-2 last:border-none
                     text-gray-100 dark:text-gray-300
                     hover:bg-white/10 dark:hover:bg-white/20
-                    rounded transition-colors
+                    rounded-xs transition-colors
                   "
                 >
                   {`${item.expression} ${item.result}`}
@@ -130,26 +130,26 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
             exit={{ opacity: 0, scale: 0.8 }}
             className="
               fixed top-1/2 left-1/2 z-50 w-80 max-w-full -translate-x-1/2 -translate-y-1/2
-              rounded-md
+              rounded-xs
               bg-gray-800 dark:bg-gray-900
               p-6
               shadow-lg
               text-gray-100 dark:text-gray-300
             "
           >
-            <p className="mb-4 text-center font-medium">
+            <p className="mb-4 text-center font-black">
               آیا مطمئن هستید که می‌خواهید تاریخچه را پاک کنید؟
             </p>
             <div className="flex justify-center gap-4">
               <button
                 onClick={cancelClear}
-                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
+                className="px-4 py-2 rounded-xs bg-gray-600 hover:bg-gray-700 transition"
               >
                 لغو
               </button>
               <button
                 onClick={confirmClear}
-                className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 transition text-white"
+                className="px-4 py-2 rounded-xs bg-red-600 hover:bg-red-700 transition text-white"
               >
                 پاک کردن
               </button>

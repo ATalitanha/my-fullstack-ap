@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import theme from "@/lib/theme";
 
 
 
@@ -17,11 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`antialiased
-          bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
-         dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
-          transition-colors duration-500`
+          ${theme}`
         }
       >
+        
         {children}
       </body>
     </html>

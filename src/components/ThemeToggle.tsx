@@ -29,8 +29,8 @@ const ThemeSwitcher = () => {
     <button
       onClick={toggle}
       title="تغییر تم"
-      className="border border-white/20 dark:border-black/30 dark:bg-gray-800/80 bg-gray-100/20 
-        hover:bg-gray-700/80 dark:hover:bg-white/10 p-2 rounded-md transition"
+      className="flex justify-center items-center border border-white/20 dark:border-black/30 dark:bg-gray-800/80 bg-gray-100/20 
+        hover:bg-gray-700/80 dark:hover:bg-white/10 p-2 rounded-xs transition"
     >
       {isDark ? (
         

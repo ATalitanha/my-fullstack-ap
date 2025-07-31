@@ -3,11 +3,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import CalculatorDisplay from "@/components/CalculatorDisplay";
-import HistoryList from "@/components/HistoryList"
+import HistoryList from "@/components/HistoryList";
 import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
-import ThemeToggle from "@/components/ThemeToggle";
-import BackMenu from "@/components/backMenu";
+import Header from "@/components/ui/header";
+import theme from "@/lib/theme";
 
 export default function Calculator() {
   const [firstOperand, setFirstOperand] = useState("");
@@ -122,19 +122,10 @@ export default function Calculator() {
 
   return (
     <>
-      <header className="fixed w-full flex justify-between p-4 h-16 top-0 bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
-        dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
-        transition-colors duration-500">
-        <BackMenu/>
-        <ThemeToggle />
-      </header>
+      <Header/>
 
       <div
-        className="min-h-screen mt-16
-        bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
-        dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
-        transition-colors duration-500
-      "
+        className={`min-h-screen mt-16 ${theme}`}
       >
         <div className="flex flex-col gap-4 container mx-auto px-4 py-8">
           <div className="grid grid-cols-4 grid-rows-6 gap-1">
@@ -145,8 +136,7 @@ export default function Calculator() {
                 key={text}
                 onClick={() => handleBtnClick(text)}
                 className={`
-                p-5 rounded-lg font-semibold transition-colors duration-200
-                focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400
+                p-5 rounded-xs font-black transition-colors duration-75
                 ${text === "="
                     ? "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-500 dark:hover:bg-green-600 dark:active:bg-green-700"
                     : OPERATIONS.includes(text as Operation)
