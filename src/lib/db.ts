@@ -26,5 +26,9 @@ export function getChangeLogs(): ChangeLog[] {
             version: "1.6.0",
             changes: ["اضافه شدن بخش تغییرات","رفع اشکالات جزِِئی"]
         },
+        {
+            version: "1.7.0",
+            changes: ["تغییر رابط کاربری","رفع ایرادات کلی"]
+        },
     ];
 };
