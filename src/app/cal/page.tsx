@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -8,6 +7,7 @@ import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Calculator() {
   const [firstOperand, setFirstOperand] = useState("");
@@ -22,6 +22,9 @@ export default function Calculator() {
     saveHistory,
     deleteServerHistory,
   } = useCalculatorHistory(result);
+
+  // وضعیت نمایش دیالوگ تایید پاک کردن تاریخچه
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const resetCalc = () => {
     setFirstOperand("");
@@ -48,7 +51,7 @@ export default function Calculator() {
       setSecondOperand("0");
     } else if (OPERATIONS.includes(op as Operation)) {
       setOperation(op as Operation);
-    };
+    }
   };
 
   const handleBtnClick = (text: OperatorBtn) => {
@@ -105,6 +108,22 @@ export default function Calculator() {
     deleteServerHistory();
   }, [setHistory, deleteServerHistory]);
 
+  // باز کردن دیالوگ تاییدیه
+  const requestClearHistory = () => {
+    setShowConfirm(true);
+  };
+
+  // لغو دیالوگ
+  const cancelClear = () => {
+    setShowConfirm(false);
+  };
+
+  // تایید حذف تاریخچه
+  const confirmClear = () => {
+    handleClearHistory();
+    setShowConfirm(false);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const { key } = e;
@@ -114,7 +133,7 @@ export default function Calculator() {
       else if (key === "Backspace") handleBtnClick("DEL");
       else if (key.toLowerCase() === "c") handleBtnClick("C");
       else if (key.toLowerCase() === "q") handleBtnClick("CA");
-      else if (key.toLowerCase() === "p") handleClearHistory();
+      else if (key.toLowerCase() === "p") requestClearHistory();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -122,39 +141,91 @@ export default function Calculator() {
 
   return (
     <>
-      <Header/>
-
-      <div
-        className={`min-h-screen mt-16 ${theme}`}
-      >
-        <div className="flex flex-col gap-4 container mx-auto px-4 py-8">
-          <div className="grid grid-cols-4 grid-rows-6 gap-1">
-            <CalculatorDisplay first={firstOperand} op={operation} second={secondOperand} result={result} />
+      <Header />
+      <div className={`min-h-screen mt-16 transition-colors duration-300 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+        <div className="flex flex-col gap-6 container mx-auto px-4 py-12 max-w-2xl">
+          {/* Calculator Section */}
+          <div className="grid grid-cols-4 grid-rows-6 gap-2 p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
+            <CalculatorDisplay
+              first={firstOperand}
+              op={operation}
+              second={secondOperand}
+              result={result}
+            />
 
             {BUTTONS.map(text => (
-              <button
+              <motion.button
                 key={text}
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
                 onClick={() => handleBtnClick(text)}
                 className={`
-                p-5 rounded-xs font-black transition-colors duration-75
-                ${text === "="
+                  p-5 rounded-xl font-black text-xl transition-colors duration-75
+                  ${text === "="
                     ? "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-500 dark:hover:bg-green-600 dark:active:bg-green-700"
                     : OPERATIONS.includes(text as Operation)
                       ? "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-500 dark:active:bg-blue-600"
                       : "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
                   }
-              `}
+                `}
               >
                 {text}
-              </button>
+              </motion.button>
             ))}
           </div>
 
-          <HistoryList history={history} loading={loading} onClear={handleClearHistory} />
+          {/* History Section */}
+          <div className="p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
+            {/* به جای حذف مستقیم، دیالوگ رو باز می‌کنیم */}
+            <HistoryList history={history} loading={loading} onClear={requestClearHistory} />
+          </div>
         </div>
       </div>
+
+      {/* دیالوگ تایید حذف تاریخچه */}
+      <AnimatePresence>
+        {showConfirm && (
+          <>
+            {/* پس‌زمینه تار و بلور */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+              onClick={cancelClear}
+            />
+
+            {/* دیالوگ وسط صفحه */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="fixed top-1/2 left-1/2 z-50 w-80 max-w-full -translate-x-1/2 -translate-y-1/2 rounded-xl bg-gray-900 p-6 shadow-2xl text-gray-100 select-none"
+            >
+              <p className="mb-5 text-center font-bold">
+                آیا مطمئن هستید که می‌خواهید تاریخچه را پاک کنید؟
+              </p>
+              <div className="flex justify-center gap-5">
+                <button
+                  onClick={cancelClear}
+                  className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+                  type="button"
+                >
+                  لغو
+                </button>
+                <button
+                  onClick={confirmClear}
+                  className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-md"
+                  type="button"
+                >
+                  پاک کردن
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
-
 }
-

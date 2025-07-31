@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import theme from "@/lib/theme";
+import "@fontsource/major-mono-display";
+
 
 
 

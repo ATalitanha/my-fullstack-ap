@@ -8,72 +8,78 @@ interface Props {
 }
 
 const CalculatorDisplay = ({ first, op, second, result }: Props) => {
-  // ساخت رشته نمایش کل عبارت با نتیجه (مثل: "3 + 5 = 8")
   const expression = `${first} ${op} ${op === "√" ? "" : second} = ${result}`;
 
   return (
     <motion.div
       className="
         row-span-1 col-span-4
-        bg-black/20 dark:bg-white/10
-        border border-white/20
-        rounded-xs
-        p-3
-        min-h-[60px]
+        bg-white/10 dark:bg-white/5
+        backdrop-blur-md
+        border border-white/20 dark:border-gray-700
+        rounded-2xl
+        p-4
+        min-h-[70px]
         select-text
         overflow-hidden
         whitespace-nowrap
-        text-black dark:text-gray-400
-        font-black text-lg
-        flex justify-start items-center
-        gap-2
+        text-right
+        font-['Major_Mono_Display']
+        text-2xl sm:text-3xl md:text-4xl
+        text-black dark:text-gray-100
+        shadow-inner shadow-gray-300 dark:shadow-black/30
+        flex justify-end items-center gap-2
       "
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.3 }}
       title={expression.trim()}
     >
-      {/* برای انیمیشن، می‌تونیم هر بخش رو جدا بذاریم با key جدا */}
       <motion.span
         key={`${first}-${op}-${second}`}
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.2 }}
+        className="text-black dark:text-gray-200"
       >
         {first}
       </motion.span>
 
       {op && (
         <motion.span
-          key={op}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          key={`op-${op}`}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          className="text-blue-400 dark:text-blue-300"
         >
           {` ${op} `}
         </motion.span>
       )}
 
-      {op !== "√" && (
+      {op !== "√" && second && (
         <motion.span
-          key={second}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          key={`second-${second}`}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.2 }}
+          className="text-black dark:text-gray-200"
         >
           {second}
         </motion.span>
       )}
 
-      <motion.span
-        key={`result-${result}`}
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="text-green-400 dark:text-green-300 font-black"
-      >
-        {` ${result}`}
-      </motion.span>
+      {result && (
+        <motion.span
+          key={`result-${result}`}
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-green-400 dark:text-green-300 font-black"
+        >
+          {` = ${result}`}
+        </motion.span>
+      )}
     </motion.div>
   );
 };
