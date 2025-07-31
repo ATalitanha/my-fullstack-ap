@@ -102,7 +102,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
                     rounded-xs transition-colors
                   "
                 >
-                  {`${item.expression} ${item.result}`}
+                  {`${item.expression} = ${item.result}`}
                 </motion.div>
               ))}
             </AnimatePresence>
