@@ -1,4 +1,3 @@
-import { reverse } from "dns";
 import { useState, useCallback, useEffect } from "react";
 
 export interface HistoryItem {

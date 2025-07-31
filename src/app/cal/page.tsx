@@ -8,12 +8,13 @@ import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import { motion, AnimatePresence } from "framer-motion";
+import { evaluate } from "mathjs";
 
 export default function Calculator() {
-  const [firstOperand, setFirstOperand] = useState("");
-  const [secondOperand, setSecondOperand] = useState("");
-  const [operation, setOperation] = useState<Operation | "">("");
+  // ذخیره کل عبارت به صورت رشته
+  const [expression, setExpression] = useState("");
   const [result, setResult] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     history,
@@ -23,81 +24,98 @@ export default function Calculator() {
     deleteServerHistory,
   } = useCalculatorHistory(result);
 
-  // وضعیت نمایش دیالوگ تایید پاک کردن تاریخچه
-  const [showConfirm, setShowConfirm] = useState(false);
-
   const resetCalc = () => {
-    setFirstOperand("");
-    setSecondOperand("");
-    setOperation("");
+    setExpression("");
     setResult("");
   };
 
   const handleInput = (value: string) => {
-    if (OPERATIONS.includes(value as Operation)) return;
-
-    if (!operation && firstOperand.length < 8 && (value !== "." || !firstOperand.includes("."))) {
-      setFirstOperand(prev => prev + value);
-    } else if (!result && secondOperand.length < 8 && (value !== "." || !secondOperand.includes("."))) {
-      setSecondOperand(prev => prev + value);
+    // اگر نتیجه قبل موجود است و کاربر عدد زد، ریست می‌کنیم (شروع از نو)
+    if (result && !OPERATIONS.includes(value as Operation)) {
+      resetCalc();
+      setExpression(value);
+      return;
     }
+
+    // جلوگیری از وارد کردن چند نقطه متوالی برای هر عدد
+    if (value === ".") {
+      // پیدا کردن آخرین عدد در expression
+      const lastNumberMatch = expression.match(/(\d+\.?\d*)$/);
+      if (lastNumberMatch && lastNumberMatch[0].includes(".")) {
+        return; // اجازه نمیدیم نقطه دوباره وارد بشه
+      }
+    }
+
+    // فقط اجازه میدیم تا 15 کاراکتر در expression باشه برای جلوگیری از overflow
+    if (expression.length >= 15) return;
+
+    setExpression(prev => prev + value);
   };
 
   const handleOperation = (op: string) => {
-    if (!firstOperand) return;
+    if (!expression && !result) return;
+
+    if (result) {
+      // وقتی نتیجه موجوده و کاربر عملگر میزنه، expression رو با نتیجه شروع کن و عملگر اضافه کن
+      setExpression(result + op);
+      setResult("");
+      return;
+    }
+
+    // اگر آخرین کاراکتر عملگر بود، جایگزینش کن
+    if (OPERATIONS.includes(expression.slice(-1) as Operation)) {
+      setExpression(prev => prev.slice(0, -1) + op);
+      return;
+    }
 
     if (op === "√") {
-      setOperation("√");
-      setSecondOperand("0");
-    } else if (OPERATIONS.includes(op as Operation)) {
-      setOperation(op as Operation);
+      setExpression(prev => prev + "sqrt(");
+      return;
     }
+
+    setExpression(prev => prev + op);
   };
 
   const handleBtnClick = (text: OperatorBtn) => {
     if (text === "CA") resetCalc();
     else if (text === "C") {
       if (result) return;
-      if (secondOperand) setSecondOperand("");
-      else setFirstOperand("");
+      setExpression(prev => prev.slice(0, -1));
     }
     else if (text === "DEL") {
       if (result) return;
-      if (secondOperand) setSecondOperand(prev => prev.slice(0, -1));
-      else if (operation) setOperation("");
-      else if (firstOperand) setFirstOperand(prev => prev.slice(0, -1));
+      setExpression(prev => prev.slice(0, -1));
     }
     else if (text === "+/-") {
-      if (result) return;
-      if (secondOperand) setSecondOperand(`${parseFloat(secondOperand) * -1}`);
-      else if (firstOperand) setFirstOperand(`${parseFloat(firstOperand) * -1}`);
+      // معکوس کردن علامت آخرین عدد در expression
+      const match = expression.match(/(-?\d+\.?\d*)$/);
+      if (match) {
+        const number = match[0];
+        const inverted = number.startsWith("-") ? number.slice(1) : "-" + number;
+        setExpression(prev => prev.slice(0, prev.length - number.length) + inverted);
+      }
     }
     else if (text === "=") calcResult();
-    else if (OPERATIONS.includes(text as Operation)) handleOperation(text as Operation);
+    else if (OPERATIONS.includes(text as Operation)) handleOperation(text);
     else handleInput(text);
   };
 
   const calcResult = () => {
     try {
-      const a = parseFloat(firstOperand);
-      const b = parseFloat(secondOperand);
-      let r: number | undefined;
-
-      switch (operation) {
-        case "+": r = a + b; break;
-        case "-": r = a - b; break;
-        case "*": r = a * b; break;
-        case "/": r = b !== 0 ? a / b : NaN; break;
-        case "^": r = Math.pow(a, b); break;
-        case "√": r = a >= 0 ? Math.sqrt(a) : NaN; break;
+      // اگر عبارت باز پرانتز sqrt( داریم، باید پرانتزشو ببندیم
+      let exprToEval = expression;
+      const openSqrtCount = (exprToEval.match(/sqrt\(/g) || []).length;
+      const closeParenCount = (exprToEval.match(/\)/g) || []).length;
+      for (let i = 0; i < openSqrtCount - closeParenCount; i++) {
+        exprToEval += ")";
       }
 
-      const expression = `${firstOperand} ${operation} ${operation === "√" ? "" : secondOperand}`;
-      const finalResult = (r !== undefined && !Number.isNaN(r)) ? `${r}` : "Error";
+      const r = evaluate(exprToEval);
+
+      const finalResult = (r !== undefined && !Number.isNaN(r)) ? r.toString() : "Error";
 
       setResult(finalResult);
-
-      if (!Number.isNaN(r) && operation) saveHistory(expression, finalResult);
+      saveHistory(expression, finalResult);
     } catch {
       setResult("Error");
     }
@@ -108,17 +126,8 @@ export default function Calculator() {
     deleteServerHistory();
   }, [setHistory, deleteServerHistory]);
 
-  // باز کردن دیالوگ تاییدیه
-  const requestClearHistory = () => {
-    setShowConfirm(true);
-  };
-
-  // لغو دیالوگ
-  const cancelClear = () => {
-    setShowConfirm(false);
-  };
-
-  // تایید حذف تاریخچه
+  const requestClearHistory = () => setShowConfirm(true);
+  const cancelClear = () => setShowConfirm(false);
   const confirmClear = () => {
     handleClearHistory();
     setShowConfirm(false);
@@ -144,15 +153,13 @@ export default function Calculator() {
       <Header />
       <div className={`min-h-screen mt-16 transition-colors duration-300 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="flex flex-col gap-6 container mx-auto px-4 py-12 max-w-2xl">
-          {/* Calculator Section */}
           <div className="grid grid-cols-4 grid-rows-6 gap-2 p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <CalculatorDisplay
-              first={firstOperand}
-              op={operation}
-              second={secondOperand}
+              first={expression}
+              op={""}
+              second={""}
               result={result}
             />
-
             {BUTTONS.map(text => (
               <motion.button
                 key={text}
@@ -174,20 +181,15 @@ export default function Calculator() {
               </motion.button>
             ))}
           </div>
-
-          {/* History Section */}
           <div className="p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
-            {/* به جای حذف مستقیم، دیالوگ رو باز می‌کنیم */}
             <HistoryList history={history} loading={loading} onClear={requestClearHistory} />
           </div>
         </div>
       </div>
 
-      {/* دیالوگ تایید حذف تاریخچه */}
       <AnimatePresence>
         {showConfirm && (
           <>
-            {/* پس‌زمینه تار و بلور */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -195,8 +197,6 @@ export default function Calculator() {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
               onClick={cancelClear}
             />
-
-            {/* دیالوگ وسط صفحه */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -210,14 +210,12 @@ export default function Calculator() {
                 <button
                   onClick={cancelClear}
                   className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-                  type="button"
                 >
                   لغو
                 </button>
                 <button
                   onClick={confirmClear}
                   className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-md"
-                  type="button"
                 >
                   پاک کردن
                 </button>
