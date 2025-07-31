@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import theme from "@/lib/theme";
 import "@fontsource/major-mono-display";
+import { Analytics } from "@vercel/analytics/next"
 
 
 
@@ -25,6 +26,7 @@ export default function RootLayout({
       >
         
         {children}
+        <Analytics />
       </body>
     </html>
   );
