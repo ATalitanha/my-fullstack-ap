@@ -32,7 +32,7 @@ export function getChangeLogs(): ChangeLog[] {
         },
         {
             version: "1.8.0",
-            changes: [""]
+            changes: ["اضافه شدن پرانتز","بهبود نمایش خطا ها"]
         },
     ];
 };
