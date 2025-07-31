@@ -5,15 +5,17 @@ import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
 import toggleTheme from "@/components/ThemeToggle";
-import ThemeToggle from "@/components/ThemeToggle";
 
-export function ChangeLog() {
-  const [isOpen, setIsOpen] = useState(false);
+type ChangeLogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
   const [changegetChangeLogs, setChangegetChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
-    setIsOpen(true);
     setChangegetChangeLogs(getChangeLogs);
   }, []);
 
@@ -58,9 +60,8 @@ export function ChangeLog() {
               >
                 تغییرات
               </motion.h2>
-              <ThemeToggle />
               <motion.button
-                onClick={() => setIsOpen(false)}
+                onClick={onClose}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 whileHover={{ scale: 1.2, rotate: 90 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -92,7 +93,13 @@ export function ChangeLog() {
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <path
                           d="M2 4L6 8L10 4"
                           stroke="currentColor"
@@ -115,19 +122,21 @@ export function ChangeLog() {
                       >
                         <div className="pb-4 px-1">
                           <ul className="list-disc pl-5 space-y-1">
-                            {log.changes.map((change, changeIndex) => (
-                              change &&
-                              <motion.li
-                                key={changeIndex}
-                                className="text-gray-800 dark:text-gray-400"
-                                custom={changeIndex}
-                                initial="hidden"
-                                animate="visible"
-                                variants={textVariants}
-                              >
-                                - {change}
-                              </motion.li>
-                            ))}
+                            {log.changes.map(
+                              (change, changeIndex) =>
+                                change && (
+                                  <motion.li
+                                    key={changeIndex}
+                                    className="text-gray-800 dark:text-gray-400"
+                                    custom={changeIndex}
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={textVariants}
+                                  >
+                                    - {change}
+                                  </motion.li>
+                                )
+                            )}
                           </ul>
                         </div>
                       </motion.div>

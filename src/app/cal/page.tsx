@@ -2,19 +2,20 @@
 
 import { useEffect, useState, useCallback } from "react";
 import CalculatorDisplay from "@/components/CalculatorDisplay";
-import HistoryList from "@/components/HistoryList";
 import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import { motion, AnimatePresence } from "framer-motion";
 import { evaluate } from "mathjs";
+import HistoryList from "@/components/HistoryList";
 
 export default function Calculator() {
-  // ذخیره کل عبارت به صورت رشته
   const [expression, setExpression] = useState("");
   const [result, setResult] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [parenError, setParenError] = useState(false);
+  const [evalError, setEvalError] = useState<string | null>(null);
 
   const {
     history,
@@ -27,49 +28,76 @@ export default function Calculator() {
   const resetCalc = () => {
     setExpression("");
     setResult("");
+    setParenError(false);
+    setEvalError(null);
   };
 
   const handleInput = (value: string) => {
-    // اگر نتیجه قبل موجود است و کاربر عدد زد، ریست می‌کنیم (شروع از نو)
+    if (parenError) setParenError(false);
+    if (evalError) setEvalError(null);
+
     if (result && !OPERATIONS.includes(value as Operation)) {
       resetCalc();
       setExpression(value);
       return;
     }
 
-    // جلوگیری از وارد کردن چند نقطه متوالی برای هر عدد
     if (value === ".") {
-      // پیدا کردن آخرین عدد در expression
       const lastNumberMatch = expression.match(/(\d+\.?\d*)$/);
       if (lastNumberMatch && lastNumberMatch[0].includes(".")) {
-        return; // اجازه نمیدیم نقطه دوباره وارد بشه
+        return;
       }
     }
 
-    // فقط اجازه میدیم تا 15 کاراکتر در expression باشه برای جلوگیری از overflow
+    if (value === "(") {
+      const lastChar = expression.slice(-1);
+      if (
+        expression === "" ||
+        OPERATIONS.includes(lastChar as Operation) ||
+        lastChar === "("
+      ) {
+        setExpression(prev => prev + "(");
+      } else if (/\d/.test(lastChar)) {
+        setExpression(prev => prev + "*" + "(");
+      }
+      return;
+    }
+
+    if (value === ")") {
+      const openParens = (expression.match(/\(/g) || []).length;
+      const closeParens = (expression.match(/\)/g) || []).length;
+      const lastChar = expression.slice(-1);
+
+      if (
+        openParens > closeParens &&
+        (/\d/.test(lastChar) || lastChar === ")")
+      ) {
+        setExpression(prev => prev + ")");
+      }
+      return;
+    }
+
     if (expression.length >= 15) return;
 
     setExpression(prev => prev + value);
   };
 
   const handleOperation = (op: string) => {
+    if (parenError) setParenError(false);
+    if (evalError) setEvalError(null);
+
     if (!expression && !result) return;
 
     if (result) {
-      // وقتی نتیجه موجوده و کاربر عملگر میزنه، expression رو با نتیجه شروع کن و عملگر اضافه کن
       setExpression(result + op);
       setResult("");
       return;
     }
 
-    // اگر آخرین کاراکتر عملگر بود، جایگزینش کن
-    if (OPERATIONS.includes(expression.slice(-1) as Operation)) {
-      setExpression(prev => prev.slice(0, -1) + op);
-      return;
-    }
+    const lastChar = expression.slice(-1);
 
-    if (op === "√") {
-      setExpression(prev => prev + "sqrt(");
+    if (OPERATIONS.includes(lastChar as Operation)) {
+      setExpression(prev => prev.slice(0, -1) + op);
       return;
     }
 
@@ -78,16 +106,11 @@ export default function Calculator() {
 
   const handleBtnClick = (text: OperatorBtn) => {
     if (text === "CA") resetCalc();
-    else if (text === "C") {
-      if (result) return;
-      setExpression(prev => prev.slice(0, -1));
-    }
-    else if (text === "DEL") {
+    else if (text === "C" || text === "DEL") {
       if (result) return;
       setExpression(prev => prev.slice(0, -1));
     }
     else if (text === "+/-") {
-      // معکوس کردن علامت آخرین عدد در expression
       const match = expression.match(/(-?\d+\.?\d*)$/);
       if (match) {
         const number = match[0];
@@ -96,30 +119,52 @@ export default function Calculator() {
       }
     }
     else if (text === "=") calcResult();
+    else if (text === "(" || text === ")") handleInput(text);
     else if (OPERATIONS.includes(text as Operation)) handleOperation(text);
     else handleInput(text);
   };
 
   const calcResult = () => {
+    if (expression.trim() === "") {
+      setEvalError("خطا در محاسبه");
+      setParenError(false);
+      return;
+    }
+
+    const openParensCount = (expression.match(/\(/g) || []).length;
+    const closeParensCount = (expression.match(/\)/g) || []).length;
+
+    if (openParensCount !== closeParensCount) {
+      setParenError(true);
+      setEvalError(null);
+      return;
+    }
+
+    setParenError(false);
+
     try {
-      // اگر عبارت باز پرانتز sqrt( داریم، باید پرانتزشو ببندیم
       let exprToEval = expression;
-      const openSqrtCount = (exprToEval.match(/sqrt\(/g) || []).length;
-      const closeParenCount = (exprToEval.match(/\)/g) || []).length;
-      for (let i = 0; i < openSqrtCount - closeParenCount; i++) {
-        exprToEval += ")";
-      }
 
       const r = evaluate(exprToEval);
 
-      const finalResult = (r !== undefined && !Number.isNaN(r)) ? r.toString() : "Error";
+      if (r === undefined || Number.isNaN(r)) throw new Error();
 
+      // اگر فقط یک عدد هست، خطا بفرستیم و ذخیره نکنیم
+      if (/^\s*-?\d+(\.\d+)?\s*$/.test(expression)) {
+        setEvalError("عبارت وارد شده کامل نیست.");
+        return;
+      }
+
+      const finalResult = r.toString();
       setResult(finalResult);
       saveHistory(expression, finalResult);
+      setEvalError(null);
     } catch {
-      setResult("Error");
+      setEvalError("عبارت وارد شده کامل نیست.");
     }
   };
+
+
 
   const handleClearHistory = useCallback(() => {
     setHistory([]);
@@ -138,6 +183,7 @@ export default function Calculator() {
       const { key } = e;
       if (/^[0-9.]$/.test(key)) handleInput(key);
       else if (OPERATIONS.includes(key as Operation)) handleOperation(key);
+      else if (key === "(" || key === ")") handleInput(key);
       else if (key === "Enter") calcResult();
       else if (key === "Backspace") handleBtnClick("DEL");
       else if (key.toLowerCase() === "c") handleBtnClick("C");
@@ -153,6 +199,20 @@ export default function Calculator() {
       <Header />
       <div className={`min-h-screen mt-16 transition-colors duration-300 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="flex flex-col gap-6 container mx-auto px-4 py-12 max-w-2xl">
+          {/* پیام‌های خطا */}
+          <div className="text-center mb-2 min-h-[1.5rem]">
+            {parenError && (
+              <div className="text-red-500 font-bold">
+                عبارت وارد شده کامل نیست.
+              </div>
+            )}
+            {evalError && (
+              <div className="text-red-600 font-semibold">
+                {evalError}
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-4 grid-rows-6 gap-2 p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <CalculatorDisplay
               first={expression}

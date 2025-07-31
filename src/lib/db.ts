@@ -30,5 +30,9 @@ export function getChangeLogs(): ChangeLog[] {
             version: "1.7.0",
             changes: ["تغییر رابط کاربری","رفع ایرادات کلی"]
         },
+        {
+            version: "1.8.0",
+            changes: [""]
+        },
     ];
 };
