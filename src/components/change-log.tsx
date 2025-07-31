@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
 import toggleTheme from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export function ChangeLog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,19 +13,14 @@ export function ChangeLog() {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
-    // Show the popup on every refresh
-    setIsOpen(true)
-
-    // Fetch the changelog data
-    setChangegetChangeLogs(getChangeLogs)
+    setIsOpen(true);
+    setChangegetChangeLogs(getChangeLogs);
   }, []);
 
-  // Handle accordion state
   const handleAccordionChange = (value: string) => {
     setExpandedItem(expandedItem === value ? null : value);
   };
 
-  // Text reveal animation for changes
   const textVariants = {
     hidden: { opacity: 0 },
     visible: (i: number) => ({
@@ -34,7 +30,6 @@ export function ChangeLog() {
       },
     }),
   };
-  
 
   return (
     <AnimatePresence>
@@ -46,36 +41,40 @@ export function ChangeLog() {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative w-full max-w-md max-h-[80vh] overflow-auto bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg p-6 m-4"
+            className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent dark:scrollbar-thumb-gray-700 dark:scrollbar-track-transparent bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg m-4"
             initial={{ y: 50, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 50, opacity: 0, scale: 0.9 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
           >
-            <motion.button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-4 left-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              whileHover={{ scale: 1.2, rotate: 90 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            >
-              <X  className="h-5 w-5 cursor-pointer" />
-            </motion.button>
+            {/* Header */}
+            <div className="w-full flex items-center justify-between sticky top-0 bg-white dark:bg-gray-950 z-10 p-4 border-b dark:border-gray-800">
+              <motion.h2
+                onClick={toggleTheme}
+                className="text-2xl font-bold cursor-pointer"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                تغییرات
+              </motion.h2>
+              <ThemeToggle />
+              <motion.button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                whileHover={{ scale: 1.2, rotate: 90 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              >
+                <X className="h-5 w-5 cursor-pointer" />
+              </motion.button>
+            </div>
 
-            <motion.h2
-              onClick={toggleTheme}
-              className="text-2xl font-bold mb-4"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              تغییرات
-            </motion.h2>
-
-            <div  className="w-full">
+            {/* Body */}
+            <div className="p-6 w-full" dir="rtl">
               {changegetChangeLogs.map((log, index) => (
                 <motion.div
                   key={index}
-                  className="border-b last:border-b-0"
+                  className="border-b last:border-b-0 px-3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * index }}
@@ -117,16 +116,16 @@ export function ChangeLog() {
                         <div className="pb-4 px-1">
                           <ul className="list-disc pl-5 space-y-1">
                             {log.changes.map((change, changeIndex) => (
-                              
+                              change &&
                               <motion.li
                                 key={changeIndex}
-                                className=" text-gray-700 dark:text-gray-300"
+                                className="text-gray-800 dark:text-gray-400"
                                 custom={changeIndex}
                                 initial="hidden"
                                 animate="visible"
                                 variants={textVariants}
                               >
-                                {change}
+                                - {change}
                               </motion.li>
                             ))}
                           </ul>
@@ -142,4 +141,4 @@ export function ChangeLog() {
       )}
     </AnimatePresence>
   );
-};
+}
