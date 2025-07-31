@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { logs } from "@/lib/db";
+import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
 import toggleTheme from "@/components/ThemeToggle";
 
 export function ChangeLog() {
   const [isOpen, setIsOpen] = useState(false);
-  const [changeLogs, setChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
+  const [changegetChangeLogs, setChangegetChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export function ChangeLog() {
     setIsOpen(true)
 
     // Fetch the changelog data
-    setChangeLogs(logs)
+    setChangegetChangeLogs(getChangeLogs)
   }, []);
 
   // Handle accordion state
@@ -72,7 +72,7 @@ export function ChangeLog() {
             </motion.h2>
 
             <div  className="w-full">
-              {changeLogs.map((log, index) => (
+              {changegetChangeLogs.map((log, index) => (
                 <motion.div
                   key={index}
                   className="border-b last:border-b-0"
