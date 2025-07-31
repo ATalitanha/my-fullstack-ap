@@ -90,13 +90,13 @@ export default function Calculator() {
       }
 
       const expression = `${firstOperand} ${operation} ${operation === "√" ? "" : secondOperand}`;
-      const finalResult = (r !== undefined && !Number.isNaN(r)) ? `=${r}` : "=Error";
+      const finalResult = (r !== undefined && !Number.isNaN(r)) ? `${r}` : "Error";
 
       setResult(finalResult);
 
       if (!Number.isNaN(r) && operation) saveHistory(expression, finalResult);
     } catch {
-      setResult("=Error");
+      setResult("Error");
     }
   };
 

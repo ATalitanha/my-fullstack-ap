@@ -9,7 +9,7 @@ interface Props {
 
 const CalculatorDisplay = ({ first, op, second, result }: Props) => {
   // ساخت رشته نمایش کل عبارت با نتیجه (مثل: "3 + 5 = 8")
-  const expression = `${first} ${op} ${op === "√" ? "" : second} ${result}`;
+  const expression = `${first} ${op} ${op === "√" ? "" : second} = ${result}`;
 
   return (
     <motion.div
