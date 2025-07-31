@@ -1,4 +1,4 @@
-export interface pruduct {
-    name: string;
-    price: number
+export interface ChangeLog {
+    version: string,
+    changes: string[],
 };
