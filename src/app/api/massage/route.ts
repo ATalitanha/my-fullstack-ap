@@ -25,14 +25,30 @@ export async function POST(req: Request) {
 };
 
 export async function DELETE(req: Request) {
-    const mass = await req.text();
-    const data = JSON.parse(mass);
-    try {
-        await prisma.message.delete({
-            where: { id: data.id },
-        });
-    } catch {
-        return NextResponse.json({ massage: "not found" }, { status: 404 });
-    };
-    return NextResponse.json("", { status: 201 });
-};
+  const mass = await req.text();
+  const data = JSON.parse(mass);
+
+  try {
+    if (data.deleteAll === true) {
+      // حذف همه پیام‌ها
+      await prisma.message.deleteMany({});
+    } else if (data.id) {
+      // حذف پیام مشخص شده
+      await prisma.message.delete({
+        where: { id: data.id },
+      });
+    } else {
+      return NextResponse.json(
+        { message: "پارامتر id یا deleteAll لازم است" },
+        { status: 400 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { message: "خطا در حذف پیام" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json("", { status: 201 });
+}

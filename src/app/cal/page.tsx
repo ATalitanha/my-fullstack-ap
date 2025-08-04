@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import CalculatorDisplay from "@/components/CalculatorDisplay";
 import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
@@ -12,6 +12,8 @@ import HistoryList from "@/components/HistoryList";
 
 export default function Calculator() {
   const [expression, setExpression] = useState("");
+  const expressionRef = useRef(expression);
+
   const [result, setResult] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [parenError, setParenError] = useState(false);
@@ -25,14 +27,19 @@ export default function Calculator() {
     deleteServerHistory,
   } = useCalculatorHistory(result);
 
-  const resetCalc = () => {
+  useEffect(() => {
+    expressionRef.current = expression;
+  }, [expression]);
+
+  const resetCalc = useCallback(() => {
     setExpression("");
+    expressionRef.current = "";
     setResult("");
     setParenError(false);
     setEvalError(null);
-  };
+  }, []);
 
-  const handleInput = (value: string) => {
+  const handleInput = useCallback((value: string) => {
     if (parenError) setParenError(false);
     if (evalError) setEvalError(null);
 
@@ -43,16 +50,16 @@ export default function Calculator() {
     }
 
     if (value === ".") {
-      const lastNumberMatch = expression.match(/(\d+\.?\d*)$/);
+      const lastNumberMatch = expressionRef.current.match(/(\d+\.?\d*)$/);
       if (lastNumberMatch && lastNumberMatch[0].includes(".")) {
         return;
       }
     }
 
     if (value === "(") {
-      const lastChar = expression.slice(-1);
+      const lastChar = expressionRef.current.slice(-1);
       if (
-        expression === "" ||
+        expressionRef.current === "" ||
         OPERATIONS.includes(lastChar as Operation) ||
         lastChar === "("
       ) {
@@ -64,9 +71,9 @@ export default function Calculator() {
     }
 
     if (value === ")") {
-      const openParens = (expression.match(/\(/g) || []).length;
-      const closeParens = (expression.match(/\)/g) || []).length;
-      const lastChar = expression.slice(-1);
+      const openParens = (expressionRef.current.match(/\(/g) || []).length;
+      const closeParens = (expressionRef.current.match(/\)/g) || []).length;
+      const lastChar = expressionRef.current.slice(-1);
 
       if (
         openParens > closeParens &&
@@ -77,62 +84,45 @@ export default function Calculator() {
       return;
     }
 
-    if (expression.length >= 15) return;
+    if (expressionRef.current.length >= 15) return;
 
     setExpression(prev => prev + value);
-  };
+  }, [parenError, evalError, result, resetCalc]);
 
-  const handleOperation = (op: string) => {
+  const handleOperation = useCallback((op: string) => {
     if (parenError) setParenError(false);
     if (evalError) setEvalError(null);
 
-    if (!expression && !result) return;
+    if (!expressionRef.current && !result) return;
 
     if (result) {
       setExpression(result + op);
+      expressionRef.current = result + op;
       setResult("");
       return;
     }
 
-    const lastChar = expression.slice(-1);
+    const lastChar = expressionRef.current.slice(-1);
 
     if (OPERATIONS.includes(lastChar as Operation)) {
       setExpression(prev => prev.slice(0, -1) + op);
+      expressionRef.current = expressionRef.current.slice(0, -1) + op;
       return;
     }
 
     setExpression(prev => prev + op);
-  };
+    expressionRef.current = expressionRef.current + op;
+  }, [parenError, evalError, result]);
 
-  const handleBtnClick = (text: OperatorBtn) => {
-    if (text === "CA") resetCalc();
-    else if (text === "C" || text === "DEL") {
-      if (result) return;
-      setExpression(prev => prev.slice(0, -1));
-    }
-    else if (text === "+/-") {
-      const match = expression.match(/(-?\d+\.?\d*)$/);
-      if (match) {
-        const number = match[0];
-        const inverted = number.startsWith("-") ? number.slice(1) : "-" + number;
-        setExpression(prev => prev.slice(0, prev.length - number.length) + inverted);
-      }
-    }
-    else if (text === "=") calcResult();
-    else if (text === "(" || text === ")") handleInput(text);
-    else if (OPERATIONS.includes(text as Operation)) handleOperation(text);
-    else handleInput(text);
-  };
-
-  const calcResult = () => {
-    if (expression.trim() === "") {
+  const calcResult = useCallback(() => {
+    if (expressionRef.current.trim() === "") {
       setEvalError("خطا در محاسبه");
       setParenError(false);
       return;
     }
 
-    const openParensCount = (expression.match(/\(/g) || []).length;
-    const closeParensCount = (expression.match(/\)/g) || []).length;
+    const openParensCount = (expressionRef.current.match(/\(/g) || []).length;
+    const closeParensCount = (expressionRef.current.match(/\)/g) || []).length;
 
     if (openParensCount !== closeParensCount) {
       setParenError(true);
@@ -143,56 +133,180 @@ export default function Calculator() {
     setParenError(false);
 
     try {
-      let exprToEval = expression;
-
-      const r = evaluate(exprToEval);
+      const r = evaluate(expressionRef.current);
 
       if (r === undefined || Number.isNaN(r)) throw new Error();
 
-      // اگر فقط یک عدد هست، خطا بفرستیم و ذخیره نکنیم
-      if (/^\s*-?\d+(\.\d+)?\s*$/.test(expression)) {
+      if (/^\s*-?\d+(\.\d+)?\s*$/.test(expressionRef.current)) {
         setEvalError("عبارت وارد شده کامل نیست.");
         return;
       }
 
       const finalResult = r.toString();
       setResult(finalResult);
-      saveHistory(expression, finalResult);
+      saveHistory(expressionRef.current, finalResult);
       setEvalError(null);
     } catch {
       setEvalError("عبارت وارد شده کامل نیست.");
     }
-  };
+  }, [saveHistory]);
 
-
+  const handleBtnClick = useCallback((text: OperatorBtn) => {
+    if (text === "CA") {
+      resetCalc();
+    }
+    else if (text === "C" || text === "DEL") {
+      if (result) return;
+      setExpression(prev => {
+        const newExpr = prev.slice(0, -1);
+        expressionRef.current = newExpr;
+        return newExpr;
+      });
+    }
+    else if (text === "+/-") {
+      const match = expressionRef.current.match(/(-?\d+\.?\d*)$/);
+      if (match) {
+        const number = match[0];
+        const inverted = number.startsWith("-") ? number.slice(1) : "-" + number;
+        setExpression(prev => {
+          const newExpr = prev.slice(0, prev.length - number.length) + inverted;
+          expressionRef.current = newExpr;
+          return newExpr;
+        });
+      }
+    }
+    else if (text === "=") {
+      calcResult();
+    }
+    else if (text === "(" || text === ")") {
+      handleInput(text);
+    }
+    else if (OPERATIONS.includes(text as Operation)) {
+      handleOperation(text);
+    }
+    else {
+      handleInput(text);
+    }
+  }, [calcResult, handleInput, handleOperation, resetCalc, result]);
 
   const handleClearHistory = useCallback(() => {
     setHistory([]);
     deleteServerHistory();
   }, [setHistory, deleteServerHistory]);
 
-  const requestClearHistory = () => setShowConfirm(true);
-  const cancelClear = () => setShowConfirm(false);
-  const confirmClear = () => {
+  const requestClearHistory = useCallback(() => setShowConfirm(true), []);
+  const cancelClear = useCallback(() => setShowConfirm(false), []);
+  const confirmClear = useCallback(() => {
     handleClearHistory();
     setShowConfirm(false);
-  };
+  }, [handleClearHistory]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const { key } = e;
-      if (/^[0-9.]$/.test(key)) handleInput(key);
-      else if (OPERATIONS.includes(key as Operation)) handleOperation(key);
-      else if (key === "(" || key === ")") handleInput(key);
-      else if (key === "Enter") calcResult();
-      else if (key === "Backspace") handleBtnClick("DEL");
-      else if (key.toLowerCase() === "c") handleBtnClick("C");
-      else if (key.toLowerCase() === "q") handleBtnClick("CA");
-      else if (key.toLowerCase() === "p") requestClearHistory();
+      const key = e.key.toLowerCase();
+
+      // اگر فوکوس روی input یا textarea یا contenteditable هست، 
+      // اجازه نده کلیدهای q, c, p کلیدهای ویژه را فعال کنند
+      const target = e.target as HTMLElement;
+      const isTyping =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+
+      if (showConfirm) {
+        if (key === "enter") {
+          e.preventDefault();
+          confirmClear();
+          return;
+        }
+        if (key === "escape") {
+          e.preventDefault();
+          cancelClear();
+          return;
+        }
+        return;
+      }
+
+      if (isTyping) {
+        // در حالت تایپ فقط اعداد، عملیات و پرانتزها را هندل کن
+        if (/^[0-9.]$/.test(e.key)) {
+          handleInput(e.key);
+        } else if (OPERATIONS.includes(e.key as Operation)) {
+          handleOperation(e.key);
+        } else if (e.key === "(" || e.key === ")") {
+          handleInput(e.key);
+        }
+        return;
+      }
+
+      // وقتی فوکوس روی ورودی نیست
+
+      if (/^[0-9.]$/.test(e.key)) {
+        handleInput(e.key);
+        return;
+      }
+
+      if (OPERATIONS.includes(e.key as Operation)) {
+        handleOperation(e.key);
+        return;
+      }
+
+      if (e.key === "(" || e.key === ")") {
+        handleInput(e.key);
+        return;
+      }
+
+      if (key === "enter") {
+        calcResult();
+        return;
+      }
+
+      if (key === "backspace") {
+        if (!result) {
+          setExpression(prev => {
+            const newExpr = prev.slice(0, -1);
+            expressionRef.current = newExpr;
+            return newExpr;
+          });
+        }
+        return;
+      }
+
+      if (key === "c") {
+        if (!result) {
+          setExpression(prev => {
+            const newExpr = prev.slice(0, -1);
+            expressionRef.current = newExpr;
+            return newExpr;
+          });
+        }
+        return;
+      }
+
+      if (key === "q") {
+        resetCalc();
+        return;
+      }
+
+      if (key === "p") {
+        requestClearHistory();
+        return;
+      }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleClearHistory]);
+  }, [
+    handleInput,
+    handleOperation,
+    calcResult,
+    resetCalc,
+    requestClearHistory,
+    result,
+    showConfirm,
+    confirmClear,
+    cancelClear,
+  ]);
 
   return (
     <>

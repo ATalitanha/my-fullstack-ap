@@ -4,8 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
     try {
         const history = await prisma.calculation.findMany({
-            orderBy: { createdAt: "desc" },
-            take: 10,
+            orderBy: { createdAt: "desc" }
         });
         return NextResponse.json(history, { status: 200 });
     } catch (error) {
