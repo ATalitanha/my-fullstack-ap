@@ -17,7 +17,10 @@ export default function Calculator() {
       </header>
       <div className={`flex h-screen w-screen justify-center items-center ${theme}`}>
         <Link href={"/cal"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
-          cal
+          ماشین حساب
+        </Link>
+        <Link href={"/messenger"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
+          انتقال متن
         </Link>
         <button
           id="open"
