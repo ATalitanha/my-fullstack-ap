@@ -20,7 +20,6 @@ type ResponseMessage = {
 export default function MessageForm() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [first, setFirst] = useState(0)
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<ResponseMessage | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,7 +35,6 @@ export default function MessageForm() {
   const listRef = useRef<HTMLDivElement>(null);
 
   const fetchMessages = async () => {
-    
     try {
       const res = await fetch("/api/massage");
       const data = await res.json();
@@ -114,34 +112,7 @@ export default function MessageForm() {
     setDeleteModalOpen(false);
     setToDeleteId(null);
   };
-  const confirmDeleteAll = async () => {
-  setDeleteModalOpen(false);
-  setDeletingId("all");
 
-  try {
-    const res = await fetch("/api/massage", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ deleteAll: true }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      showResponse({ text: "✅ همه پیام‌ها حذف شدند", type: "success" });
-      fetchMessages();
-    } else {
-      showResponse({
-        text: `❌ خطا در حذف همه پیام‌ها: ${data.message || "ناموفق بود"}`,
-        type: "error",
-      });
-    }
-  } catch {
-    showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
-  } finally {
-    setDeletingId(null);
-  }
-};
 
 
   const confirmDelete = async () => {
@@ -151,16 +122,28 @@ export default function MessageForm() {
     setDeleteModalOpen(false);
 
     try {
-      const res = await fetch("/api/massage", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: toDeleteId }),
-      });
+      let res;
+      if (toDeleteId === "all") {
+        res = await fetch("/api/massage", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deleteAll: true }),
+        });
+      } else {
+        res = await fetch("/api/massage", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: toDeleteId }),
+        });
+      }
 
       const data = await res.json();
 
       if (res.ok) {
-        showResponse({ text: "✅ پیام حذف شد", type: "success" });
+        showResponse({
+          text: toDeleteId === "all" ? "✅ همه پیام‌ها حذف شدند" : "✅ پیام حذف شد",
+          type: "success",
+        });
         fetchMessages();
       } else {
         showResponse({
@@ -176,14 +159,11 @@ export default function MessageForm() {
     }
   };
 
+
   return (
     <>
       <Header />
-      <div
-        className="min-h-screen mt-16 transition-colors duration-300
-        bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100
-        dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
-      >
+      <div className="min-h-screen mt-16 transition-colors duration-300 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="container mx-auto max-w-2xl px-4 py-12 flex flex-col gap-6">
           <form
             onSubmit={handleSubmit}
@@ -194,7 +174,7 @@ export default function MessageForm() {
               ارسال پیام جدید
             </h2>
 
-            <div className="w-full col-span-4 row-span-1 bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 min-h-[70px] shadow-inner shadow-gray-300 dark:shadow-black/30 flex items-center">
+            <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 min-h-[70px] shadow-inner flex items-center">
               <input
                 type="text"
                 placeholder="عنوان پیام"
@@ -205,7 +185,7 @@ export default function MessageForm() {
                   w-full max-h-9 bg-transparent border-none focus:outline-none
                   text-right text-black dark:text-gray-100
                   font-['Major_Mono_Display'] text-2xl sm:text-3xl md:text-4xl
-                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                  placeholder:text-gray-400 dark:placeholder:text-gray-500
                 `}
                 aria-invalid={(touchedTitle || formTouched) && !title.trim()}
                 aria-describedby="title-error"
@@ -213,27 +193,29 @@ export default function MessageForm() {
             </div>
 
             {(touchedTitle || formTouched) && !title.trim() && (
-              <p
-                id="title-error"
-                className="text-red-600 text-sm mt-1 select-none text-right"
-                role="alert"
-              >
+              <p id="title-error" className="text-red-600 text-sm mt-1 text-right" role="alert">
                 لطفا عنوان را وارد کنید.
               </p>
             )}
 
-            <div className="w-full col-span-4 row-span-1 bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner shadow-gray-300 dark:shadow-black/30">
+            <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner">
               <textarea
-              dir="rtl"
+                dir="rtl"
                 placeholder="متن پیام"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 onBlur={() => setTouchedBody(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as unknown as React.FormEvent);
+                  }
+                }}
                 className={`
                   w-full min-h-10 bg-transparent border-none focus:outline-none
                   text-right text-black dark:text-gray-100
                   font-['Major_Mono_Display'] text-xl sm:text-2xl md:text-3xl
-                 placeholder:text-gray-400 dark:placeholder:text-gray-500
+                  placeholder:text-gray-400 dark:placeholder:text-gray-500
                 `}
                 aria-invalid={(touchedBody || formTouched) && !body.trim()}
                 aria-describedby="body-error"
@@ -241,11 +223,7 @@ export default function MessageForm() {
             </div>
 
             {(touchedBody || formTouched) && !body.trim() && (
-              <p
-                id="body-error"
-                className="text-red-600 text-sm mt-1 select-none text-right"
-                role="alert"
-              >
+              <p id="body-error" className="text-red-600 text-sm mt-1 text-right" role="alert">
                 لطفا متن پیام را وارد کنید.
               </p>
             )}
@@ -253,73 +231,44 @@ export default function MessageForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold
-                rounded-lg py-3 transition disabled:opacity-60"
+              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg py-3 transition disabled:opacity-60"
             >
               {loading ? "در حال ارسال..." : "ارسال"}
             </button>
           </form>
 
-          {/* لیست پیام‌ها */}
+          {/* پیام‌ها */}
           <div className="p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <section
               ref={listRef}
               id="messages-section"
-              className="
-                rounded-xl
-              bg-white/10 dark:bg-black/30
-                backdrop-blur-lg
-                border border-white/20 dark:border-gray-700
-                p-4 text-sm font-black
-                shadow-lg
-                transition-colors duration-300
-                select-none
-                max-h-96 flex flex-col
-              "
+              className="rounded-xl bg-white/10 dark:bg-black/30 backdrop-blur-lg border border-white/20 dark:border-gray-700 p-4 text-sm font-black shadow-lg transition-colors max-h-96 flex flex-col"
             >
               <div className="flex justify-between mb-3 items-center">
                 <h3 className="text-lg font-black text-black dark:text-gray-300">
                   پیام‌های ثبت‌شده
                 </h3>
                 <button
-                  onClick={confirmDeleteAll}
+                  onClick={() => {
+                    setToDeleteId("all");
+                    setDeleteModalOpen(true);
+                  }}
                   className="font-black text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-3 py-1 rounded-lg transition-colors shadow-md"
-                  aria-label="پاک‌کردن تاریخچه"
                   type="button"
                 >
-                  پاک‌کردن تاریخچه
+                  {deletingId === "all" ? "در حال حذف..." : "حذف تاریخچه"}
                 </button>
               </div>
 
-              <div
-                className="
-                  flex-1 overflow-y-auto pr-3
-                  scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70
-                  scrollbar-thumb-rounded scrollbar-track-transparent
-                hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
-                  transition-all
-                "
-                style={{ scrollbarGutter: "stable" }}
-              >
+              <div className="flex-1 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
                 {loading ? (
                   <div className="flex justify-center items-center h-28">
                     <LoadingDots />
                   </div>
                 ) : messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10 mb-2 opacity-50"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 12h6m-3-3v6m-6 3h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"
-                      />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-3-3v6m-6 3h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z" />
                     </svg>
                     هیچ پیامی وجود ندارد.
                   </div>
@@ -332,19 +281,7 @@ export default function MessageForm() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3 }}
-                        className="
-                          border-b border-white/20 py-3 last:border-none
-                        text-black dark:text-gray-300
-                        bg-gray-100
-                        hover:bg-gray-200 dark:hover:bg-white/30
-                          rounded-lg
-                          transition-colors
-                          px-3
-                          cursor-default
-                          select-text
-                          font-mono
-                          flex justify-between items-start
-                        "
+                        className="border-b border-white/20 py-3 last:border-none text-black dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:hover:bg-white/30 rounded-lg transition-colors px-3 cursor-default select-text font-mono flex justify-between items-start"
                       >
                         <div>
                           <div className="font-bold text-base">{msg.title}</div>
@@ -355,11 +292,7 @@ export default function MessageForm() {
                         <button
                           onClick={() => onDeleteClick(msg.id)}
                           disabled={deletingId === msg.id}
-                          className="
-                            ml-4 text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700
-                            px-2 py-1 rounded-md text-xs font-bold transition-colors shadow-sm
-                          "
-                          title="حذف پیام"
+                          className="ml-4 text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 px-2 py-1 rounded-md text-xs font-bold transition-colors shadow-sm"
                         >
                           {deletingId === msg.id ? "در حال حذف..." : "حذف"}
                         </button>
@@ -373,7 +306,6 @@ export default function MessageForm() {
         </div>
       </div>
 
-      {/* پیام واکنش پایین صفحه */}
       <AnimatePresence>
         {response && (
           <motion.div
@@ -383,12 +315,11 @@ export default function MessageForm() {
             transition={{ duration: 0.3 }}
             role="alert"
             className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold select-none z-50
-              ${
-                response.type === "success"
-                  ? "bg-green-100 text-green-800"
-                  : response.type === "error"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-blue-100 text-blue-800"
+              ${response.type === "success"
+                ? "bg-green-100 text-green-800"
+                : response.type === "error"
+                  ? "bg-red-100 text-red-800"
+                  : "bg-blue-100 text-blue-800"
               }`}
           >
             <div className="flex items-center justify-between gap-4">
@@ -408,7 +339,6 @@ export default function MessageForm() {
         )}
       </AnimatePresence>
 
-      {/* مودال تأیید حذف */}
       <DeleteConfirmModal
         isOpen={deleteModalOpen}
         onCancel={cancelDelete}
