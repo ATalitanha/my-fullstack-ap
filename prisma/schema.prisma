@@ -20,13 +20,10 @@ model user {
   age   Int?
 }
 
-model post {
-  id  Int @id @default(autoincrement())
-  title  String
-  relase_year Int 
-  relase_month Int 
-  relase_day Int
-  description String
+model Message {
+  id        Int   @id @default(autoincrement())
+  title     String
+  body      String
 }
 
 model Calculation {
