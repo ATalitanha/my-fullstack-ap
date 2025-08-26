@@ -15,17 +15,23 @@ export default function Calculator() {
         transition-colors duration-500">
         <ThemeToggle />
       </header>
-      <div className={`flex h-screen w-screen justify-center items-center ${theme}`}>
+      <div className={`flex lg:flex-row flex-col  h-screen w-screen px-14 justify-center items-stretch md:items-center ${theme}`}>
         <Link href={"/cal"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
           ماشین حساب
         </Link>
         <Link href={"/messenger"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
           انتقال متن
         </Link>
+        <Link href={"/login"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
+          ورود/ثبت نام
+        </Link>
+        <Link href={"/dashboard"} about="cal" className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white">
+          حساب کاربری
+        </Link>
         <button
           id="open"
           onClick={() => setIsChangeLogOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           باز کردن تغییرات
         </button>
