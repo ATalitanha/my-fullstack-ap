@@ -280,8 +280,8 @@ export default function MessageForm() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.3 }}
-                        className="border-b border-white/20 py-3 last:border-none text-black dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:hover:bg-white/30 rounded-lg transition-colors px-3 cursor-default select-text font-mono flex justify-between items-start"
+                        transition={{ duration: 0.2 }}
+                        className="p-4 mb-3 rounded-lg bg-white/10 dark:bg-black/30 flex justify-between items-start shadow"
                       >
                         <div>
                           <div className="font-bold text-base">{msg.title}</div>
