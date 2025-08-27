@@ -3,16 +3,20 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 
-export default function DeleteConfirmModal({
+export default function ConfirmModal({
   isOpen,
   onCancel,
   onConfirm,
-  message = "آیا مطمئن هستید که می‌خواهید حذف کنید؟",
+  message = "آیا مطمئن هستید؟",
+  confirmText = "تایید",
+  confirmColor = "bg-blue-600 hover:bg-blue-700",
 }: {
   isOpen: boolean;
   onCancel: () => void;
   onConfirm: () => void;
   message?: string;
+  confirmText?: string;
+  confirmColor?: string;
 }) {
   useEffect(() => {
     if (!isOpen) return;
@@ -60,9 +64,9 @@ export default function DeleteConfirmModal({
               </button>
               <button
                 onClick={onConfirm}
-                className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-md"
+                className={`px-5 py-2 rounded-lg text-white transition shadow-md ${confirmColor}`}
               >
-                حذف
+                {confirmText}
               </button>
             </div>
           </motion.div>
