@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
-import toggleTheme from "@/components/ThemeToggle";
 
 type ChangeLogProps = {
   isOpen: boolean;
@@ -52,8 +51,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
             {/* Header */}
             <div className="w-full flex items-center justify-between sticky top-0 bg-white dark:bg-gray-950 z-10 p-4 border-b dark:border-gray-800">
               <motion.h2
-                onClick={toggleTheme}
-                className="text-2xl font-bold cursor-pointer"
+                className="text-2xl font-semibold text-gray-800 dark:text-gray-100"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
