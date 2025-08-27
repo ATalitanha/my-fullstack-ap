@@ -88,7 +88,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     className="py-4 text-xl flex justify-between items-center cursor-pointer"
                     onClick={() => handleAccordionChange(`item-${index}`)}
                   >
-                    <span className="font-medium">نسخه {log.version}</span>
+                    <span className="font-medium text-black dark:text-gray-100">نسخه {log.version}</span>
                     <motion.div
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}
                       transition={{ duration: 0.3 }}

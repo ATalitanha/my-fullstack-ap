@@ -17,12 +17,27 @@ export async function POST(req: NextRequest) {
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
-  const accessToken = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
-  const refreshToken = jwt.sign({ id: user.id }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+  // ساخت accessToken با username
+  const accessToken = jwt.sign(
+    { id: user.id, username: user.username },
+    JWT_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
+
+  // ساخت refreshToken فقط با id
+  const refreshToken = jwt.sign(
+    { id: user.id },
+    JWT_REFRESH_SECRET,
+    { expiresIn: REFRESH_TOKEN_EXPIRY }
+  );
 
   // ست کردن refresh token در کوکی HttpOnly
   const response = NextResponse.json({ accessToken });
-  response.cookies.set("refreshToken", refreshToken, { httpOnly: true, path: "/api/auth/refresh", maxAge: 7*24*60*60 });
+  response.cookies.set("refreshToken", refreshToken, {
+    httpOnly: true,
+    path: "/api/auth/refresh",
+    maxAge: 7 * 24 * 60 * 60,
+  });
 
   return response;
 }

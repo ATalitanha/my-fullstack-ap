@@ -3,6 +3,7 @@
 import LoadingDots from "@/components/loading";
 import ConfirmModal from "@/components/DeleteConfirmModal";
 import Header from "@/components/ui/header";
+import theme from "@/lib/theme";
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -153,15 +154,15 @@ export default function DashboardPage() {
 
     if (!user)
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
-            </div>
+            <div className={`min-h-screen flex items-center justify-center ${theme}`}>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
+      </div>
         );
 
     return (
         <>
             <Header />
-            <div className="min-h-screen mt-16 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
+            <div className={`min-h-screen mt-16 ${theme} p-6`}>
                 <div className="container mx-auto max-w-2xl flex flex-col gap-6">
 
                     {/* فرم یادداشت */}
@@ -223,10 +224,10 @@ export default function DashboardPage() {
                                 notes.length === 0 ? <p className="text-center text-gray-500">هیچ یادداشتی وجود ندارد.</p> :
                                     <AnimatePresence>
                                         {notes.map((note) => (
-                                            <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="p-4 mb-3 gap-2 rounded-lg bg-white/10 dark:bg-black/30 flex justify-between items-start shadow">
-                                                <div className="space-y-4 w-full">
-                                                    <h3 dir={/[\u0600-\u06FF]/.test(note.title) ? "rtl" : "ltr"} className="font-bold text-gray-700 dark:text-indigo-300">{note.title}</h3>
-                                                    <p dir={/[\u0600-\u06FF]/.test(note.content) ? "rtl" : "ltr"} className="text-gray-500 dark:text-gray-200 mt-1 whitespace-pre-wrap">{note.content}</p>
+                                            <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="p-4 mb-3 gap-2 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse justify-between items-start shadow">
+                                                <div className="space-y-4 w-full text-right">
+                                                    <h3  className="font-bold text-gray-700 dark:text-indigo-300">{note.title}</h3>
+                                                    <p  className="text-gray-500 dark:text-gray-200 mt-1 whitespace-pre-wrap">{note.content}</p>
                                                     <small className="text-gray-400 block mt-1 text-left">{new Date(note.createdAt).toLocaleString()}</small>
                                                 </div>
                                                 <div className="flex flex-col gap-5">

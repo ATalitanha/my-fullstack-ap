@@ -166,6 +166,7 @@ export default function MessageForm() {
       <div className="min-h-screen mt-16 transition-colors duration-300 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="container mx-auto max-w-2xl px-4 py-12 flex flex-col gap-6">
           <form
+          dir="rtl"
             onSubmit={handleSubmit}
             className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-6"
             noValidate
@@ -231,7 +232,7 @@ export default function MessageForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg py-3 transition disabled:opacity-60"
+              className=" bg-blue-600 hover:bg-blue-700  active:bg-blue-800 text-white font-semibold rounded-lg px-5 py-3 transition disabled:opacity-60 whitespace-nowrap inline-block"
             >
               {loading ? "در حال ارسال..." : "ارسال"}
             </button>
@@ -244,7 +245,7 @@ export default function MessageForm() {
               id="messages-section"
               className="rounded-xl bg-white/10 dark:bg-black/30 backdrop-blur-lg border border-white/20 dark:border-gray-700 p-4 text-sm font-black shadow-lg transition-colors max-h-96 flex flex-col"
             >
-              <div className="flex justify-between mb-3 items-center">
+              <div className="flex flex-row-reverse justify-between mb-3 items-center">
                 <h3 className="text-lg font-black text-black dark:text-gray-300">
                   پیام‌های ثبت‌شده
                 </h3>
@@ -281,11 +282,11 @@ export default function MessageForm() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="p-4 mb-3 rounded-lg bg-white/10 dark:bg-black/30 flex justify-between items-start shadow"
+                        className="p-4 mb-3 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse text-right justify-between items-start shadow"
                       >
                         <div>
-                          <div className="font-bold text-base">{msg.title}</div>
-                          <p className="mt-1 text-sm dark:text-gray-300 whitespace-pre-wrap">
+                          <div className="font-bold text-gray-800 dark:text-white text-base">{msg.title}</div>
+                          <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                             {msg.body}
                           </p>
                         </div>

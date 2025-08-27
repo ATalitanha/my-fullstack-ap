@@ -4,22 +4,34 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Header from "@/components/ui/header";
+import theme from "@/lib/theme";
+
+type User = { id: string; username: string };
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ id: string; username: string } | null>(null);
+  const [user, setUser]   = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // گرفتن access token از حافظه یا refresh
+  // گرفتن access token از سرور یا refresh
   const fetchAccessToken = async () => {
-    const res = await fetch("/api/auth/refresh");
-    const data = await res.json();
-    if (res.ok) {
-      setToken(data.accessToken);
-      const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
-      setUser({ id: payload.id, username: payload.username });
-    } else {
+    try {
+      const res = await fetch("/api/auth/refresh");
+      const data = await res.json();
+
+      if (res.ok) {
+        setToken(data.accessToken);
+        const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
+        console.log(payload)
+        setUser({ id: payload.id, username: payload.username });
+      } else {
+        router.push("/login");
+      }
+    } catch {
       router.push("/login");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,38 +44,52 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
-  if (!user)
+  if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className={`min-h-screen flex items-center justify-center ${theme}`}>
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
       </div>
     );
 
+  if (!user) return null;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <Header/>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 40 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-lg p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 text-white"
+    <>
+      <Header />
+      <div
+        className={`min-h-screen flex items-center justify-center px-4 ${theme}
+        bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 
+        dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
       >
-        <h1 className="text-3xl font-bold text-center mb-6">Dashboard</h1>
-
-        <div className="bg-white/10 p-6 rounded-xl shadow-inner text-center space-y-3">
-          <p className="text-xl font-semibold">
-            Welcome, <span className="text-indigo-400">{user.username}</span>
-          </p>
-          <p className="text-gray-300 text-sm">User ID: {user.id}</p>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="mt-6 w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold shadow-lg transition duration-300 cursor-pointer"
+        <motion.div
+          initial={{ opacity: 0, y: 40, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="w-full max-w-lg p-8 rounded-2xl shadow-2xl border border-white/20 text-right
+          backdrop-blur-xl bg-white/10 dark:bg-black/20 text-gray-900 dark:text-white"
         >
-          Logout
-        </button>
-      </motion.div>
-    </div>
+          <h1 className="text-3xl font-bold text-center mb-6">داشبورد</h1>
+
+          <div className="bg-white/10 dark:bg-white/5 p-6 rounded-xl shadow-inner text-center space-y-3">
+            <p className="text-xl font-semibold space-x-3">
+              <span className="font-semibold">{user.username}</span>
+              <span className="text-xl">
+              خوش آمدی 
+              </span>
+            </p>
+          </div>
+
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            onClick={handleLogout}
+            className="mt-6 p-3 rounded-xl bg-red-600 hover:bg-red-700 inline-block
+            text-white font-semibold shadow-lg transition duration-300 cursor-pointer"
+          >
+            خروج
+          </motion.button>
+        </motion.div>
+      </div>
+    </>
   );
 }
