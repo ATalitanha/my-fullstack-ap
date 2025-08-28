@@ -42,7 +42,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent dark:scrollbar-thumb-gray-700 dark:scrollbar-track-transparent bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg m-4"
+            className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg m-4"
             initial={{ y: 50, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 50, opacity: 0, scale: 0.9 }}
