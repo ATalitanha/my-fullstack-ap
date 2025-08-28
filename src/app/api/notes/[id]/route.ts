@@ -1,6 +1,8 @@
+// src/app/api/note/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import jwt from "jsonwebtoken";
+import { encryptText, decryptText } from "@/utils/crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -15,7 +17,6 @@ function getUserIdFromToken(req: NextRequest) {
   }
 }
 
-// PUT برای ویرایش
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -25,16 +26,27 @@ export async function PUT(
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { title, content } = await req.json();
+  if (!title || !content) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+
   const updated = await prisma.note.updateMany({
     where: { id, userId },
-    data: { title, content },
+    data: { title: encryptText(title), content: encryptText(content) },
   });
 
   if (updated.count === 0) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ success: true });
+
+  const note = await prisma.note.findUnique({
+    where: { id },
+    select: { id: true, title: true, content: true, createdAt: true, updatedAt: true },
+  });
+
+  if (!note) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  return NextResponse.json({
+    note: { ...note, title: decryptText(note.title), content: decryptText(note.content) },
+  });
 }
 
-// DELETE برای حذف
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
