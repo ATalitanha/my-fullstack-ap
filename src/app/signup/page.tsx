@@ -7,19 +7,25 @@ import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 
 export default function SignupPage() {
+  // مقادیر فرم
   const [username, setUsername] = useState("");
   const [email, setEmail]     = useState("");
   const [password, setPassword] = useState("");
+  
+  // وضعیت خطا و لودینگ
   const [error, setError]     = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
+  // تابع ارسال فرم
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // جلوگیری از رفرش صفحه
     setError(null);
-    setLoading(true);
+    setLoading(true); // فعال شدن لودینگ
 
     try {
+      // درخواست ثبت نام به سرور
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         body: JSON.stringify({ username, email, password }),
@@ -27,36 +33,37 @@ export default function SignupPage() {
       });
 
       const data = await res.json();
+
       if (res.ok) {
-        router.push("/login");
+        router.push("/login"); // اگر موفق بود، به صفحه ورود هدایت می‌شود
       } else {
-        setError("ثبت نام ناموفق بود");
+        setError("ثبت نام ناموفق بود"); // نمایش پیام خطا
       }
     } catch {
-      setError("خطایی در ارتباط با سرور رخ داد.");
+      setError("خطایی در ارتباط با سرور رخ داد."); // خطای شبکه یا سرور
     } finally {
-      setLoading(false);
+      setLoading(false); // پایان لودینگ
     }
   };
 
   return (
     <>
       <Header />
-      <div
-        className={`min-h-screen flex items-center justify-center px-4 ${theme}`}
-      >
+
+      {/* کانتینر اصلی */}
+      <div className={`min-h-screen flex items-center justify-center px-4 ${theme}`}>
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-md rounded-2xl shadow-2xl border border-white/20 
-          backdrop-blur-xl bg-white/10 dark:bg-black/20 p-8"
+          className="w-full max-w-md rounded-2xl shadow-2xl border border-white/20 backdrop-blur-xl bg-white/10 dark:bg-black/20 p-8"
         >
+          {/* عنوان صفحه */}
           <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
             ایجاد حساب کاربری
           </h1>
 
-          {/* پیام خطا */}
+          {/* نمایش پیام خطا */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -70,7 +77,9 @@ export default function SignupPage() {
             )}
           </AnimatePresence>
 
+          {/* فرم ثبت نام */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* فیلد نام کاربری */}
             <input
               placeholder="نام کاربری"
               value={username}
@@ -79,6 +88,8 @@ export default function SignupPage() {
               text-gray-900 dark:text-white placeholder-gray-400 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right"
             />
+
+            {/* فیلد ایمیل */}
             <input
               placeholder="ایمیل"
               type="email"
@@ -88,6 +99,8 @@ export default function SignupPage() {
               text-gray-900 dark:text-white placeholder-gray-400 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right"
             />
+
+            {/* فیلد رمز عبور */}
             <input
               placeholder="رمز عبور"
               type="password"
@@ -98,6 +111,7 @@ export default function SignupPage() {
               focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right"
             />
 
+            {/* دکمه ثبت نام */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.02 }}
@@ -111,6 +125,7 @@ export default function SignupPage() {
             </motion.button>
           </form>
 
+          {/* لینک ورود برای کاربران قبلی */}
           <p className="text-center text-gray-500 dark:text-gray-300 text-sm mt-6">
             قبلاً حساب داری؟{" "}
             <a href="/login" className="text-indigo-400 hover:underline">

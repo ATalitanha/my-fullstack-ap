@@ -7,12 +7,21 @@ import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 
 export default function LoginPage() {
-  const [email, setEmail]       = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError]       = useState<string | null>(null);
-  const [loading, setLoading]   = useState(false);
   const router = useRouter();
 
+  // State های فرم
+  const [email, setEmail]       = useState("");      // ایمیل وارد شده
+  const [password, setPassword] = useState("");      // رمز عبور وارد شده
+  const [error, setError]       = useState<string | null>(null); // پیام خطا
+  const [loading, setLoading]   = useState(false);   // وضعیت loading
+
+  /**
+   * ارسال فرم ورود
+   * - جلوگیری از ریفرش صفحه
+   * - تماس با API /api/auth/login
+   * - ذخیره توکن در localStorage و هدایت به داشبورد در صورت موفقیت
+   * - نمایش خطا در صورت عدم موفقیت
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -27,8 +36,9 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (res.ok) {
+        // ذخیره توکن در مرورگر
         localStorage.setItem("token", data.token);
-        router.push("/dashboard");
+        router.push("/dashboard"); // هدایت به داشبورد
       } else {
         setError(data.error || "ورود ناموفق بود.");
       }
@@ -41,10 +51,11 @@ export default function LoginPage() {
 
   return (
     <>
+      {/* هدر سایت */}
       <Header />
-      <div
-        className={`min-h-screen flex items-center justify-center px-4 ${theme}`}
-      >
+
+      {/* کارت ورود */}
+      <div className={`min-h-screen flex items-center justify-center px-4 ${theme}`}>
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -52,11 +63,12 @@ export default function LoginPage() {
           className="w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/20 
           backdrop-blur-xl bg-white/10 dark:bg-black/20"
         >
+          {/* عنوان */}
           <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
             خوش آمدی ✨
           </h1>
 
-          {/* پیام خطا */}
+          {/* نمایش خطا */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -70,7 +82,9 @@ export default function LoginPage() {
             )}
           </AnimatePresence>
 
+          {/* فرم ورود */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* ایمیل */}
             <input
               placeholder="ایمیل"
               type="email"
@@ -80,6 +94,8 @@ export default function LoginPage() {
               text-gray-900 dark:text-white placeholder-gray-400 
               focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
+
+            {/* رمز عبور */}
             <input
               placeholder="رمز عبور"
               type="password"
@@ -90,6 +106,7 @@ export default function LoginPage() {
               focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
 
+            {/* دکمه ورود */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.02 }}
@@ -103,6 +120,7 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
+          {/* لینک ثبت‌نام */}
           <p className="text-center text-gray-500 dark:text-gray-300 text-sm mt-6">
             حساب نداری؟{" "}
             <a href="/signup" className="text-indigo-400 hover:underline">

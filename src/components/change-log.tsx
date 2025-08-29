@@ -5,44 +5,54 @@ import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
 
+// Props کامپوننت
 type ChangeLogProps = {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean;       // آیا پنجره تغییرات باز است؟
+  onClose: () => void;   // تابع بسته شدن پنجره
 };
 
 export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
-  const [changegetChangeLogs, setChangegetChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
+  // داده‌های تغییرات
+  const [changeLogs, setChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
+  // نگهداری نسخه‌ای که باز شده (اکاردئون)
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
+  // دریافت تغییرات هنگام mount
   useEffect(() => {
-    setChangegetChangeLogs(getChangeLogs);
+    setChangeLogs(getChangeLogs);
   }, []);
 
+  // باز/بسته کردن آیتم اکاردئون
   const handleAccordionChange = (value: string) => {
     setExpandedItem(expandedItem === value ? null : value);
   };
 
+  // انیمیشن ورود عناصر لیست تغییرات
   const textVariants = {
     hidden: { opacity: 0 },
     visible: (i: number) => ({
       opacity: 1,
-      transition: {
-        delay: i * 0.1,
-      },
+      transition: { delay: i * 0.1 },
     }),
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
+        // بک‌دراپ نیمه شفاف
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          {/* پنجره تغییرات */}
           <motion.div
-            className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg m-4"
+            className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin 
+                       scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
+                       scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 
+                       dark:hover:scrollbar-thumb-blue-500/80 transition-all 
+                       bg-white dark:bg-gray-950 dark:text-white rounded-lg shadow-lg m-4"
             initial={{ y: 50, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 50, opacity: 0, scale: 0.9 }}
@@ -70,7 +80,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
 
             {/* Body */}
             <div className="p-6 w-full" dir="rtl">
-              {changegetChangeLogs.map((log, index) => (
+              {changeLogs.map((log, index) => (
                 <motion.div
                   key={index}
                   className="border-b last:border-b-0 px-3"
@@ -82,22 +92,19 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     transition: { duration: 0.2 },
                   }}
                 >
+                  {/* عنوان اکاردئون */}
                   <div
                     className="py-4 text-xl flex justify-between items-center cursor-pointer"
                     onClick={() => handleAccordionChange(`item-${index}`)}
                   >
-                    <span className="font-medium text-black dark:text-gray-100">نسخه {log.version}</span>
+                    <span className="font-medium text-black dark:text-gray-100">
+                      نسخه {log.version}
+                    </span>
                     <motion.div
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M2 4L6 8L10 4"
                           stroke="currentColor"
@@ -109,6 +116,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     </motion.div>
                   </div>
 
+                  {/* محتوای اکاردئون */}
                   <AnimatePresence>
                     {expandedItem === `item-${index}` && (
                       <motion.div

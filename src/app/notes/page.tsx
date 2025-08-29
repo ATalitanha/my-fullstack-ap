@@ -8,41 +8,52 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
+// نوع داده برای یادداشت‌ها
 type Note = { id: string; title: string; content: string; createdAt: string };
+// نوع داده برای پیام‌های پاسخ به کاربر
 type ResponseMessage = { text: string; type: "success" | "error" | "info" };
 
+// تابع fetcher برای گرفتن یادداشت‌ها با JWT
 const fetcher = async (url: string, token: string) => {
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) throw new Error("Unauthorized");
+    if (!res.ok) throw new Error("Unauthorized"); // اگر خطا باشد، خطا پرتاب می‌کنیم
     return res.json();
 };
 
 export default function DashboardPage() {
+    // توکن JWT
     const [token, setToken] = useState<string | null>(null);
+    // اطلاعات کاربر
     const [user, setUser] = useState<{ id: string; username: string } | null>(null);
+    // لیست یادداشت‌ها
     const [notes, setNotes] = useState<Note[]>([]);
+    // مقادیر فرم
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [editingNote, setEditingNote] = useState<Note | null>(null);
 
-    const [loading, setLoading] = useState(false); // برای لودینگ داده‌ها
+    // وضعیت‌ها
+    const [loading, setLoading] = useState(false); // برای لود شدن داده‌ها
     const [submitting, setSubmitting] = useState(false); // برای ارسال فرم
-
     const [response, setResponse] = useState<ResponseMessage | null>(null);
 
+    // مودال‌های حذف و ویرایش
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
     const [deletingId, setDeletingId] = useState<string | number | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
 
+    // مدیریت فرم و خطاها
     const [touchedTitle, setTouchedTitle] = useState(false);
     const [touchedContent, setTouchedContent] = useState(false);
     const [formTouched, setFormTouched] = useState(false);
 
+    // رفرنس تایمر برای پیام‌ها
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const router = useRouter();
 
+    // گرفتن توکن از سرور (refresh)
     const fetchAccessToken = async () => {
         const res = await fetch("/api/auth/refresh");
         const data = await res.json();
@@ -51,32 +62,37 @@ export default function DashboardPage() {
             const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
             setUser({ id: payload.id, username: payload.username });
         } else {
-            router.push("/login");
+            router.push("/login"); // اگر موفق نبود، به صفحه ورود هدایت شود
         }
     };
 
+    // گرفتن لیست یادداشت‌ها
     const fetchNotes = async () => {
         if (!token) return;
         try {
-            setLoading(true);
+            setLoading(true); // شروع لودینگ
             const data = await fetcher("/api/notes", token);
             setNotes(data.notes || []);
         } catch {
             showResponse({ text: "❌ خطا در دریافت یادداشت‌ها", type: "error" });
         } finally {
-            setLoading(false);
+            setLoading(false); // پایان لودینگ
         }
     };
 
+    // فراخوانی توکن هنگام mount
     useEffect(() => { fetchAccessToken(); }, []);
+    // فراخوانی یادداشت‌ها وقتی توکن موجود است
     useEffect(() => { if (token) fetchNotes(); }, [token]);
 
+    // نمایش پیام به کاربر
     const showResponse = (resp: ResponseMessage) => {
         setResponse(resp);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setResponse(null), 4000);
+        timeoutRef.current = setTimeout(() => setResponse(null), 4000); // پیام پس از 4 ثانیه ناپدید می‌شود
     };
 
+    // ذخیره یا ویرایش یادداشت
     const saveNote = async (e: React.FormEvent) => {
         e.preventDefault();
         setFormTouched(true);
@@ -88,7 +104,7 @@ export default function DashboardPage() {
             return;
         }
 
-        setSubmitting(true); // فقط فرم در حال ارسال است
+        setSubmitting(true); // شروع ارسال فرم
         try {
             const url = editingNote ? `/api/notes/${editingNote.id}` : "/api/notes";
             const method = editingNote ? "PUT" : "POST";
@@ -100,19 +116,21 @@ export default function DashboardPage() {
             const data = await res.json();
             if (res.ok) {
                 showResponse({ text: editingNote ? "✅ یادداشت بروز شد" : "✅ یادداشت اضافه شد", type: "success" });
+                // ریست فرم
                 setTitle(""); setContent(""); setEditingNote(null);
                 setFormTouched(false); setTouchedTitle(false); setTouchedContent(false);
-                fetchNotes();
+                fetchNotes(); // بروزرسانی لیست
             } else {
                 showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
             }
         } catch {
             showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
         } finally {
-            setSubmitting(false);
+            setSubmitting(false); // پایان ارسال فرم
         }
     };
 
+    // مدیریت حذف یادداشت
     const onDeleteClick = (id: string | number) => { setToDeleteId(id); setDeleteModalOpen(true); };
     const cancelDelete = () => { setDeleteModalOpen(false); setToDeleteId(null); };
     const confirmDelete = async () => {
@@ -127,7 +145,7 @@ export default function DashboardPage() {
             const data = await res.json();
             if (res.ok) showResponse({ text: "✅ یادداشت حذف شد", type: "success" });
             else showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
-            fetchNotes();
+            fetchNotes(); // بروزرسانی لیست
         } catch {
             showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
         } finally {
@@ -136,6 +154,7 @@ export default function DashboardPage() {
         }
     };
 
+    // شروع ویرایش یادداشت
     const startEdit = (note: Note) => { setNoteToEdit(note); setEditModalOpen(true); };
     const confirmEdit = () => {
         if (!noteToEdit) return;
@@ -147,16 +166,18 @@ export default function DashboardPage() {
     };
     const cancelEdit = () => { setEditModalOpen(false); setNoteToEdit(null); };
 
+    // خروج از حساب کاربری
     const handleLogout = async () => {
         await fetch("/api/auth/logout", { method: "POST" });
         window.location.href = "/login";
     };
 
+    // نمایش لودینگ اگر کاربر هنوز بارگذاری نشده
     if (!user)
         return (
             <div className={`min-h-screen flex items-center justify-center ${theme}`}>
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
-      </div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
+            </div>
         );
 
     return (
@@ -171,6 +192,7 @@ export default function DashboardPage() {
                             {editingNote ? "ویرایش یادداشت" : "افزودن یادداشت"}
                         </h2>
 
+                        {/* فیلد عنوان */}
                         <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 min-h-[70px] shadow-inner flex items-start">
                             <input
                                 type="text"
@@ -185,6 +207,7 @@ export default function DashboardPage() {
                             <p className="text-red-600 text-sm mt-1 text-right">لطفا عنوان را وارد کنید.</p>
                         )}
 
+                        {/* فیلد محتوا */}
                         <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner">
                             <textarea
                                 placeholder="متن یادداشت"
@@ -199,6 +222,7 @@ export default function DashboardPage() {
                             <p className="text-red-600 text-sm mt-1 text-right">لطفا متن یادداشت را وارد کنید.</p>
                         )}
 
+                        {/* دکمه‌ها */}
                         <div className="flex items-end justify-end gap-2">
                             <button
                                 type="submit"
@@ -208,7 +232,7 @@ export default function DashboardPage() {
                                 {submitting ? "در حال ارسال..." : editingNote ? "بروز رسانی" : "افزودن"}
                             </button>
 
-
+                            {/* دکمه لغو ویرایش */}
                             {editingNote && (
                                 <button type="button" onClick={() => { setEditingNote(null); setTitle(""); setContent(""); setFormTouched(false); setTouchedTitle(false); setTouchedContent(false); }} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex-1">
                                     لغو
@@ -245,7 +269,7 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* پاسخ‌ها */}
+            {/* پیام‌های پاسخ */}
             <AnimatePresence>
                 {response && (
                     <motion.div initial={{ opacity: 0, x: 50, y: 50 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: 50, y: 50 }} transition={{ duration: 0.3 }} className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold z-50 ${response.type === "success" ? "bg-green-100 text-green-800" : response.type === "error" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>

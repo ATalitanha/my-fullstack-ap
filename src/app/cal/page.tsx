@@ -1,24 +1,30 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import CalculatorDisplay from "@/components/CalculatorDisplay";
-import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
-import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
-import Header from "@/components/ui/header";
-import theme from "@/lib/theme";
 import { motion, AnimatePresence } from "framer-motion";
 import { evaluate } from "mathjs";
+
+// کامپوننت‌ها
+import Header from "@/components/ui/header";
+import CalculatorDisplay from "@/components/CalculatorDisplay";
 import HistoryList from "@/components/HistoryList";
+import theme from "@/lib/theme";
+
+// هوک و ثابت‌ها
+import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
+import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
 
 export default function Calculator() {
-  const [expression, setExpression] = useState("");
-  const expressionRef = useRef(expression);
+  // وضعیت‌های داخلی
+  const [expression, setExpression] = useState("");  // عبارت فعلی
+  const expressionRef = useRef(expression);          // ریفرنس برای دسترسی در callbackها
 
-  const [result, setResult] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [parenError, setParenError] = useState(false);
-  const [evalError, setEvalError] = useState<string | null>(null);
+  const [result, setResult] = useState("");          // نتیجه محاسبه
+  const [showConfirm, setShowConfirm] = useState(false); // نمایش پنجره تایید پاک کردن تاریخچه
+  const [parenError, setParenError] = useState(false);   // خطا در پرانتزها
+  const [evalError, setEvalError] = useState<string | null>(null); // خطای محاسبه
 
+  // تاریخچه ماشین‌حساب
   const {
     history,
     loading,
@@ -27,10 +33,12 @@ export default function Calculator() {
     deleteServerHistory,
   } = useCalculatorHistory(result);
 
+  // به‌روز رسانی ریفرنس هر بار که expression تغییر می‌کند
   useEffect(() => {
     expressionRef.current = expression;
   }, [expression]);
 
+  // ریست کردن کل ماشین‌حساب
   const resetCalc = useCallback(() => {
     setExpression("");
     expressionRef.current = "";
@@ -39,23 +47,25 @@ export default function Calculator() {
     setEvalError(null);
   }, []);
 
+  // مدیریت ورودی‌ها (اعداد، نقطه، پرانتز)
   const handleInput = useCallback((value: string) => {
     if (parenError) setParenError(false);
     if (evalError) setEvalError(null);
 
+    // اگر نتیجه موجود باشد و کاراکتر ورودی عملیات نیست، ریست کن
     if (result && !OPERATIONS.includes(value as Operation)) {
       resetCalc();
       setExpression(value);
       return;
     }
 
+    // مدیریت نقطه اعشار
     if (value === ".") {
       const lastNumberMatch = expressionRef.current.match(/(\d+\.?\d*)$/);
-      if (lastNumberMatch && lastNumberMatch[0].includes(".")) {
-        return;
-      }
+      if (lastNumberMatch && lastNumberMatch[0].includes(".")) return;
     }
 
+    // مدیریت پرانتز باز
     if (value === "(") {
       const lastChar = expressionRef.current.slice(-1);
       if (
@@ -70,25 +80,25 @@ export default function Calculator() {
       return;
     }
 
+    // مدیریت پرانتز بسته
     if (value === ")") {
       const openParens = (expressionRef.current.match(/\(/g) || []).length;
       const closeParens = (expressionRef.current.match(/\)/g) || []).length;
       const lastChar = expressionRef.current.slice(-1);
 
-      if (
-        openParens > closeParens &&
-        (/\d/.test(lastChar) || lastChar === ")")
-      ) {
+      if (openParens > closeParens && (/\d/.test(lastChar) || lastChar === ")")) {
         setExpression(prev => prev + ")");
       }
       return;
     }
 
+    // حداکثر طول عبارت
     if (expressionRef.current.length >= 15) return;
 
     setExpression(prev => prev + value);
   }, [parenError, evalError, result, resetCalc]);
 
+  // مدیریت عملیات (+، -، *، / و ...)
   const handleOperation = useCallback((op: string) => {
     if (parenError) setParenError(false);
     if (evalError) setEvalError(null);
@@ -104,6 +114,7 @@ export default function Calculator() {
 
     const lastChar = expressionRef.current.slice(-1);
 
+    // جایگزینی عملیات اگر عملیات قبلی هم باشد
     if (OPERATIONS.includes(lastChar as Operation)) {
       setExpression(prev => prev.slice(0, -1) + op);
       expressionRef.current = expressionRef.current.slice(0, -1) + op;
@@ -114,6 +125,7 @@ export default function Calculator() {
     expressionRef.current = expressionRef.current + op;
   }, [parenError, evalError, result]);
 
+  // محاسبه نتیجه
   const calcResult = useCallback(() => {
     if (expressionRef.current.trim() === "") {
       setEvalError("خطا در محاسبه");
@@ -134,7 +146,6 @@ export default function Calculator() {
 
     try {
       const r = evaluate(expressionRef.current);
-
       if (r === undefined || Number.isNaN(r)) throw new Error();
 
       if (/^\s*-?\d+(\.\d+)?\s*$/.test(expressionRef.current)) {
@@ -151,10 +162,9 @@ export default function Calculator() {
     }
   }, [saveHistory]);
 
+  // مدیریت کلیک روی دکمه‌های ماشین‌حساب
   const handleBtnClick = useCallback((text: OperatorBtn) => {
-    if (text === "CA") {
-      resetCalc();
-    }
+    if (text === "CA") resetCalc();
     else if (text === "C" || text === "DEL") {
       if (result) return;
       setExpression(prev => {
@@ -175,20 +185,13 @@ export default function Calculator() {
         });
       }
     }
-    else if (text === "=") {
-      calcResult();
-    }
-    else if (text === "(" || text === ")") {
-      handleInput(text);
-    }
-    else if (OPERATIONS.includes(text as Operation)) {
-      handleOperation(text);
-    }
-    else {
-      handleInput(text);
-    }
+    else if (text === "=") calcResult();
+    else if (text === "(" || text === ")") handleInput(text);
+    else if (OPERATIONS.includes(text as Operation)) handleOperation(text);
+    else handleInput(text);
   }, [calcResult, handleInput, handleOperation, resetCalc, result]);
 
+  // پاک کردن تاریخچه
   const handleClearHistory = useCallback(() => {
     setHistory([]);
     deleteServerHistory();
@@ -201,12 +204,10 @@ export default function Calculator() {
     setShowConfirm(false);
   }, [handleClearHistory]);
 
+  // مدیریت کلیدهای صفحه‌کلید
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-
-      // اگر فوکوس روی input یا textarea یا contenteditable هست، 
-      // اجازه نده کلیدهای q, c, p کلیدهای ویژه را فعال کنند
       const target = e.target as HTMLElement;
       const isTyping =
         target.tagName === "INPUT" ||
@@ -214,54 +215,23 @@ export default function Calculator() {
         target.isContentEditable;
 
       if (showConfirm) {
-        if (key === "enter") {
-          e.preventDefault();
-          confirmClear();
-          return;
-        }
-        if (key === "escape") {
-          e.preventDefault();
-          cancelClear();
-          return;
-        }
+        if (key === "enter") { e.preventDefault(); confirmClear(); return; }
+        if (key === "escape") { e.preventDefault(); cancelClear(); return; }
         return;
       }
 
       if (isTyping) {
-        // در حالت تایپ فقط اعداد، عملیات و پرانتزها را هندل کن
-        if (/^[0-9.]$/.test(e.key)) {
-          handleInput(e.key);
-        } else if (OPERATIONS.includes(e.key as Operation)) {
-          handleOperation(e.key);
-        } else if (e.key === "(" || e.key === ")") {
-          handleInput(e.key);
-        }
+        if (/^[0-9.]$/.test(e.key)) handleInput(e.key);
+        else if (OPERATIONS.includes(e.key as Operation)) handleOperation(e.key);
+        else if (e.key === "(" || e.key === ")") handleInput(e.key);
         return;
       }
 
-      // وقتی فوکوس روی ورودی نیست
-
-      if (/^[0-9.]$/.test(e.key)) {
-        handleInput(e.key);
-        return;
-      }
-
-      if (OPERATIONS.includes(e.key as Operation)) {
-        handleOperation(e.key);
-        return;
-      }
-
-      if (e.key === "(" || e.key === ")") {
-        handleInput(e.key);
-        return;
-      }
-
-      if (key === "enter") {
-        calcResult();
-        return;
-      }
-
-      if (key === "backspace") {
+      if (/^[0-9.]$/.test(e.key)) { handleInput(e.key); return; }
+      if (OPERATIONS.includes(e.key as Operation)) { handleOperation(e.key); return; }
+      if (e.key === "(" || e.key === ")") { handleInput(e.key); return; }
+      if (key === "enter") { calcResult(); return; }
+      if (key === "backspace" || key === "c") {
         if (!result) {
           setExpression(prev => {
             const newExpr = prev.slice(0, -1);
@@ -271,69 +241,32 @@ export default function Calculator() {
         }
         return;
       }
-
-      if (key === "c") {
-        if (!result) {
-          setExpression(prev => {
-            const newExpr = prev.slice(0, -1);
-            expressionRef.current = newExpr;
-            return newExpr;
-          });
-        }
-        return;
-      }
-
-      if (key === "q") {
-        resetCalc();
-        return;
-      }
-
-      if (key === "p") {
-        requestClearHistory();
-        return;
-      }
+      if (key === "q") { resetCalc(); return; }
+      if (key === "p") { requestClearHistory(); return; }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    handleInput,
-    handleOperation,
-    calcResult,
-    resetCalc,
-    requestClearHistory,
-    result,
-    showConfirm,
-    confirmClear,
-    cancelClear,
-  ]);
+  }, [handleInput, handleOperation, calcResult, resetCalc, requestClearHistory, result, showConfirm, confirmClear, cancelClear]);
 
   return (
     <>
+      {/* هدر */}
       <Header />
+
+      {/* بخش اصلی ماشین‌حساب */}
       <div className={`min-h-screen mt-16 transition-colors duration-300 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="flex flex-col gap-6 container mx-auto px-4 py-12 max-w-2xl">
+          
           {/* پیام‌های خطا */}
           <div className="text-center mb-2 min-h-[1.5rem]">
-            {parenError && (
-              <div className="text-red-500 font-bold">
-                عبارت وارد شده کامل نیست.
-              </div>
-            )}
-            {evalError && (
-              <div className="text-red-600 font-semibold">
-                {evalError}
-              </div>
-            )}
+            {parenError && <div className="text-red-500 font-bold">عبارت وارد شده کامل نیست.</div>}
+            {evalError && <div className="text-red-600 font-semibold">{evalError}</div>}
           </div>
 
+          {/* دکمه‌های ماشین‌حساب */}
           <div className="grid grid-cols-4 grid-rows-6 gap-2 p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
-            <CalculatorDisplay
-              first={expression}
-              op={""}
-              second={""}
-              result={result}
-            />
+            <CalculatorDisplay first={expression} op={""} second={""} result={result} />
             {BUTTONS.map(text => (
               <motion.button
                 key={text}
@@ -355,12 +288,15 @@ export default function Calculator() {
               </motion.button>
             ))}
           </div>
+
+          {/* تاریخچه */}
           <div className="p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <HistoryList history={history} loading={loading} onClear={requestClearHistory} />
           </div>
         </div>
       </div>
 
+      {/* پنجره تایید پاک کردن تاریخچه */}
       <AnimatePresence>
         {showConfirm && (
           <>

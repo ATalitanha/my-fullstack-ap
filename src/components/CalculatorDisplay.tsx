@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 
 interface Props {
-  first: string;
-  op: string;
-  second: string;
-  result: string;
+  first: string;   // عدد اول
+  op: string;      // عملگر (+, -, *, /, √ و غیره)
+  second: string;  // عدد دوم (برای جذر، دومین عدد خالی است)
+  result: string;  // نتیجه عملیات
 }
 
 const CalculatorDisplay = ({ first, op, second, result }: Props) => {
+  // رشته کامل نمایش داده شده به عنوان tooltip
   const expression = `${first} ${op} ${op === "√" ? "" : second} = ${result}`;
 
   return (
@@ -30,11 +31,12 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         shadow-inner shadow-gray-300 dark:shadow-black/30
         flex justify-end items-center gap-2
       "
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.95 }} // انیمیشن ورود
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      title={expression.trim()}
+      title={expression.trim()} // tooltip هنگام hover
     >
+      {/* عدد اول */}
       <motion.span
         key={`${first}-${op}-${second}`}
         initial={{ opacity: 0, x: -10 }}
@@ -45,6 +47,7 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         {first}
       </motion.span>
 
+      {/* عملگر */}
       {op && (
         <motion.span
           key={`op-${op}`}
@@ -57,6 +60,7 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         </motion.span>
       )}
 
+      {/* عدد دوم (برای √ نمایش داده نمی‌شود) */}
       {op !== "√" && second && (
         <motion.span
           key={`second-${second}`}
@@ -69,6 +73,7 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         </motion.span>
       )}
 
+      {/* نتیجه */}
       {result && (
         <motion.span
           key={`result-${result}`}

@@ -6,12 +6,14 @@ import { HistoryItem } from "@/hooks/useCalculatorHistory";
 interface Props {
   history: HistoryItem[];
   loading: boolean;
-  onClear: () => void; // این فقط برای باز کردن دیالوگه، حذف مستقیم انجام نمیشه
+  onClear: () => void; // فقط برای باز کردن دیالوگ، حذف مستقیم انجام نمیشه
 }
 
 const HistoryList = ({ history, loading, onClear }: Props) => {
+  // ref برای اسکرول اتوماتیک به پایین لیست
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // وقتی تاریخچه تغییر کرد، اسکرول به پایین هدایت شود
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -33,6 +35,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         flex flex-col
       "
     >
+      {/* هدر تاریخچه و دکمه پاک‌کردن */}
       <div className="flex justify-between mb-3 items-center">
         <span className="font-black text-black dark:text-gray-300 text-lg">
           تاریخچه
@@ -47,6 +50,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         </button>
       </div>
 
+      {/* کانتینر لیست تاریخچه */}
       <div
         ref={scrollRef}
         className="
@@ -60,11 +64,13 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         "
         style={{ scrollbarGutter: "stable" }}
       >
+        {/* حالت لودینگ */}
         {loading ? (
           <div className="flex justify-center items-center h-28">
             <LoadingDots />
           </div>
         ) : history.length === 0 ? (
+          // حالت خالی بودن تاریخچه
           <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -83,6 +89,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
             هیچ تاریخی وجود ندارد.
           </div>
         ) : (
+          // نمایش آیتم‌های تاریخچه با انیمیشن ورود و خروج
           <AnimatePresence>
             {history.map((item) => (
               <motion.div
@@ -102,7 +109,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
                   select-text
                   font-mono
                 "
-                title={`${item.expression} = ${item.result}`}
+                title={`${item.expression} = ${item.result}`} // نمایش مقدار کامل روی hover
               >
                 {`${item.expression} = ${item.result}`}
               </motion.div>
