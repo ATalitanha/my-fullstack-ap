@@ -30,6 +30,20 @@ export default function Calculator() {
       <div
         className={`flex lg:flex-row flex-col h-screen w-screen px-14 justify-center items-stretch md:items-center ${theme}`}
       >
+        {/* دکمه باز کردن Change Log */}
+        <button
+          id="open"
+          onClick={() => setIsChangeLogOpen(true)}
+          className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+          باز کردن تغییرات
+        </button>
+
+        {/* پنجره ChangeLog */}
+        <ChangeLog
+          isOpen={isChangeLogOpen}
+          onClose={() => setIsChangeLogOpen(false)}
+        />
         {/* لینک‌ها به صفحات مختلف */}
         <Link
           href="/cal"
@@ -48,11 +62,11 @@ export default function Calculator() {
         </Link>
 
         <Link
-          href="/login"
+          href="/notes"
           className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white"
           about="cal"
         >
-          ورود/ثبت نام
+          یادداشت ها
         </Link>
 
         <Link
@@ -62,29 +76,15 @@ export default function Calculator() {
         >
           حساب کاربری
         </Link>
-
         <Link
-          href="/notes"
+          href="/login"
           className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-gray-500 hover:bg-gray-300 text-white"
           about="cal"
         >
-          یادداشت ها
+          ورود/ثبت نام
         </Link>
 
-        {/* دکمه باز کردن Change Log */}
-        <button
-          id="open"
-          onClick={() => setIsChangeLogOpen(true)}
-          className="inline-flex justify-center items-center py-2 px-5 m-5 rounded-xs bg-blue-600 text-white hover:bg-blue-700 transition"
-        >
-          باز کردن تغییرات
-        </button>
-
-        {/* پنجره ChangeLog */}
-        <ChangeLog
-          isOpen={isChangeLogOpen}
-          onClose={() => setIsChangeLogOpen(false)}
-        />
+        
       </div>
     </>
   );
