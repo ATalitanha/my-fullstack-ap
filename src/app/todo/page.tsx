@@ -67,7 +67,7 @@ export default function TodosPage() {
       const data = await fetcher("/api/todo", token);
       setTodos(data.todos || []);
     } catch {
-      showResponse({ text: "❌ خطا در دریافت تودوها", type: "error" });
+      showResponse({ text: "❌ خطا در دریافت انجام دادنیها", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ export default function TodosPage() {
       const data = await res.json();
       if (res.ok) {
         showResponse({
-          text: editingTodo ? "✅ تودو بروز شد" : "✅ تودو اضافه شد",
+          text: editingTodo ? "✅ انجام دادنی بروز شد" : "✅ انجام دادنی اضافه شد",
           type: "success",
         });
         setTitle("");
@@ -153,7 +153,7 @@ export default function TodosPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      if (res.ok) showResponse({ text: "✅ تودو حذف شد", type: "success" });
+      if (res.ok) showResponse({ text: "✅ انجام دادنی حذف شد", type: "success" });
       else
         showResponse({
           text: `❌ خطا: ${data.message || "ناموفق"}`,
@@ -191,7 +191,7 @@ export default function TodosPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showResponse({ text: "✅ تودو تکمیل شد", type: "success" });
+        showResponse({ text: "✅ انجام دادنی تکمیل شد", type: "success" });
         fetchTodos();
       } else {
         showResponse({
@@ -220,7 +220,7 @@ export default function TodosPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showResponse({ text: "✅ تودو لغو تکمیل شد", type: "success" });
+        showResponse({ text: "✅ انجام دادنی لغو تکمیل شد", type: "success" });
         fetchTodos();
       } else {
         showResponse({
@@ -249,19 +249,19 @@ export default function TodosPage() {
       <Header />
       <div className="min-h-screen mt-16 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
         <div className="container mx-auto max-w-2xl flex flex-col gap-6">
-          {/* فرم تودو */}
+          {/* فرم انجام دادنی */}
           <form
             onSubmit={(e) => e.preventDefault()} // submit مستقیم جلوگیری
             className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-4"
           >
             <h2 className="text-xl font-bold text-center text-gray-800 dark:text-gray-200">
-              {editingTodo ? "ویرایش تودو" : "افزودن تودو"}
+              {editingTodo ? "ویرایش انجام دادنی" : "افزودن انجام دادنی"}
             </h2>
 
             <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner flex items-center">
               <input
                 type="text"
-                placeholder="عنوان تودو..."
+                placeholder="عنوان انجام دادنی..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={() => setTouchedTitle(true)}
@@ -308,7 +308,7 @@ export default function TodosPage() {
             </div>
           </form>
 
-          {/* لیست تودوها */}
+          {/* لیست انجام دادنیها */}
           <div className="py-2.5 px-0.5 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <div className="p-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
               {loading ? (
@@ -316,7 +316,7 @@ export default function TodosPage() {
                   <LoadingDots />
                 </div>
               ) : todos.length === 0 ? (
-                <p className="text-center text-gray-500">هیچ تودویی وجود ندارد.</p>
+                <p className="text-center text-gray-500">هیچ انجام دادنییی وجود ندارد.</p>
               ) : (
                 <AnimatePresence>
                   {todos.map((todo) => (
@@ -420,7 +420,7 @@ export default function TodosPage() {
         isOpen={deleteModalOpen}
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
-        message="آیا مطمئن هستید که می‌خواهید این تودو را حذف کنید؟"
+        message="آیا مطمئن هستید که می‌خواهید این انجام دادنی را حذف کنید؟"
         confirmText="حذف"
         confirmColor="bg-red-600 hover:bg-red-700"
       />
@@ -428,7 +428,7 @@ export default function TodosPage() {
         isOpen={completeModalOpen}
         onCancel={() => setCompleteModalOpen(false)}
         onConfirm={confirmComplete}
-        message="آیا مطمئن هستید که این تودو تکمیل شود؟"
+        message="آیا مطمئن هستید که این انجام دادنی تکمیل شود؟"
         confirmText="تکمیل"
         confirmColor="bg-green-500 hover:bg-green-600"
       />
@@ -436,7 +436,7 @@ export default function TodosPage() {
         isOpen={uncompleteModalOpen}
         onCancel={() => setUncompleteModalOpen(false)}
         onConfirm={confirmUncomplete}
-        message="آیا مطمئن هستید که تکمیل این تودو لغو شود؟"
+        message="آیا مطمئن هستید که تکمیل این انجام دادنی لغو شود؟"
         confirmText="لغو تکمیل"
         confirmColor="bg-yellow-500 hover:bg-yellow-600"
       />
@@ -453,8 +453,8 @@ export default function TodosPage() {
           }
           setEditModalOpen(false);
         }}
-        message="آیا می‌خواهید وارد حالت ویرایش شوید؟"
-        confirmText="بله"
+        message="آیا می‌خواهید این انجام دادنی را ویرایش کنید؟"
+        confirmText="ویرایش"
         confirmColor="bg-yellow-500 hover:bg-yellow-600"
       />
 
@@ -464,7 +464,7 @@ export default function TodosPage() {
         onCancel={() => setUpdateModalOpen(false)}
         onConfirm={() => handleUpdate(editingTodo!.id)}
         message="آیا مطمئن هستید که تغییرات ذخیره شود؟"
-        confirmText="بله، ذخیره کن"
+        confirmText="ذخیره"
         confirmColor="bg-blue-500 hover:bg-blue-600"
       />
     </>
