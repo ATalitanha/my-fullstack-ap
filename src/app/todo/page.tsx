@@ -32,9 +32,15 @@ export default function TodosPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
-  const [actionModalOpen, setActionModalOpen] = useState(false);
-  const [actionTodo, setActionTodo] = useState<Todo | null>(null);
-  const [actionType, setActionType] = useState<"edit" | "toggleCompleted" | null>(null);
+
+  const [completeModalOpen, setCompleteModalOpen] = useState(false);
+  const [uncompleteModalOpen, setUncompleteModalOpen] = useState(false);
+  const [targetTodo, setTargetTodo] = useState<Todo | null>(null);
+
+  // مودال ویرایش و بروزرسانی
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [targetEditTodo, setTargetEditTodo] = useState<Todo | null>(null);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   const [touchedTitle, setTouchedTitle] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
@@ -67,8 +73,12 @@ export default function TodosPage() {
     }
   };
 
-  useEffect(() => { fetchAccessToken(); }, []);
-  useEffect(() => { if (token) fetchTodos(); }, [token]);
+  useEffect(() => {
+    fetchAccessToken();
+  }, []);
+  useEffect(() => {
+    if (token) fetchTodos();
+  }, [token]);
 
   const showResponse = (resp: ResponseMessage) => {
     setResponse(resp);
@@ -76,11 +86,7 @@ export default function TodosPage() {
     timeoutRef.current = setTimeout(() => setResponse(null), 4000);
   };
 
-  const saveTodo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormTouched(true);
-    setTouchedTitle(true);
-
+  const saveTodo = async () => {
     if (!title.trim() || !token) {
       showResponse({ text: "❌ لطفا عنوان را وارد کنید.", type: "error" });
       return;
@@ -92,17 +98,29 @@ export default function TodosPage() {
       const method = editingTodo ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ title, completed }),
       });
       const data = await res.json();
       if (res.ok) {
-        showResponse({ text: editingTodo ? "✅ تودو بروز شد" : "✅ تودو اضافه شد", type: "success" });
-        setTitle(""); setCompleted(false); setEditingTodo(null);
-        setFormTouched(false); setTouchedTitle(false);
+        showResponse({
+          text: editingTodo ? "✅ تودو بروز شد" : "✅ تودو اضافه شد",
+          type: "success",
+        });
+        setTitle("");
+        setCompleted(false);
+        setEditingTodo(null);
+        setFormTouched(false);
+        setTouchedTitle(false);
         fetchTodos();
       } else {
-        showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
+        showResponse({
+          text: `❌ خطا: ${data.message || "ناموفق"}`,
+          type: "error",
+        });
       }
     } catch {
       showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
@@ -111,8 +129,20 @@ export default function TodosPage() {
     }
   };
 
-  const onDeleteClick = (id: string | number) => { setToDeleteId(id); setDeleteModalOpen(true); };
-  const cancelDelete = () => { setDeleteModalOpen(false); setToDeleteId(null); };
+  const handleUpdate = async (id: string) => {
+    setSubmitting(true);
+    await saveTodo();
+    setUpdateModalOpen(false);
+  };
+
+  const onDeleteClick = (id: string | number) => {
+    setToDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+    setToDeleteId(null);
+  };
   const confirmDelete = async () => {
     if (!toDeleteId || !token) return;
     setDeletingId(toDeleteId);
@@ -124,7 +154,11 @@ export default function TodosPage() {
       });
       const data = await res.json();
       if (res.ok) showResponse({ text: "✅ تودو حذف شد", type: "success" });
-      else showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
+      else
+        showResponse({
+          text: `❌ خطا: ${data.message || "ناموفق"}`,
+          type: "error",
+        });
       fetchTodos();
     } catch {
       showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
@@ -134,52 +168,71 @@ export default function TodosPage() {
     }
   };
 
-  const startEdit = (todo: Todo) => {
-    setEditingTodo(todo);
-    setTitle(todo.title);
-    setCompleted(todo.completed);
+  const onCompleteClick = (todo: Todo) => {
+    setTargetTodo(todo);
+    setCompleteModalOpen(true);
   };
 
-  const onActionClick = (todo: Todo, type: "edit" | "toggleCompleted") => {
-    setActionTodo(todo);
-    setActionType(type);
-    setActionModalOpen(true);
-    if (type === "edit") startEdit(todo);
+  const onUncompleteClick = (todo: Todo) => {
+    setTargetTodo(todo);
+    setUncompleteModalOpen(true);
   };
 
-  const confirmAction = async () => {
-    if (!actionTodo || !token || !actionType) return;
-
-    setSubmitting(true);
-    setActionModalOpen(false);
-
+  const confirmComplete = async () => {
+    if (!targetTodo || !token) return;
     try {
-      const url = `/api/todo/${actionTodo.id}`;
-      const method = "PUT";
-      let body: any = {};
-
-      if (actionType === "edit") body = { title, completed };
-      else if (actionType === "toggleCompleted") body = { completed: !actionTodo.completed };
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(body),
+      const res = await fetch(`/api/todo/${targetTodo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ completed: true }),
       });
       const data = await res.json();
       if (res.ok) {
-        showResponse({ text: actionType === "edit" ? "✅ تودو بروز شد" : "✅ وضعیت تکمیل تغییر کرد", type: "success" });
-        if (actionType === "edit") { setTitle(""); setCompleted(false); setEditingTodo(null); }
+        showResponse({ text: "✅ تودو تکمیل شد", type: "success" });
         fetchTodos();
       } else {
-        showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
+        showResponse({
+          text: `❌ خطا: ${data.message || "ناموفق"}`,
+          type: "error",
+        });
       }
     } catch {
       showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
     } finally {
-      setSubmitting(false);
-      setActionTodo(null);
-      setActionType(null);
+      setCompleteModalOpen(false);
+      setTargetTodo(null);
+    }
+  };
+
+  const confirmUncomplete = async () => {
+    if (!targetTodo || !token) return;
+    try {
+      const res = await fetch(`/api/todo/${targetTodo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ completed: false }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showResponse({ text: "✅ تودو لغو تکمیل شد", type: "success" });
+        fetchTodos();
+      } else {
+        showResponse({
+          text: `❌ خطا: ${data.message || "ناموفق"}`,
+          type: "error",
+        });
+      }
+    } catch {
+      showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
+    } finally {
+      setUncompleteModalOpen(false);
+      setTargetTodo(null);
     }
   };
 
@@ -191,15 +244,16 @@ export default function TodosPage() {
     );
   }
 
-
   return (
     <>
       <Header />
       <div className="min-h-screen mt-16 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
         <div className="container mx-auto max-w-2xl flex flex-col gap-6">
-
           {/* فرم تودو */}
-          <form onSubmit={saveTodo} className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-4">
+          <form
+            onSubmit={(e) => e.preventDefault()} // submit مستقیم جلوگیری
+            className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-4"
+          >
             <h2 className="text-xl font-bold text-center text-gray-800 dark:text-gray-200">
               {editingTodo ? "ویرایش تودو" : "افزودن تودو"}
             </h2>
@@ -211,7 +265,7 @@ export default function TodosPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={() => setTouchedTitle(true)}
-                className="w-full bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-xl sm:text-2xl md:text-3xl placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded-lg transition-all"
+                className="w-full bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-xl sm:text-2xl md:text-3xl placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg transition-all"
               />
             </div>
             {(touchedTitle || formTouched) && !title.trim() && (
@@ -219,23 +273,48 @@ export default function TodosPage() {
             )}
 
             <div className="flex items-end justify-end gap-2">
-              <button type="submit" disabled={submitting} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
-                {submitting ? "در حال ارسال..." : editingTodo ? "بروز رسانی" : "افزودن"}
-              </button>
+              {editingTodo ? (
+                <button
+                  type="button"
+                  onClick={() => setUpdateModalOpen(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                >
+                  بروزرسانی
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={saveTodo}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                >
+                  افزودن
+                </button>
+              )}
               {editingTodo && (
-                <button type="button" onClick={() => { setEditingTodo(null); setTitle(""); setCompleted(false); setFormTouched(false); setTouchedTitle(false); }} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingTodo(null);
+                    setTitle("");
+                    setCompleted(false);
+                    setFormTouched(false);
+                    setTouchedTitle(false);
+                  }}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+                >
                   لغو
                 </button>
               )}
             </div>
-
           </form>
 
           {/* لیست تودوها */}
           <div className="py-2.5 px-0.5 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
             <div className="p-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
               {loading ? (
-                <div className="flex justify-center items-center h-24"><LoadingDots /></div>
+                <div className="flex justify-center items-center h-24">
+                  <LoadingDots />
+                </div>
               ) : todos.length === 0 ? (
                 <p className="text-center text-gray-500">هیچ تودویی وجود ندارد.</p>
               ) : (
@@ -250,17 +329,49 @@ export default function TodosPage() {
                       className="p-4 mb-3 gap-2 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse justify-between items-start shadow"
                     >
                       <div className="space-y-4 w-full text-right">
-                        <h3 className={`font-bold ${todo.completed ? "line-through text-green-600" : "text-gray-700 dark:text-indigo-300"} text-xl  `}>
+                        <h3
+                          className={`font-bold ${
+                            todo.completed
+                              ? "line-through text-green-600"
+                              : "text-gray-700 dark:text-indigo-300"
+                          } text-xl`}
+                        >
                           {todo.title}
                         </h3>
-                        <small className="text-gray-400 block mt-1 text-left text-sm">{new Date(todo.createdAt).toLocaleString()}</small>
+                        <small className="text-gray-400 block mt-1 text-left text-sm">
+                          {new Date(todo.createdAt).toLocaleString()}
+                        </small>
                       </div>
                       <div className="flex flex-col gap-3">
-                        <button onClick={() => onActionClick(todo, "edit")} className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs">ویرایش</button>
-                        <button onClick={() => onActionClick(todo, "toggleCompleted")} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs">
-                          {todo.completed ? "لغو" : "تکمیل"}
+                        <button
+                          onClick={() => {
+                            setTargetEditTodo(todo);
+                            setEditModalOpen(true);
+                          }}
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs"
+                        >
+                          ویرایش
                         </button>
-                        <button onClick={() => onDeleteClick(todo.id)} disabled={deletingId === todo.id} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs">
+                        {todo.completed ? (
+                          <button
+                            onClick={() => onUncompleteClick(todo)}
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs"
+                          >
+                            لغو
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => onCompleteClick(todo)}
+                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs"
+                          >
+                            تکمیل
+                          </button>
+                        )}
+                        <button
+                          onClick={() => onDeleteClick(todo.id)}
+                          disabled={deletingId === todo.id}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs"
+                        >
                           {deletingId === todo.id ? "در حال حذف..." : "حذف"}
                         </button>
                       </div>
@@ -276,20 +387,86 @@ export default function TodosPage() {
       {/* پاسخ‌ها */}
       <AnimatePresence>
         {response && (
-          <motion.div initial={{ opacity: 0, x: 50, y: 50 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: 50, y: 50 }} transition={{ duration: 0.3 }} className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold z-50 ${response.type === "success" ? "bg-green-100 text-green-800" : response.type === "error" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
+          <motion.div
+            initial={{ opacity: 0, x: 50, y: 50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 50, y: 50 }}
+            transition={{ duration: 0.3 }}
+            className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold z-50 ${
+              response.type === "success"
+                ? "bg-green-100 text-green-800"
+                : response.type === "error"
+                ? "bg-red-100 text-red-800"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
             <div className="flex justify-between items-center">
               <span>{response.text}</span>
-              <button onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}>&times;</button>
+              <button
+                onClick={() => {
+                  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                  setResponse(null);
+                }}
+              >
+                &times;
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* مودال‌ها */}
-      <ConfirmModal isOpen={deleteModalOpen} onCancel={cancelDelete} onConfirm={confirmDelete} message="آیا مطمئن هستید که می‌خواهید این تودو را حذف کنید؟" confirmText="حذف" confirmColor="bg-red-600 hover:bg-red-700" />
-      <ConfirmModal isOpen={actionModalOpen} onCancel={() => setActionModalOpen(false)} onConfirm={confirmAction} message={
-        actionType === "edit" ? "آیا مطمئن هستید که این تودو را ویرایش می‌کنید؟" : "آیا مطمئن هستید که وضعیت تکمیل این تودو تغییر کند؟"
-      } confirmText={actionType === "edit" ? "ویرایش" : "تکمیل"} confirmColor={actionType === "edit" ? "bg-yellow-500 hover:bg-yellow-600" : "bg-green-500 hover:bg-green-600"} />
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onCancel={cancelDelete}
+        onConfirm={confirmDelete}
+        message="آیا مطمئن هستید که می‌خواهید این تودو را حذف کنید؟"
+        confirmText="حذف"
+        confirmColor="bg-red-600 hover:bg-red-700"
+      />
+      <ConfirmModal
+        isOpen={completeModalOpen}
+        onCancel={() => setCompleteModalOpen(false)}
+        onConfirm={confirmComplete}
+        message="آیا مطمئن هستید که این تودو تکمیل شود؟"
+        confirmText="تکمیل"
+        confirmColor="bg-green-500 hover:bg-green-600"
+      />
+      <ConfirmModal
+        isOpen={uncompleteModalOpen}
+        onCancel={() => setUncompleteModalOpen(false)}
+        onConfirm={confirmUncomplete}
+        message="آیا مطمئن هستید که تکمیل این تودو لغو شود؟"
+        confirmText="لغو تکمیل"
+        confirmColor="bg-yellow-500 hover:bg-yellow-600"
+      />
+
+      {/* مودال شروع ویرایش */}
+      <ConfirmModal
+        isOpen={editModalOpen}
+        onCancel={() => setEditModalOpen(false)}
+        onConfirm={() => {
+          if (targetEditTodo) {
+            setEditingTodo(targetEditTodo);
+            setTitle(targetEditTodo.title);
+            setCompleted(targetEditTodo.completed);
+          }
+          setEditModalOpen(false);
+        }}
+        message="آیا می‌خواهید وارد حالت ویرایش شوید؟"
+        confirmText="بله"
+        confirmColor="bg-yellow-500 hover:bg-yellow-600"
+      />
+
+      {/* مودال بروزرسانی */}
+      <ConfirmModal
+        isOpen={updateModalOpen}
+        onCancel={() => setUpdateModalOpen(false)}
+        onConfirm={() => handleUpdate(editingTodo!.id)}
+        message="آیا مطمئن هستید که تغییرات ذخیره شود؟"
+        confirmText="بله، ذخیره کن"
+        confirmColor="bg-blue-500 hover:bg-blue-600"
+      />
     </>
   );
 }
