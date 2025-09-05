@@ -2,22 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 /**
- * API برای گرفتن تاریخچه‌ی محاسبات
+ * API برای دریافت تاریخچه‌ی محاسبات
  * متد: GET
  */
 export async function GET() {
   try {
-    // دریافت همه محاسبات از دیتابیس مرتب شده بر اساس تاریخ ایجاد (جدیدترین اول)
+    // دریافت همه محاسبات از دیتابیس مرتب‌شده بر اساس تاریخ ایجاد (جدیدترین اول)
     const history = await prisma.calculation.findMany({
       orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(history, { status: 200 });
-
   } catch (error) {
+    // ثبت لاگ خطا در سرور
     console.error("خطا در دریافت تاریخچه محاسبات:", error);
+
     return NextResponse.json(
-      { error: "خطای سرور" },
+      { error: "خطای داخلی سرور در دریافت تاریخچه محاسبات" },
       { status: 500 }
     );
   }
@@ -30,10 +31,11 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   try {
+    // دریافت داده‌ها از درخواست
     const body = await req.json();
     const { expression, result } = body;
 
-    // اعتبارسنجی ورودی‌ها
+    // بررسی صحت ورودی‌ها
     if (!expression || result === undefined) {
       return NextResponse.json(
         { success: false, error: "فیلدهای expression و result الزامی هستند" },
@@ -46,12 +48,16 @@ export async function POST(req: NextRequest) {
       data: { expression, result },
     });
 
-    return NextResponse.json({ success: true, data: created });
-
-  } catch (error) {
-    console.error("خطا در ایجاد محاسبه:", error);
     return NextResponse.json(
-      { success: false, error: "عدم توانایی در ایجاد محاسبه" },
+      { success: true, data: created },
+      { status: 201 }
+    );
+  } catch (error) {
+    // ثبت لاگ خطا در سرور
+    console.error("خطا در ایجاد محاسبه:", error);
+
+    return NextResponse.json(
+      { success: false, error: "خطای داخلی سرور در ایجاد محاسبه" },
       { status: 500 }
     );
   }
@@ -61,19 +67,21 @@ export async function POST(req: NextRequest) {
  * API برای حذف تمام تاریخچه محاسبات
  * متد: DELETE
  */
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
   try {
+    // حذف همه رکوردهای محاسبات
     await prisma.calculation.deleteMany();
 
-    return NextResponse.json({
-      success: true,
-      message: "تمام محاسبات حذف شدند",
-    });
-
-  } catch (error) {
-    console.error("خطا در حذف محاسبات:", error);
     return NextResponse.json(
-      { success: false, error: "عدم توانایی در حذف محاسبات" },
+      { success: true, message: "تمام محاسبات حذف شدند" },
+      { status: 200 }
+    );
+  } catch (error) {
+    // ثبت لاگ خطا در سرور
+    console.error("خطا در حذف محاسبات:", error);
+
+    return NextResponse.json(
+      { success: false, error: "خطای داخلی سرور در حذف محاسبات" },
       { status: 500 }
     );
   }

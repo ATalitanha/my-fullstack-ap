@@ -3,38 +3,35 @@ import jwt from "jsonwebtoken";
 import prisma from "@/lib/prisma";
 import { decryptText } from "@/utils/crypto";
 
-// متغیرهای JWT از env
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
 
 /**
- * API برای صدور دوباره Access Token
+ * API برای صدور مجدد Access Token
  * متد: GET
+ * ورودی: refreshToken از کوکی HttpOnly
  */
 export async function GET(req: NextRequest) {
-  // گرفتن refreshToken از کوکی
-  const refreshToken = req.cookies.get("refreshToken")?.value;
-
-  // اگر کوکی وجود نداشت → خطای Unauthorized
-  if (!refreshToken) {
-    return NextResponse.json(
-      { error: "رفرش توکن موجود نیست" },
-      { status: 401 }
-    );
-  }
-
   try {
-    // بررسی و دیکد کردن refresh token
+    const refreshToken = req.cookies.get("refreshToken")?.value;
+
+    if (!refreshToken) {
+      return NextResponse.json(
+        { error: "رفرش توکن موجود نیست" },
+        { status: 401 }
+      );
+    }
+
+    // بررسی و دیکد refresh token
     const payload: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 
-    // پیدا کردن کاربر بر اساس id ذخیره‌شده در payload
+    // پیدا کردن کاربر در دیتابیس
     const user = await prisma.user.findUnique({
       where: { id: payload.id },
       select: { id: true, username: true },
     });
 
-    // اگر کاربر وجود نداشت → خطای Unauthorized
     if (!user) {
       return NextResponse.json(
         { error: "کاربر یافت نشد" },
@@ -42,7 +39,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // رمزگشایی نام کاربری برای قرار گرفتن در توکن جدید
+    // رمزگشایی نام کاربری برای توکن جدید
     const decryptedUsername = decryptText(user.username);
 
     // تولید access token جدید
@@ -52,14 +49,12 @@ export async function GET(req: NextRequest) {
       { expiresIn: ACCESS_TOKEN_EXPIRY }
     );
 
-    // ارسال access token جدید به کلاینت
-    return NextResponse.json({ accessToken: newAccessToken });
+    return NextResponse.json({ accessToken: newAccessToken }, { status: 200 });
 
-  } catch {
-    // خطا در صورتی که:
-    // - refresh token نامعتبر یا منقضی باشد
+  } catch (error) {
+    console.error("خطا در GET /auth/refresh:", error);
     return NextResponse.json(
-      { error: "رفرش توکن نامعتبر است" },
+      { error: "رفرش توکن نامعتبر یا خطای سرور" },
       { status: 401 }
     );
   }
