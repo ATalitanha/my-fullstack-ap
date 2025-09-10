@@ -1,4 +1,4 @@
-import {ChangeLog} from "@/lib/type"
+import {ChangeLog, Unit} from "@/lib/type"
 
 export function getChangeLogs(): ChangeLog[] {
     return [
@@ -60,3 +60,22 @@ export function getChangeLogs(): ChangeLog[] {
         },
     ];
 };
+
+export const UNITS: Unit[] = [
+  { category: "length", label: "متر", value: "m", factor: 1 },
+  { category: "length", label: "سانتی‌متر", value: "cm", factor: 0.01 },
+  { category: "length", label: "کیلومتر", value: "km", factor: 1000 },
+  { category: "length", label: "میلی‌متر", value: "mm", factor: 0.001 },
+  { category: "weight", label: "کیلوگرم", value: "kg", factor: 1 },
+  { category: "weight", label: "گرم", value: "g", factor: 0.001 },
+  { category: "weight", label: "تن", value: "t", factor: 1000 },
+  { category: "volume", label: "لیتر", value: "l", factor: 1 },
+  { category: "volume", label: "میلی‌لیتر", value: "ml", factor: 0.001 },
+  { category: "volume", label: "متر مکعب", value: "m3", factor: 1000 },
+  { category: "temperature", label: "سانتی‌گراد", value: "c" },
+  { category: "temperature", label: "فارنهایت", value: "f" },
+  { category: "temperature", label: "کلوین", value: "k" },
+  { category: "time", label: "ثانیه", value: "s", factor: 1 },
+  { category: "time", label: "دقیقه", value: "min", factor: 60 },
+  { category: "time", label: "ساعت", value: "h", factor: 3600 },
+];
