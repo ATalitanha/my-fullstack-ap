@@ -6,6 +6,7 @@ import Header from "@/components/ui/header";
 import { UNITS } from "@/lib/db";
 import { convertValue } from "@/lib/converter";
 import UnitSelect from "@/components/UnitSelect";
+import CategorySelect from "@/components/CategorySelect";
 
 export default function UnitConverterPage() {
   const [category, setCategory] = useState("length");
@@ -46,72 +47,8 @@ export default function UnitConverterPage() {
           {result || ""}
         </motion.div>
 
-        {/* تب‌ها */}
-        <div className="flex flex-wrap justify-center gap-2 mb-4">
-          {[
-            "length",
-            "weight",
-            "volume",
-            "temperature",
-            "time",
-            "speed",
-            "energy",
-            "pressure",
-            "area",
-            "light",
-            "data",
-            "power",
-            "frequency",
-            "angle",
-          ].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setCategory(cat);
-                const first = UNITS.find((u) => u.category === cat)?.value;
-                setFrom(first || "");
-                setTo(first || "");
-                setValue("");
-                setResult("");
-              }}
-              className={`px-4 py-2 rounded-full font-bold transition
-                ${
-                  category === cat
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                }
-                hover:scale-105 flex-1 sm:flex-none text-center`}
-            >
-              {cat === "length"
-                ? "📏 طول"
-                : cat === "weight"
-                ? "⚖️ وزن"
-                : cat === "volume"
-                ? "🧪 حجم"
-                : cat === "temperature"
-                ? "🌡️ دما"
-                : cat === "time"
-                ? "⏱️ زمان"
-                : cat === "speed"
-                ? "🏎️ سرعت"
-                : cat === "energy"
-                ? "⚡ انرژی"
-                : cat === "pressure"
-                ? "🔧 فشار"
-                : cat === "area"
-                ? "🗺️ مساحت"
-                : cat === "light"
-                ? "💡 روشنایی"
-                : cat === "data"
-                ? "💾 داده"
-                : cat === "power"
-                ? "🔋 توان"
-                : cat === "frequency"
-                ? "🎵 فرکانس"
-                : "📐 زاویه"}
-            </button>
-          ))}
-        </div>
+        {/* سلکت دسته‌ها */}
+        <CategorySelect category={category} setCategory={setCategory} />
 
         {/* ورودی */}
         <input
@@ -122,14 +59,14 @@ export default function UnitConverterPage() {
           className="w-full p-4 rounded-2xl text-center font-bold bg-white/30 border border-gray-300 dark:bg-gray-800/50 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        {/* سلکت‌ها */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
+        {/* سلکت‌های واحد */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 mb-4 w-full">
           <UnitSelect value={from} setValue={setFrom} units={filteredUnits} />
           <span className="text-lg">➡️</span>
           <UnitSelect value={to} setValue={setTo} units={filteredUnits} />
         </div>
 
-        {/* دکمه */}
+        {/* دکمه تبدیل */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.02 }}
