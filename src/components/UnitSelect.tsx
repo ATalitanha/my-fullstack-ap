@@ -15,7 +15,7 @@ export default function UnitSelect({
 }) {
   return (
     <Select.Root value={value} onValueChange={setValue}>
-      <Select.Trigger className="flex-1 p-3 rounded-2xl bg-white/30 border dark:bg-gray-800/50 justify-between flex">
+      <Select.Trigger className="flex-1 p-5 rounded-2xl min-h-[70px] bg-white/30 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700 flex justify-between items-center shadow-md">
         <Select.Value>{units.find(u => u.value === value)?.label}</Select.Value>
         <Select.Icon>
           <ChevronDownIcon />
@@ -29,7 +29,7 @@ export default function UnitSelect({
               <Select.Item
                 key={unit.value}
                 value={unit.value}
-                className="p-2 rounded-lg cursor-pointer hover:bg-blue-500 hover:text-white"
+                className="p-3 rounded-lg cursor-pointer hover:bg-blue-500 hover:text-white"
               >
                 <Select.ItemText>{unit.label}</Select.ItemText>
               </Select.Item>
