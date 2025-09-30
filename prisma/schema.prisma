@@ -58,3 +58,9 @@ model Calculation {
   createdAt  DateTime @default(now())
 }
 
+model HistoryItem {
+  id        String   @id @default(cuid())
+  expr      String
+  result    String
+  createdAt DateTime @default(now())
+}
