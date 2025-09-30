@@ -29,7 +29,7 @@ export default function CategorySelect({
 }) {
   return (
     <Select.Root value={category} onValueChange={setCategory}>
-      <Select.Trigger className="w-full p-5 rounded-2xl min-h-[70px] bg-white/30 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-md mb-4">
+      <Select.Trigger className="w-full p-5 rounded-2xl min-h-[70px] bg-white/30 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-md">
         <Select.Value>{CATEGORIES.find(c => c.value === category)?.label}</Select.Value>
         <Select.Icon>
           <ChevronDownIcon />
@@ -43,7 +43,7 @@ export default function CategorySelect({
               <Select.Item
                 key={c.value}
                 value={c.value}
-                className="p-3 rounded-lg cursor-pointer hover:bg-blue-500 hover:text-white"
+                className="p-3 rounded-lg cursor-pointer hover:bg-blue-500 text-gray-500 dark:text-white hover:text-white dark:hover:text-gray-700"
               >
                 <Select.ItemText>{c.label}</Select.ItemText>
               </Select.Item>

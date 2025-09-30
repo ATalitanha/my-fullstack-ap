@@ -60,7 +60,7 @@ export default function UnitConverterPage() {
         />
 
         {/* سلکت‌های واحد */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 mb-4 w-full">
+        <div className="flex sm:flex-row items-center gap-2 mb-4 w-full">
           <UnitSelect value={from} setValue={setFrom} units={filteredUnits} />
           <span className="text-lg">➡️</span>
           <UnitSelect value={to} setValue={setTo} units={filteredUnits} />
