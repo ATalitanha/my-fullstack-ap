@@ -30,8 +30,8 @@ export default function PricesTableCards() {
 
   if (!data)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <LoadingDots />
+      <div className={`min-h-screen flex items-center justify-center ${theme}`}>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
       </div>
     );
 
