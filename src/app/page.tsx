@@ -17,12 +17,13 @@ export default function Calculator() {
       {/* هدر ثابت بالای صفحه با سوئیچ تم */}
       <header
         className="
-          fixed w-full flex justify-end p-4 h-16 top-0
+          fixed w-full flex justify-between items-center p-4 h-16 top-0
           bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300
           dark:from-gray-900 dark:via-gray-800 dark:to-gray-950
           transition-colors duration-500
         "
       >
+        <div className="font-black text-2xl font-serif">V4</div>
         <ThemeToggle />
       </header>
 
