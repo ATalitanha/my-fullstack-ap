@@ -280,7 +280,12 @@ export default function MessageForm() {
               {/* محتوای پیام‌ها */}
               <div className="flex-1 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
                 {loading ? (
-                  <div className="flex justify-center items-center h-28"><LoadingDots /></div>
+                  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500 mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300 animate-pulse">
+                      در حال بارگذاری...
+                    </p>
+                  </div>
                 ) : messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
                     هیچ پیامی وجود ندارد.

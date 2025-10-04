@@ -249,6 +249,13 @@ export default function Calculator() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleInput, handleOperation, calcResult, resetCalc, requestClearHistory, result, showConfirm, confirmClear, cancelClear]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // وقتی کامپوننت mount شد، لودینگ را غیرفعال کن
+    setIsLoading(false);
+  }, []);
+
   return (
     <>
       {/* هدر */}

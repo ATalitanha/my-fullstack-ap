@@ -5,6 +5,7 @@ import LoadingDots from "@/components/loading";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBitcoin, FaDollarSign, FaCoins } from "react-icons/fa"; // آیکون‌ها
+import theme from "@/lib/theme";
 
 type Item = {
   name: string;
@@ -30,8 +31,13 @@ export default function PricesTableCards() {
 
   if (!data)
     return (
-      <div className={`min-h-screen flex items-center justify-center ${theme}`}>
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-indigo-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300 animate-pulse">
+            در حال بارگذاری...
+          </p>
+        </div>
       </div>
     );
 
@@ -53,9 +59,9 @@ export default function PricesTableCards() {
 
       <div className="max-w-5xl mx-auto space-y-6 mt-16">
         {/* هدر و جستجو */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">📊 جدول قیمت‌ها</h1>
-          <div className="flex gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200 mt-4">📊 جدول قیمت‌ها</h1>
+          <div className="flex gap-2 mt-4">
             <input
               type="text"
               placeholder="جستجو..."
@@ -64,7 +70,7 @@ export default function PricesTableCards() {
               onChange={(e) => setSearch(e.target.value)}
             />
             <select
-              className="border border-blue-400 dark:border-indigo-500 rounded-2xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white/30 dark:bg-black/30"
+              className="text-gray-700 dark:text-indigo-300 border border-blue-400 dark:border-indigo-500 rounded-2xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white/30 dark:bg-black/30"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >

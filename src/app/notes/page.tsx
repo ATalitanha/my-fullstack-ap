@@ -175,8 +175,11 @@ export default function DashboardPage() {
     // نمایش لودینگ اگر کاربر هنوز بارگذاری نشده
     if (!user)
         return (
-            <div className={`min-h-screen flex items-center justify-center ${theme}`}>
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500 mb-4"></div>
+                <p className="text-gray-600 dark:text-gray-300 animate-pulse">
+                    در حال بارگذاری...
+                </p>
             </div>
         );
 
@@ -250,8 +253,8 @@ export default function DashboardPage() {
                                         {notes.map((note) => (
                                             <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="p-4 mb-3 gap-2 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse justify-between items-start shadow">
                                                 <div className="space-y-4 w-full text-right">
-                                                    <h3  className="font-bold text-gray-700 dark:text-indigo-300">{note.title}</h3>
-                                                    <p  className="text-gray-500 dark:text-gray-200 mt-1 whitespace-pre-wrap">{note.content}</p>
+                                                    <h3 className="font-bold text-gray-700 dark:text-indigo-300">{note.title}</h3>
+                                                    <p className="text-gray-500 dark:text-gray-200 mt-1 whitespace-pre-wrap">{note.content}</p>
                                                     <small className="text-gray-400 block mt-1 text-left">{new Date(note.createdAt).toLocaleString()}</small>
                                                 </div>
                                                 <div className="flex flex-col gap-5">
