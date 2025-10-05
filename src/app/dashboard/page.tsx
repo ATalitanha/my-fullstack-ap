@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import theme from "@/lib/theme";
 import ThemeToggle from "@/components/ThemeToggle";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User, LogOut, Sparkles, Settings, Activity } from "lucide-react";
 import Link from "next/link";
 
 // نوع داده کاربر
-type User = { id: string; username: string };
+type User = { id: string; username: string; email?: string };
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,11 +18,20 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // ردیابی موقعیت ماوس
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   /**
    * گرفتن access token از سرور یا refresh token
-   * اگر موفق بود، اطلاعات کاربر در state ذخیره می‌شود
-   * در غیر اینصورت به صفحه login هدایت می‌شود
    */
   const fetchAccessToken = async () => {
     try {
@@ -32,10 +41,13 @@ export default function DashboardPage() {
       if (res.ok) {
         setToken(data.accessToken);
         const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
-        console.log(payload);
-        setUser({ id: payload.id, username: payload.username });
+        setUser({ 
+          id: payload.id, 
+          username: payload.username,
+          email: payload.email 
+        });
       } else {
-        router.push("/login"); // هدایت به login در صورت خطا
+        router.push("/login");
       }
     } catch {
       router.push("/login");
@@ -44,14 +56,12 @@ export default function DashboardPage() {
     }
   };
 
-  // فراخوانی دریافت توکن هنگام mount کامپوننت
   useEffect(() => {
     fetchAccessToken();
   }, []);
 
   /**
    * خروج کاربر
-   * فراخوانی API logout و سپس هدایت به login
    */
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -62,65 +72,206 @@ export default function DashboardPage() {
   if (loading)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500 mb-4"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
         <p className="text-gray-600 dark:text-gray-300 animate-pulse">
           در حال بارگذاری...
         </p>
       </div>
     );
 
-  if (!user) return null; // اگر کاربر وجود نداشت، هیچ چیزی نمایش داده نشود
+  if (!user) return null;
 
   return (
     <>
+      {/* افکت دنبال کننده ماوس */}
+      <div 
+        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
+        }}
+      />
+
       {/* هدر سایت */}
-      <header className={`fixed w-full flex justify-between p-4 h-16 top-0 z-10 ${theme}`}>
+      <header className={`fixed w-full flex justify-between items-center p-4 h-16 top-0 z-40 ${theme} bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-white/40 dark:border-gray-700/40`}>
         <Link
-        href={"/"}
-          className="flex justify-center items-center border border-white/30 dark:border-black/30 
-        dark:bg-gray-800/80 bg-gray-100/20 hover:bg-gray-700/50 dark:hover:bg-white/10 
-        p-2 w-9 h-9 rounded-full transition"
+          href="/"
+          className="flex justify-center items-center border border-white/30 dark:border-gray-700/30 
+          bg-white/60 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700/60 
+          p-2 w-10 h-10 rounded-xl transition-all duration-200 shadow-lg"
         >
-          <ArrowLeft className="w-5 h-5 text-black dark:text-gray-200" />
+          <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </Link>
-        <ThemeToggle />
+        
+        <div className="flex items-center gap-3">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm"
+          >
+            <User size={14} />
+            <span>{user.username}</span>
+          </motion.div>
+          <ThemeToggle />
+        </div>
       </header>
 
-      {/* کارت داشبورد */}
-      <div
-        className={`min-h-screen flex items-center justify-center px-4 ${theme}
-        bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 
-        dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-lg p-8 rounded-2xl shadow-2xl border border-white/20 text-right
-          backdrop-blur-xl bg-white/10 dark:bg-black/20 text-gray-900 dark:text-white"
-        >
-          {/* عنوان */}
-          <h1 className="text-3xl font-bold text-center mb-6">داشبورد</h1>
+      {/* بخش اصلی */}
+      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+        
+        {/* افکت‌های پس‌زمینه */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        </div>
 
-          {/* اطلاعات کاربر */}
-          <div className="bg-white/10 dark:bg-white/5 p-6 rounded-xl shadow-inner text-center space-y-3">
-            <p className="text-xl font-semibold space-x-3">
-              <span className="font-semibold">{user.username}</span>
-              <span className="text-xl">خوش آمدی</span>
+        <div className="container mx-auto px-4 py-12 relative z-10">
+          
+          {/* هدر صفحه */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+            >
+              <Sparkles size={16} />
+              <span>حساب کاربری شما</span>
+            </motion.div>
+            
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                داشبورد
+              </span>
+            </h1>
+            
+            <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+              مدیریت حساب کاربری و دسترسی به تمام امکانات ✨
             </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            
+            {/* کارت اطلاعات کاربر */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-2"
+            >
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg">
+                    <User className="text-white" size={28} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">اطلاعات کاربر</h2>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">مشاهده و مدیریت اطلاعات حساب</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 border border-white/40 dark:border-gray-600/40">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">نام کاربری</p>
+                      <p className="text-lg font-semibold text-gray-800 dark:text-white">{user.username}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 border border-white/40 dark:border-gray-600/40">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">آدرس ایمیل</p>
+                      <p className="text-lg font-semibold text-gray-800 dark:text-white">{user.email || "ثبت نشده"}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-4 border border-blue-200 dark:border-blue-700/40">
+                    <div className="flex items-center gap-3">
+                      <Activity className="text-blue-500" size={20} />
+                      <div>
+                        <p className="text-blue-800 dark:text-blue-300 font-semibold">وضعیت حساب: فعال</p>
+                        <p className="text-blue-600 dark:text-blue-400 text-sm">حساب کاربری شما در حالت عادی فعالیت می‌کند</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* پنل کناری */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-1 space-y-6"
+            >
+              {/* کارت اقدامات سریع */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                  <Settings size={20} />
+                  اقدامات سریع
+                </h3>
+                <div className="space-y-3">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 
+                    text-gray-700 dark:text-gray-300 hover:from-blue-500 hover:to-blue-600 hover:text-white 
+                    transition-all duration-200 text-right font-semibold text-sm"
+                  >
+                    ویرایش پروفایل
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 
+                    text-gray-700 dark:text-gray-300 hover:from-green-500 hover:to-green-600 hover:text-white 
+                    transition-all duration-200 text-right font-semibold text-sm"
+                  >
+                    تغییر رمز عبور
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* کارت خروج */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">مدیریت حساب</h3>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleLogout}
+                  className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 
+                  text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40 
+                  transition-all duration-200 flex items-center justify-center gap-2 font-semibold"
+                >
+                  <LogOut size={18} />
+                  خروج از حساب
+                </motion.button>
+              </div>
+            </motion.div>
           </div>
 
-          {/* دکمه خروج */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={handleLogout}
-            className="mt-6 p-3 rounded-xl bg-red-600 hover:bg-red-700 inline-block
-            text-white font-semibold shadow-lg transition duration-300 cursor-pointer"
+          {/* آمار و اطلاعات */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-12 text-center"
           >
-            خروج
-          </motion.button>
-        </motion.div>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8 max-w-4xl mx-auto">
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">فعالیت‌های اخیر</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">۱۲</div>
+                  <p>محاسبات انجام شده</p>
+                </div>
+                <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">۸</div>
+                  <p>پیام‌های ارسال شده</p>
+                </div>
+                <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">۵</div>
+                  <p>تبدیل واحد انجام شده</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </>
   );

@@ -7,6 +7,7 @@ import theme from "@/lib/theme";
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { Sparkles, Plus, Edit3, Trash2, FileText, AlertCircle, CheckCircle, X } from "lucide-react";
 
 // نوع داده برای یادداشت‌ها
 type Note = { id: string; title: string; content: string; createdAt: string };
@@ -16,11 +17,11 @@ type ResponseMessage = { text: string; type: "success" | "error" | "info" };
 // تابع fetcher برای گرفتن یادداشت‌ها با JWT
 const fetcher = async (url: string, token: string) => {
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) throw new Error("Unauthorized"); // اگر خطا باشد، خطا پرتاب می‌کنیم
+    if (!res.ok) throw new Error("Unauthorized");
     return res.json();
 };
 
-export default function DashboardPage() {
+export default function NotesPage() {
     // توکن JWT
     const [token, setToken] = useState<string | null>(null);
     // اطلاعات کاربر
@@ -33,9 +34,10 @@ export default function DashboardPage() {
     const [editingNote, setEditingNote] = useState<Note | null>(null);
 
     // وضعیت‌ها
-    const [loading, setLoading] = useState(false); // برای لود شدن داده‌ها
-    const [submitting, setSubmitting] = useState(false); // برای ارسال فرم
+    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [response, setResponse] = useState<ResponseMessage | null>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
     // مودال‌های حذف و ویرایش
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -53,6 +55,16 @@ export default function DashboardPage() {
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const router = useRouter();
 
+    // ردیابی موقعیت ماوس
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+        };
+        
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, []);
+
     // گرفتن توکن از سرور (refresh)
     const fetchAccessToken = async () => {
         const res = await fetch("/api/auth/refresh");
@@ -62,7 +74,7 @@ export default function DashboardPage() {
             const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
             setUser({ id: payload.id, username: payload.username });
         } else {
-            router.push("/login"); // اگر موفق نبود، به صفحه ورود هدایت شود
+            router.push("/login");
         }
     };
 
@@ -70,13 +82,13 @@ export default function DashboardPage() {
     const fetchNotes = async () => {
         if (!token) return;
         try {
-            setLoading(true); // شروع لودینگ
+            setLoading(true);
             const data = await fetcher("/api/notes", token);
             setNotes(data.notes || []);
         } catch {
             showResponse({ text: "❌ خطا در دریافت یادداشت‌ها", type: "error" });
         } finally {
-            setLoading(false); // پایان لودینگ
+            setLoading(false);
         }
     };
 
@@ -89,7 +101,7 @@ export default function DashboardPage() {
     const showResponse = (resp: ResponseMessage) => {
         setResponse(resp);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setResponse(null), 4000); // پیام پس از 4 ثانیه ناپدید می‌شود
+        timeoutRef.current = setTimeout(() => setResponse(null), 4000);
     };
 
     // ذخیره یا ویرایش یادداشت
@@ -104,7 +116,7 @@ export default function DashboardPage() {
             return;
         }
 
-        setSubmitting(true); // شروع ارسال فرم
+        setSubmitting(true);
         try {
             const url = editingNote ? `/api/notes/${editingNote.id}` : "/api/notes";
             const method = editingNote ? "PUT" : "POST";
@@ -116,17 +128,16 @@ export default function DashboardPage() {
             const data = await res.json();
             if (res.ok) {
                 showResponse({ text: editingNote ? "✅ یادداشت بروز شد" : "✅ یادداشت اضافه شد", type: "success" });
-                // ریست فرم
                 setTitle(""); setContent(""); setEditingNote(null);
                 setFormTouched(false); setTouchedTitle(false); setTouchedContent(false);
-                fetchNotes(); // بروزرسانی لیست
+                fetchNotes();
             } else {
                 showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
             }
         } catch {
             showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
         } finally {
-            setSubmitting(false); // پایان ارسال فرم
+            setSubmitting(false);
         }
     };
 
@@ -145,7 +156,7 @@ export default function DashboardPage() {
             const data = await res.json();
             if (res.ok) showResponse({ text: "✅ یادداشت حذف شد", type: "success" });
             else showResponse({ text: `❌ خطا: ${data.message || "ناموفق"}`, type: "error" });
-            fetchNotes(); // بروزرسانی لیست
+            fetchNotes();
         } catch {
             showResponse({ text: "❌ خطا در ارتباط با سرور", type: "error" });
         } finally {
@@ -166,17 +177,11 @@ export default function DashboardPage() {
     };
     const cancelEdit = () => { setEditModalOpen(false); setNoteToEdit(null); };
 
-    // خروج از حساب کاربری
-    const handleLogout = async () => {
-        await fetch("/api/auth/logout", { method: "POST" });
-        window.location.href = "/login";
-    };
-
     // نمایش لودینگ اگر کاربر هنوز بارگذاری نشده
     if (!user)
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500 mb-4"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
                 <p className="text-gray-600 dark:text-gray-300 animate-pulse">
                     در حال بارگذاری...
                 </p>
@@ -186,88 +191,282 @@ export default function DashboardPage() {
     return (
         <>
             <Header />
-            <div className={`min-h-screen mt-16 ${theme} p-6`}>
-                <div className="container mx-auto max-w-2xl flex flex-col gap-6">
 
-                    {/* فرم یادداشت */}
-                    <form onSubmit={saveNote} className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-4">
-                        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-gray-200">
-                            {editingNote ? "ویرایش یادداشت" : "افزودن یادداشت"}
-                        </h2>
+            {/* افکت دنبال کننده ماوس */}
+            <div 
+                className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
+                style={{
+                    background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
+                }}
+            />
 
-                        {/* فیلد عنوان */}
-                        <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 min-h-[70px] shadow-inner flex items-start">
-                            <input
-                                type="text"
-                                placeholder="عنوان"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                onBlur={() => setTouchedTitle(true)}
-                                className="w-full max-h-9 bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-2xl sm:text-3xl md:text-4xl placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                            />
-                        </div>
-                        {(touchedTitle || formTouched) && !title.trim() && (
-                            <p className="text-red-600 text-sm mt-1 text-right">لطفا عنوان را وارد کنید.</p>
-                        )}
+            {/* بخش اصلی */}
+            <div className={`min-h-screen mt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+                
+                {/* افکت‌های پس‌زمینه */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+                </div>
 
-                        {/* فیلد محتوا */}
-                        <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner">
-                            <textarea
-                                placeholder="متن یادداشت"
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                onBlur={() => setTouchedContent(true)}
-                                className="w-full min-h-10 bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-xl sm:text-2xl md:text-3xl placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                                rows={4}
-                            />
-                        </div>
-                        {(touchedContent || formTouched) && !content.trim() && (
-                            <p className="text-red-600 text-sm mt-1 text-right">لطفا متن یادداشت را وارد کنید.</p>
-                        )}
+                <div className="container mx-auto px-4 py-12 relative z-10">
+                    
+                    {/* هدر صفحه */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center mb-12"
+                    >
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+                        >
+                            <Sparkles size={16} />
+                            <span>مدیریت یادداشت‌های شخصی</span>
+                        </motion.div>
+                        
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                                یادداشت‌ها
+                            </span>
+                        </h1>
+                        
+                        <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+                            یادداشت‌های خود را مدیریت و سازماندهی کنید ✨
+                        </p>
+                    </motion.div>
 
-                        {/* دکمه‌ها */}
-                        <div className="flex items-end justify-end gap-2">
-                            <button
-                                type="submit"
-                                disabled={submitting}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold whitespace-nowrap inline-block"
-                            >
-                                {submitting ? "در حال ارسال..." : editingNote ? "بروز رسانی" : "افزودن"}
-                            </button>
+                    <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                        
+                        {/* فرم یادداشت */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="lg:col-span-1"
+                        >
+                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                                        <FileText className="text-blue-600 dark:text-blue-400" size={24} />
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                                        {editingNote ? "ویرایش یادداشت" : "افزودن یادداشت جدید"}
+                                    </h2>
+                                </div>
 
-                            {/* دکمه لغو ویرایش */}
-                            {editingNote && (
-                                <button type="button" onClick={() => { setEditingNote(null); setTitle(""); setContent(""); setFormTouched(false); setTouchedTitle(false); setTouchedContent(false); }} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex-1">
-                                    لغو
-                                </button>
-                            )}
-                        </div>
-                    </form>
+                                <form onSubmit={saveNote} className="space-y-6">
+                                    
+                                    {/* فیلد عنوان */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
+                                            عنوان یادداشت
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="عنوان یادداشت را وارد کنید..."
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            onBlur={() => setTouchedTitle(true)}
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
+                                            text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
+                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            transition-all duration-200 text-right"
+                                        />
+                                        <AnimatePresence>
+                                            {(touchedTitle || formTouched) && !title.trim() && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="text-red-600 text-sm mt-2 text-right flex items-center gap-1"
+                                                >
+                                                    <AlertCircle size={16} />
+                                                    لطفا عنوان را وارد کنید.
+                                                </motion.p>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
 
-                    {/* لیست یادداشت‌ها */}
-                    <div className="py-2.5 px-0.5 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
-                        <div className="p-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
-                            {loading ? <div className="flex justify-center items-center h-24"><LoadingDots /></div> :
-                                notes.length === 0 ? <p className="text-center text-gray-500">هیچ یادداشتی وجود ندارد.</p> :
-                                    <AnimatePresence>
-                                        {notes.map((note) => (
-                                            <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="p-4 mb-3 gap-2 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse justify-between items-start shadow">
-                                                <div className="space-y-4 w-full text-right">
-                                                    <h3 className="font-bold text-gray-700 dark:text-indigo-300">{note.title}</h3>
-                                                    <p className="text-gray-500 dark:text-gray-200 mt-1 whitespace-pre-wrap">{note.content}</p>
-                                                    <small className="text-gray-400 block mt-1 text-left">{new Date(note.createdAt).toLocaleString()}</small>
-                                                </div>
-                                                <div className="flex flex-col gap-5">
-                                                    <button onClick={() => startEdit(note)} className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs">ویرایش</button>
-                                                    <button onClick={() => onDeleteClick(note.id)} disabled={deletingId === note.id} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs">
-                                                        {deletingId === note.id ? "در حال حذف..." : "حذف"}
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </AnimatePresence>
-                            }
-                        </div>
+                                    {/* فیلد محتوا */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
+                                            متن یادداشت
+                                        </label>
+                                        <textarea
+                                            placeholder="متن یادداشت خود را بنویسید..."
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            onBlur={() => setTouchedContent(true)}
+                                            rows={6}
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
+                                            text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
+                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            transition-all duration-200 text-right resize-none"
+                                        />
+                                        <AnimatePresence>
+                                            {(touchedContent || formTouched) && !content.trim() && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="text-red-600 text-sm mt-2 text-right flex items-center gap-1"
+                                                >
+                                                    <AlertCircle size={16} />
+                                                    لطفا متن یادداشت را وارد کنید.
+                                                </motion.p>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+
+                                    {/* دکمه‌ها */}
+                                    <div className="flex gap-3">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="submit"
+                                            disabled={submitting}
+                                            className="flex-1 py-3 rounded-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+                                            text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 
+                                            transition-all duration-200 flex items-center justify-center gap-2 
+                                            disabled:opacity-60 disabled:cursor-not-allowed"
+                                        >
+                                            {submitting ? (
+                                                <>
+                                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                    در حال ارسال...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {editingNote ? <Edit3 size={20} /> : <Plus size={20} />}
+                                                    {editingNote ? "بروزرسانی" : "افزودن یادداشت"}
+                                                </>
+                                            )}
+                                        </motion.button>
+
+                                        {editingNote && (
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                type="button"
+                                                onClick={() => { 
+                                                    setEditingNote(null); 
+                                                    setTitle(""); 
+                                                    setContent(""); 
+                                                    setFormTouched(false); 
+                                                    setTouchedTitle(false); 
+                                                    setTouchedContent(false); 
+                                                }}
+                                                className="px-6 py-3 rounded-2xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 
+                                                text-gray-700 dark:text-gray-300 transition-all duration-200 font-semibold"
+                                            >
+                                                لغو
+                                            </motion.button>
+                                        )}
+                                    </div>
+                                </form>
+                            </div>
+                        </motion.div>
+
+                        {/* لیست یادداشت‌ها */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="lg:col-span-1"
+                        >
+                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
+                                
+                                {/* هدر لیست */}
+                                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-blue-500/10 rounded-lg">
+                                                <FileText className="text-blue-600 dark:text-blue-400" size={20} />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-xl font-bold text-gray-800 dark:text-white">یادداشت‌های من</h2>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {notes.length} یادداشت
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* محتوای لیست */}
+                                <div className="p-4 h-[600px] overflow-y-auto">
+                                    {loading ? (
+                                        <div className="flex flex-col items-center justify-center h-32">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                                            <p className="text-gray-500 dark:text-gray-400">در حال بارگذاری...</p>
+                                        </div>
+                                    ) : notes.length === 0 ? (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
+                                        >
+                                            <FileText size={48} className="mb-3 opacity-50" />
+                                            <p>هیچ یادداشتی وجود ندارد</p>
+                                            <p className="text-sm mt-1">اولین یادداشت را ایجاد کنید!</p>
+                                        </motion.div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            <AnimatePresence>
+                                                {notes.map((note, index) => (
+                                                    <motion.div
+                                                        key={note.id}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        transition={{ delay: index * 0.1 }}
+                                                        className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
+                                                    >
+                                                        <div className="flex justify-between items-start gap-4">
+                                                            <div className="flex-1 text-right">
+                                                                <h3 className="font-bold text-gray-800 dark:text-white text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                                    {note.title}
+                                                                </h3>
+                                                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                                                                    {note.content}
+                                                                </p>
+                                                                <small className="text-gray-400 text-xs">
+                                                                    {new Date(note.createdAt).toLocaleString('fa-IR')}
+                                                                </small>
+                                                            </div>
+                                                            <div className="flex flex-col gap-2 flex-shrink-0">
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    whileTap={{ scale: 0.9 }}
+                                                                    onClick={() => startEdit(note)}
+                                                                    className="p-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
+                                                                    title="ویرایش یادداشت"
+                                                                >
+                                                                    <Edit3 size={16} />
+                                                                </motion.button>
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    whileTap={{ scale: 0.9 }}
+                                                                    onClick={() => onDeleteClick(note.id)}
+                                                                    disabled={deletingId === note.id}
+                                                                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                                    title="حذف یادداشت"
+                                                                >
+                                                                    {deletingId === note.id ? (
+                                                                        <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                                                                    ) : (
+                                                                        <Trash2 size={16} />
+                                                                    )}
+                                                                </motion.button>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>
@@ -275,18 +474,57 @@ export default function DashboardPage() {
             {/* پیام‌های پاسخ */}
             <AnimatePresence>
                 {response && (
-                    <motion.div initial={{ opacity: 0, x: 50, y: 50 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: 50, y: 50 }} transition={{ duration: 0.3 }} className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold z-50 ${response.type === "success" ? "bg-green-100 text-green-800" : response.type === "error" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
-                        <div className="flex justify-between items-center">
-                            <span>{response.text}</span>
-                            <button onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}>&times;</button>
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg border z-50 ${
+                            response.type === "success"
+                                ? "bg-green-50/90 dark:bg-green-900/90 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200"
+                                : response.type === "error"
+                                ? "bg-red-50/90 dark:bg-red-900/90 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
+                                : "bg-blue-50/90 dark:bg-blue-900/90 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
+                        }`}
+                    >
+                        <div className="flex items-center gap-3">
+                            {response.type === "success" ? (
+                                <CheckCircle className="text-green-600 dark:text-green-400" size={20} />
+                            ) : response.type === "error" ? (
+                                <AlertCircle className="text-red-600 dark:text-red-400" size={20} />
+                            ) : (
+                                <FileText className="text-blue-600 dark:text-blue-400" size={20} />
+                            )}
+                            <span className="flex-1 font-semibold">{response.text}</span>
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}
+                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
+                            >
+                                <X size={18} />
+                            </motion.button>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             {/* مودال‌ها */}
-            <ConfirmModal isOpen={deleteModalOpen} onCancel={cancelDelete} onConfirm={confirmDelete} message="آیا مطمئن هستید که می‌خواهید این یادداشت را حذف کنید؟" confirmText="حذف" confirmColor="bg-red-600 hover:bg-red-700" />
-            <ConfirmModal isOpen={editModalOpen} onCancel={cancelEdit} onConfirm={confirmEdit} message="آیا مطمئن هستید که می‌خواهید این یادداشت را ویرایش کنید؟" confirmText="ویرایش" confirmColor="bg-yellow-500 hover:bg-yellow-600" />
+            <ConfirmModal 
+                isOpen={deleteModalOpen} 
+                onCancel={cancelDelete} 
+                onConfirm={confirmDelete} 
+                message="آیا مطمئن هستید که می‌خواهید این یادداشت را حذف کنید؟" 
+                confirmText="حذف" 
+                confirmColor="bg-red-600 hover:bg-red-700" 
+            />
+            <ConfirmModal 
+                isOpen={editModalOpen} 
+                onCancel={cancelEdit} 
+                onConfirm={confirmEdit} 
+                message="آیا مطمئن هستید که می‌خواهید این یادداشت را ویرایش کنید؟" 
+                confirmText="ویرایش" 
+                confirmColor="bg-yellow-500 hover:bg-yellow-600" 
+            />
         </>
     );
 }
