@@ -121,6 +121,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-12 relative z-10"
+          dir="rtl"
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
