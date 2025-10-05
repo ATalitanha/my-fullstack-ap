@@ -5,6 +5,7 @@ import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
+import { Sparkles, Send, MessageCircle, Trash2, AlertCircle, CheckCircle } from "lucide-react";
 
 /**
  * نوع پیام
@@ -44,6 +45,17 @@ export default function MessageForm() {
   // Ref ها
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // ردیابی موقعیت ماوس
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   /**
    * دریافت پیام‌ها از سرور
@@ -189,135 +201,269 @@ export default function MessageForm() {
       {/* هدر سایت */}
       <Header />
 
-      <div className="min-h-screen mt-16 transition-colors duration-300 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="container mx-auto max-w-2xl px-4 py-12 flex flex-col gap-6">
+      {/* افکت دنبال کننده ماوس */}
+      <div 
+        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
+        }}
+      />
 
-          {/* فرم ارسال پیام */}
-          <form
-            dir="rtl"
-            onSubmit={handleSubmit}
-            className="rounded-2xl p-6 bg-white/10 backdrop-blur-md shadow-xl space-y-6"
-            noValidate
+      {/* بخش اصلی */}
+      <div className="min-h-screen mt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        
+        {/* افکت‌های پس‌زمینه */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="container mx-auto px-4 py-12 relative z-10">
+          
+          {/* هدر صفحه */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
           >
-            <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-200">
-              ارسال پیام جدید
-            </h2>
-
-            {/* عنوان پیام */}
-            <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 min-h-[70px] shadow-inner flex items-center">
-              <input
-                type="text"
-                placeholder="عنوان پیام"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={() => setTouchedTitle(true)}
-                className="w-full max-h-9 bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-2xl sm:text-3xl md:text-4xl placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                aria-invalid={(touchedTitle || formTouched) && !title.trim()}
-                aria-describedby="title-error"
-              />
-            </div>
-            {(touchedTitle || formTouched) && !title.trim() && (
-              <p id="title-error" className="text-red-600 text-sm mt-1 text-right" role="alert">
-                لطفا عنوان را وارد کنید.
-              </p>
-            )}
-
-            {/* متن پیام */}
-            <div className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-gray-700 rounded-2xl p-4 shadow-inner">
-              <textarea
-                dir="rtl"
-                placeholder="متن پیام"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                onBlur={() => setTouchedBody(true)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e as unknown as React.FormEvent);
-                  }
-                }}
-                className="w-full min-h-10 bg-transparent border-none focus:outline-none text-right text-black dark:text-gray-100 font-['Major_Mono_Display'] text-xl sm:text-2xl md:text-3xl placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                aria-invalid={(touchedBody || formTouched) && !body.trim()}
-                aria-describedby="body-error"
-              />
-            </div>
-            {(touchedBody || formTouched) && !body.trim() && (
-              <p id="body-error" className="text-red-600 text-sm mt-1 text-right" role="alert">
-                لطفا متن پیام را وارد کنید.
-              </p>
-            )}
-
-            {/* دکمه ارسال */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg px-5 py-3 transition disabled:opacity-60 whitespace-nowrap inline-block"
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
-              {loading ? "در حال ارسال..." : "ارسال"}
-            </button>
-          </form>
+              <Sparkles size={16} />
+              <span>سیستم ارسال و مدیریت پیام‌ها</span>
+            </motion.div>
+            
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                ارسال پیام
+              </span>
+            </h1>
+            
+            <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+              ارسال و مدیریت پیام‌های خود در یک محیط زیبا و کاربرپسند ✨
+            </p>
+          </motion.div>
 
-          {/* لیست پیام‌ها */}
-          <div className="p-4 rounded-2xl backdrop-blur-md bg-white/10 dark:bg-black/20 shadow-xl">
-            <section
-              ref={listRef}
-              id="messages-section"
-              className="rounded-xl bg-white/10 dark:bg-black/30 backdrop-blur-lg border border-white/20 dark:border-gray-700 p-4 text-sm font-black shadow-lg transition-colors max-h-96 flex flex-col"
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            
+            {/* فرم ارسال پیام */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-1"
             >
-              <div className="flex flex-row-reverse justify-between mb-3 items-center">
-                <h3 className="text-lg font-black text-black dark:text-gray-300">
-                  پیام‌های ثبت‌شده
-                </h3>
-                <button
-                  onClick={() => { setToDeleteId("all"); setDeleteModalOpen(true); }}
-                  className="font-black text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-3 py-1 rounded-lg transition-colors shadow-md"
-                  type="button"
-                >
-                  {deletingId === "all" ? "در حال حذف..." : "حذف تاریخچه"}
-                </button>
-              </div>
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Send className="text-blue-600 dark:text-blue-400" size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                    ارسال پیام جدید
+                  </h2>
+                </div>
 
-              {/* محتوای پیام‌ها */}
-              <div className="flex-1 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80 transition-all">
-                {loading ? (
-                  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500 mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-300 animate-pulse">
-                      در حال بارگذاری...
-                    </p>
-                  </div>
-                ) : messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
-                    هیچ پیامی وجود ندارد.
-                  </div>
-                ) : (
-                  <AnimatePresence>
-                    {messages.map((msg) => (
-                      <motion.div
-                        key={msg.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="p-4 mb-3 rounded-lg bg-white/10 dark:bg-black/30 flex flex-row-reverse text-right justify-between items-start shadow"
-                      >
-                        <div>
-                          <div className="font-bold text-gray-800 dark:text-white text-base">{msg.title}</div>
-                          <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{msg.body}</p>
-                        </div>
-                        <button
-                          onClick={() => onDeleteClick(msg.id)}
-                          disabled={deletingId === msg.id}
-                          className="ml-4 text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 px-2 py-1 rounded-md text-xs font-bold transition-colors shadow-sm"
+                <form dir="rtl" onSubmit={handleSubmit} noValidate className="space-y-6">
+                  
+                  {/* عنوان پیام */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
+                      عنوان پیام
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="عنوان پیام خود را وارد کنید..."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        onBlur={() => setTouchedTitle(true)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 border border-white/40 dark:border-gray-600/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-right text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+                        aria-invalid={(touchedTitle || formTouched) && !title.trim()}
+                        aria-describedby="title-error"
+                      />
+                    </div>
+                    <AnimatePresence>
+                      {(touchedTitle || formTouched) && !title.trim() && (
+                        <motion.p
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          id="title-error"
+                          className="text-red-600 text-sm mt-2 text-right flex items-center gap-1"
+                          role="alert"
                         >
-                          {deletingId === msg.id ? "در حال حذف..." : "حذف"}
-                        </button>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                )}
+                          <AlertCircle size={16} />
+                          لطفا عنوان را وارد کنید.
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* متن پیام */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
+                      متن پیام
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        dir="rtl"
+                        placeholder="متن پیام خود را وارد کنید..."
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                        onBlur={() => setTouchedBody(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSubmit(e as unknown as React.FormEvent);
+                          }
+                        }}
+                        rows={4}
+                        className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 border border-white/40 dark:border-gray-600/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-right text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none transition-all duration-200"
+                        aria-invalid={(touchedBody || formTouched) && !body.trim()}
+                        aria-describedby="body-error"
+                      />
+                    </div>
+                    <AnimatePresence>
+                      {(touchedBody || formTouched) && !body.trim() && (
+                        <motion.p
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          id="body-error"
+                          className="text-red-600 text-sm mt-2 text-right flex items-center gap-1"
+                          role="alert"
+                        >
+                          <AlertCircle size={16} />
+                          لطفا متن پیام را وارد کنید.
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* دکمه ارسال */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <>
+                        <LoadingDots />
+                        در حال ارسال...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        ارسال پیام
+                      </>
+                    )}
+                  </motion.button>
+                </form>
               </div>
-            </section>
+            </motion.div>
+
+            {/* لیست پیام‌ها */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
+                
+                {/* هدر لیست پیام‌ها */}
+                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">پیام‌های ثبت‌شده</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {messages.length} پیام
+                        </p>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => { setToDeleteId("all"); setDeleteModalOpen(true); }}
+                      disabled={messages.length === 0 || deletingId === "all"}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {deletingId === "all" ? (
+                        <LoadingDots />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                      حذف همه
+                    </motion.button>
+                  </div>
+                </div>
+                
+                {/* محتوای پیام‌ها */}
+                <div ref={listRef} className="p-4 h-[500px] overflow-y-auto">
+                  {loading ? (
+                    <div className="flex flex-col items-center justify-center h-32">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                      <p className="text-gray-500 dark:text-gray-400">در حال بارگذاری...</p>
+                    </div>
+                  ) : messages.length === 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
+                    >
+                      <MessageCircle size={48} className="mb-3 opacity-50" />
+                      <p>هیچ پیامی وجود ندارد</p>
+                      <p className="text-sm mt-1">اولین پیام را ارسال کنید!</p>
+                    </motion.div>
+                  ) : (
+                    <div className="space-y-4">
+                      <AnimatePresence>
+                        {messages.map((msg, index) => (
+                          <motion.div
+                            key={msg.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
+                          >
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1 text-right">
+                                <h3 className="font-bold text-gray-800 dark:text-white text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                  {msg.title}
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {msg.body}
+                                </p>
+                              </div>
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => onDeleteClick(msg.id)}
+                                disabled={deletingId === msg.id}
+                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
+                                title="حذف پیام"
+                              >
+                                {deletingId === msg.id ? (
+                                  <LoadingDots />
+                                ) : (
+                                  <Trash2 size={16} />
+                                )}
+                              </motion.button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -326,28 +472,34 @@ export default function MessageForm() {
       <AnimatePresence>
         {response && (
           <motion.div
-            initial={{ opacity: 0, x: 50, y: 50 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 50, y: 50 }}
-            transition={{ duration: 0.3 }}
-            role="alert"
-            className={`fixed bottom-6 right-6 max-w-xs rounded-lg px-4 py-3 shadow-lg font-semibold select-none z-50
-              ${response.type === "success"
-                ? "bg-green-100 text-green-800"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg border z-50 ${
+              response.type === "success"
+                ? "bg-green-50/90 dark:bg-green-900/90 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200"
                 : response.type === "error"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-blue-100 text-blue-800"
-              }`}
+                  ? "bg-red-50/90 dark:bg-red-900/90 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
+                  : "bg-blue-50/90 dark:bg-blue-900/90 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
+            }`}
           >
-            <div className="flex items-center justify-between gap-4">
-              <span>{response.text}</span>
-              <button
-                aria-label="بستن پیام"
+            <div className="flex items-center gap-3">
+              {response.type === "success" ? (
+                <CheckCircle className="text-green-600 dark:text-green-400" size={20} />
+              ) : response.type === "error" ? (
+                <AlertCircle className="text-red-600 dark:text-red-400" size={20} />
+              ) : (
+                <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
+              )}
+              <span className="flex-1 font-semibold">{response.text}</span>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}
-                className="text-gray-600 hover:text-gray-800 font-bold text-lg leading-none"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
               >
                 &times;
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         )}
@@ -358,7 +510,11 @@ export default function MessageForm() {
         isOpen={deleteModalOpen}
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
-        message="آیا مطمئن هستید که می‌خواهید این پیام را حذف کنید؟"
+        message={
+          toDeleteId === "all" 
+            ? "آیا مطمئن هستید که می‌خواهید همه پیام‌ها را حذف کنید؟ این عمل غیرقابل بازگشت است."
+            : "آیا مطمئن هستید که می‌خواهید این پیام را حذف کنید؟"
+        }
       />
     </>
   );
