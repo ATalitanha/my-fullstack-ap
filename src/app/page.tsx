@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChangeLog } from "@/components/change-log";
 import ThemeToggle from "@/components/ThemeToggle";
-import Header from "@/components/ui/header";
 
 export default function HomePage() {
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
