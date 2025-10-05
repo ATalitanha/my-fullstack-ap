@@ -24,10 +24,6 @@ export default function RootLayout({
           ${theme}`
         }
       >
-        <div id="initial-loading">
-          
-        </div>
-        
         {children}
         <Analytics />
       </body>

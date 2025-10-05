@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
+import ThemeToggle from "@/components/ThemeToggle";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 // نوع داده کاربر
 type User = { id: string; username: string };
@@ -72,7 +74,17 @@ export default function DashboardPage() {
   return (
     <>
       {/* هدر سایت */}
-      <Header />
+      <header className={`fixed w-full flex justify-between p-4 h-16 top-0 z-10 ${theme}`}>
+        <Link
+        href={"/"}
+          className="flex justify-center items-center border border-white/30 dark:border-black/30 
+        dark:bg-gray-800/80 bg-gray-100/20 hover:bg-gray-700/50 dark:hover:bg-white/10 
+        p-2 w-9 h-9 rounded-full transition"
+        >
+          <ArrowLeft className="w-5 h-5 text-black dark:text-gray-200" />
+        </Link>
+        <ThemeToggle />
+      </header>
 
       {/* کارت داشبورد */}
       <div
