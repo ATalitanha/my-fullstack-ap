@@ -205,7 +205,7 @@ export default function AdvancedCalculatorPage() {
       />
 
       {/* بخش اصلی ماشین‌حساب */}
-      <div className="min-h-screen mt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         
         {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">

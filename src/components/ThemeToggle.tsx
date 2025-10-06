@@ -41,8 +41,7 @@ const ThemeSwitcher = () => {
     <button
       onClick={toggle}
       title="تغییر تم"
-      className="flex justify-center items-center border border-white/30 dark:border-black/30 
-        dark:bg-gray-800/80 bg-gray-100/20 hover:bg-gray-700/50 dark:hover:bg-white/10 
+      className="flex justify-center items-center cursor-pointer 
         p-2 w-9 h-9 rounded-full transition"
     >
       {/* نمایش آیکون بسته به حالت تم */}

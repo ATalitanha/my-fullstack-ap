@@ -92,12 +92,12 @@ export default function DashboardPage() {
       />
 
       {/* هدر سایت */}
-      <header className={`fixed w-full flex justify-between items-center p-4 h-16 top-0 z-40 ${theme} bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-white/40 dark:border-gray-700/40`}>
+      <header dir="ltr"
+       className={`fixed w-full flex justify-between p-4 h-16 top-0 z-50  bg-transparent`}>
         <Link
           href="/"
-          className="flex justify-center items-center border border-white/30 dark:border-gray-700/30 
-          bg-white/60 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700/60 
-          p-2 w-10 h-10 rounded-xl transition-all duration-200 shadow-lg"
+          className="flex justify-center items-center   
+          p-2 w-10 h-10 rounded-xl transition-all duration-200"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </Link>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm"
+            className="flex items-center gap-2 px-3 py-1 rounded-full 0 text-blue-600 dark:text-blue-400 text-sm"
           >
             <User size={14} />
             <span>{user.username}</span>
