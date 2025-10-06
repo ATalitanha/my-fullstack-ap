@@ -194,7 +194,7 @@ export default function NotesPage() {
 
             {/* افکت دنبال کننده ماوس */}
             <div 
-                className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
+                className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
                 style={{
                     background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
                 }}

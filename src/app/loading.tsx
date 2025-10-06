@@ -1,8 +1,7 @@
 'use client';
 
 
-import { usePathname } from 'next/navigation';
-import Header from '@/components/ui/header';
+import { usePathname } from 'next/navigation'
 
 export default function HybridLoading() {
     const pathname = usePathname();
