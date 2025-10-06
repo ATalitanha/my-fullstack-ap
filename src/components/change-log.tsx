@@ -48,6 +48,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
         >
           {/* پنجره تغییرات */}
           <motion.div
+            dir="ltr"
             className="relative w-full max-w-md max-h-[50vh] overflow-auto scrollbar-thin 
                        scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
                        scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 
