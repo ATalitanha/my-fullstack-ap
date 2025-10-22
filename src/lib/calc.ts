@@ -1,3 +1,9 @@
+/**
+ * Calculates the result of a mathematical expression.
+ * It sanitizes the input, handles square roots and powers, and then evaluates the expression.
+ * @param {string} input - The mathematical expression to calculate.
+ * @returns {string} The result of the calculation or an error message.
+ */
 export function calcResult(input: string): string {
   try {
     // جلوگیری از اجراهای خطرناک

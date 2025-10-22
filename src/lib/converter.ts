@@ -1,5 +1,13 @@
 import { UNITS } from "@/lib/db";
 
+/**
+ * Converts a value from one unit to another within a given category.
+ * @param {string} category - The category of the units (e.g., "temperature", "length").
+ * @param {string} from - The unit to convert from.
+ * @param {string} to - The unit to convert to.
+ * @param {number} value - The value to convert.
+ * @returns {string} The converted value with the unit label, or an error message.
+ */
 export function convertValue(category: string, from: string, to: string, value: number): string {
   let res: number | null = null;
 

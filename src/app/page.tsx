@@ -7,6 +7,12 @@ import { ChangeLog } from "@/components/change-log";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
 
+/**
+ * The main homepage component for the application.
+ * It displays a list of tools and allows users to search and filter them.
+ * It also includes a theme toggle and a changelog modal.
+ * @returns {JSX.Element} The rendered homepage.
+ */
 export default function HomePage() {
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");

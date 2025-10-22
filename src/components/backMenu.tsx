@@ -3,6 +3,11 @@
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+/**
+ * A component that renders a back button.
+ * When clicked, it navigates to the previous page in the browser's history.
+ * @returns {JSX.Element} The back button component.
+ */
 const BackMenu = () => {
   const router = useRouter();
 

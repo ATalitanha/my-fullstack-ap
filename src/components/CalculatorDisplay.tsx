@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
 
+/**
+ * Props for the CalculatorDisplay component.
+ * @property {string} first - The first number in the expression.
+ * @property {string} op - The operator.
+ * @property {string} second - The second number in the expression.
+ * @property {string} result - The result of the calculation.
+ */
 interface Props {
   first: string;   // عدد اول
   op: string;      // عملگر (+, -, *, /, √ و غیره)
@@ -7,6 +14,11 @@ interface Props {
   result: string;  // نتیجه عملیات
 }
 
+/**
+ * A component that displays the state of a calculator, including the current expression and result.
+ * @param {Props} props - The props for the component.
+ * @returns {JSX.Element} The calculator display.
+ */
 const CalculatorDisplay = ({ first, op, second, result }: Props) => {
   // رشته کامل نمایش داده شده به عنوان tooltip
   const expression = `${first} ${op} ${op === "√" ? "" : second} = ${result}`;

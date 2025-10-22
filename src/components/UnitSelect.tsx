@@ -7,14 +7,23 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 // تایپ Unit که از کتابخانه محلی وارد شده
 import { Unit } from "@/lib/type";
 
-// تعریف پروپس‌های کامپوننت UnitSelect
+/**
+ * Props for the UnitSelect component.
+ * @property {string} value - The currently selected unit value.
+ * @property {(value: string) => void} setValue - A function to set the selected unit value.
+ * @property {Unit[]} units - An array of unit objects to display in the select menu.
+ */
 interface UnitSelectProps {
   value: string;                   // مقدار انتخاب شده فعلی
   setValue: (val: string) => void; // تابع برای تغییر مقدار انتخاب شده
   units: Unit[];                   // لیست واحدها برای نمایش در منو
 }
 
-// کامپوننت UnitSelect
+/**
+ * A select component that allows the user to choose a unit for conversion.
+ * @param {UnitSelectProps} props - The props for the component.
+ * @returns {JSX.Element} The unit select component.
+ */
 export default function UnitSelect({ value, setValue, units }: UnitSelectProps) {
   return (
     <Select.Root value={value} onValueChange={setValue}>
