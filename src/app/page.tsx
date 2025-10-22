@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChangeLog } from "@/components/change-log";
+import { ChangeLog } from "@/shared/components/change-log";
 import ThemeToggle from "@/shared/components/ThemeToggle";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
 

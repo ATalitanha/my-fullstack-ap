@@ -1,4 +1,4 @@
-import BackMenu from "../backMenu";
+import BackMenu from "@/shared/components/backMenu";
 import ThemeToggle from "../ThemeToggle";
 
 const Header = () => {
