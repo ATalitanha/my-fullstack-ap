@@ -4,7 +4,11 @@
 import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 
-// تعریف دسته‌بندی‌ها با برچسب و آیکون
+/**
+ * An array of category objects used for unit conversions.
+ * Each object contains a value, a label, and an icon.
+ * @type {{value: string, label: string}[]}
+ */
 export const CATEGORIES = [
   { value: "length", label: "📏 طول" },
   { value: "weight", label: "⚖️ وزن" },
@@ -22,7 +26,13 @@ export const CATEGORIES = [
   { value: "angle", label: "📐 زاویه" },
 ];
 
-// کامپوننت CategorySelect
+/**
+ * A select component that allows the user to choose a category for unit conversion.
+ * @param {object} props - The component props.
+ * @param {string} props.category - The currently selected category.
+ * @param {(category: string) => void} props.setCategory - A function to set the selected category.
+ * @returns {JSX.Element} The category select component.
+ */
 export default function CategorySelect({
   category,
   setCategory,

@@ -3,17 +3,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import LoadingDots from "@/components/loading";
 import { HistoryItem } from "@/hooks/useCalculatorHistory";
 
+/**
+ * Props for the HistoryList component.
+ * @property {HistoryItem[]} history - An array of history items.
+ * @property {boolean} loading - Whether the history is currently loading.
+ * @property {() => void} onClear - Function to call when the clear history button is clicked.
+ */
 interface Props {
   history: HistoryItem[];
   loading: boolean;
   onClear: () => void; // فقط برای باز کردن دیالوگ، حذف مستقیم انجام نمیشه
 }
 
+/**
+ * A component that displays a list of calculator history items.
+ * @param {Props} props - The props for the component.
+ * @returns {JSX.Element} The history list component.
+ */
 const HistoryList = ({ history, loading, onClear }: Props) => {
   // ref برای اسکرول اتوماتیک به پایین لیست
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // وقتی تاریخچه تغییر کرد، اسکرول به پایین هدایت شود
+  // When the history changes, scroll to the bottom of the list.
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

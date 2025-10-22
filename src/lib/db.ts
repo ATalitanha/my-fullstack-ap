@@ -1,5 +1,9 @@
 import { ChangeLog, Unit } from "@/lib/type"
 
+/**
+ * Retrieves a list of changelogs.
+ * @returns {ChangeLog[]} An array of changelog objects.
+ */
 export function getChangeLogs(): ChangeLog[] {
     return [
         {
@@ -82,7 +86,11 @@ export function getChangeLogs(): ChangeLog[] {
 };
 
 
-
+/**
+ * An array of unit objects used for conversions.
+ * Each object contains the category, label, value, and conversion factor for a unit.
+ * @type {Unit[]}
+ */
 export const UNITS: Unit[] = [
     // طول
     {

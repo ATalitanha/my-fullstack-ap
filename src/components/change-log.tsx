@@ -5,12 +5,21 @@ import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
 
-// Props کامپوننت
+/**
+ * Props for the ChangeLog component.
+ * @property {boolean} isOpen - Whether the changelog modal is open.
+ * @property {() => void} onClose - Function to call when the changelog modal should be closed.
+ */
 type ChangeLogProps = {
   isOpen: boolean;       // آیا پنجره تغییرات باز است؟
   onClose: () => void;   // تابع بسته شدن پنجره
 };
 
+/**
+ * A component that displays a list of changelogs in a modal.
+ * @param {ChangeLogProps} props - The props for the component.
+ * @returns {JSX.Element} The changelog modal.
+ */
 export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
   // داده‌های تغییرات
   const [changeLogs, setChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);

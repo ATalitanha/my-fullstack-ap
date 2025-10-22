@@ -1,6 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
 
-// هر آیتم تاریخچه شامل این فیلدهاست
+/**
+ * Represents a single item in the calculator's history.
+ * @property {string} id - The unique identifier of the history item.
+ * @property {string} expression - The mathematical expression.
+ * @property {string} result - The result of the expression.
+ * @property {string} createdAt - The timestamp of when the item was created.
+ */
 export interface HistoryItem {
   id: string;
   expression: string; // رشته عملیات (مثل "5 + 3")
@@ -8,7 +14,20 @@ export interface HistoryItem {
   createdAt: string;  // زمان ایجاد
 }
 
-// هوک مدیریت تاریخچه ماشین حساب
+/**
+ * A custom hook for managing the calculator's history.
+ * It handles fetching, saving, and deleting history items from the server.
+ * @param {any} trigger - A value that, when changed, triggers a refetch of the history.
+ * @returns {{
+ *  history: HistoryItem[],
+ *  setHistory: React.Dispatch<React.SetStateAction<HistoryItem[]>>,
+ *  loading: boolean,
+ *  error: string | null,
+ *  fetchHistory: () => Promise<void>,
+ *  saveHistory: (expression: string, result: string) => Promise<void>,
+ *  deleteServerHistory: () => Promise<void>
+ * }} - An object containing the history state and functions to manage it.
+ */
 export function useCalculatorHistory(trigger: any) {
   const [history, setHistory] = useState<HistoryItem[]>([]); // آرایه تاریخچه
   const [loading, setLoading] = useState<boolean>(false);     // وضعیت بارگذاری

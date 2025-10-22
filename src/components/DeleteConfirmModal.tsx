@@ -3,7 +3,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 
-// Props کامپوننت
+/**
+ * Props for the ConfirmModal component.
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {() => void} onCancel - Function to call when the cancel button is clicked.
+ * @property {() => void} onConfirm - Function to call when the confirm button is clicked.
+ * @property {string} [message] - The message to display in the modal.
+ * @property {string} [confirmText] - The text for the confirm button.
+ * @property {string} [confirmColor] - The color of the confirm button.
+ */
 interface ConfirmModalProps {
   isOpen: boolean; // آیا مودال باز است یا نه
   onCancel: () => void; // تابع فراخوانی برای لغو
@@ -13,6 +21,11 @@ interface ConfirmModalProps {
   confirmColor?: string; // رنگ دکمه تایید
 }
 
+/**
+ * A confirmation modal component that can be used to confirm user actions.
+ * @param {ConfirmModalProps} props - The props for the component.
+ * @returns {JSX.Element} The confirmation modal.
+ */
 export default function ConfirmModal({
   isOpen,
   onCancel,

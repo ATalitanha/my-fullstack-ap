@@ -3,11 +3,16 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
+/**
+ * A component that allows the user to switch between light and dark themes.
+ * The selected theme is persisted in local storage.
+ * @returns {JSX.Element} The theme switcher button.
+ */
 const ThemeSwitcher = () => {
   // وضعیت فعلی تم: تاریک یا روشن
   const [isDark, setIsDark] = useState(false);
 
-  // بارگذاری اولیه وضعیت تم
+  // Load the theme from local storage or system preference on initial render.
   useEffect(() => {
     // بررسی تم ذخیره شده در localStorage
     const saved = localStorage.getItem("theme");
@@ -25,7 +30,9 @@ const ThemeSwitcher = () => {
     setIsDark(shouldUseDark);
   }, []);
 
-  // تابع تغییر تم
+  /**
+   * Toggles the theme between light and dark and saves the new theme to local storage.
+   */
   const toggle = () => {
     const newTheme = !isDark;
     setIsDark(newTheme);

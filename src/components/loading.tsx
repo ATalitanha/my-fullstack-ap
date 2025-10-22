@@ -1,4 +1,7 @@
-// کامپوننت LoadingDots برای نمایش انیمیشن بارگذاری
+/**
+ * A component that displays a loading animation with bouncing dots.
+ * @returns {JSX.Element} The loading dots component.
+ */
 const LoadingDots = () => (
   // کانتینر دایره‌ها با فلکس برای چینش افقی و وسط‌چین
   <div className="flex justify-center items-center h-24 space-x-2">
