@@ -6,7 +6,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config: Configuration) => {
-    config.externals = [...(config.externals || []), ".prisma/client"];
+    const externals = config.externals || [];
+    if (Array.isArray(externals)) {
+      config.externals = [...externals, ".prisma/client"];
+    } else {
+      config.externals = [externals, ".prisma/client"];
+    }
     return config;
   },
 };
