@@ -1,12 +1,6 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-}
 
 
 
@@ -22,4 +16,3 @@ const eslintConfig = [
 ];
 
 export default eslintConfig;
-module.exports = nextConfig

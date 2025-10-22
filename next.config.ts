@@ -1,10 +1,12 @@
+import { Configuration } from "webpack";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true, // غیرفعال کردن بررسی‌های ESLint در زمان Build
+    ignoreDuringBuilds: true,
   },
-  webpack: (config: { externals: any[]; }) => {
-    config.externals = [...config.externals, '.prisma/client']; // حل مشکل مربوط به Prisma در Build
+  webpack: (config: Configuration) => {
+    config.externals = [...(config.externals || []), ".prisma/client"];
     return config;
   },
 };

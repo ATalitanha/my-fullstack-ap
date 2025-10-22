@@ -1,13 +1,13 @@
 "use client";
 
-import Header from "@/components/ui/header";
+import Header from "@/shared/components/ui/header";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaBitcoin, FaDollarSign, FaCoins, FaSearch, FaFilter } from "react-icons/fa";
-import { Sparkles, TrendingUp, TrendingDown, DollarSign, Gem } from "lucide-react";
+import { FaBitcoin, FaDollarSign, FaCoins, FaSearch } from "react-icons/fa";
+import { Sparkles, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import theme from "@/lib/theme";
+import theme from "@/shared/lib/theme";
 
 type Item = {
   name: string;
@@ -25,13 +25,12 @@ const categories = [
 ];
 
 export default function PricesTableCards() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<{gold: Item[], currency: Item[], cryptocurrency: Item[]} | null>(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // ردیابی موقعیت ماوس
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -86,8 +85,10 @@ export default function PricesTableCards() {
   }
 
   let items: Item[] = [];
-  if (category === "all") items = [...data.gold, ...data.currency, ...data.cryptocurrency];
-  else items = data[category];
+  if (data) {
+    if (category === "all") items = [...data.gold, ...data.currency, ...data.cryptocurrency];
+    else items = data[category as keyof typeof data];
+  }
 
   items = items.filter(
     (item: Item) =>
@@ -101,45 +102,24 @@ export default function PricesTableCards() {
     return <FaCoins className="text-orange-400 w-5 h-5" />;
   };
 
-  
-
-  const getCategoryName = (cat: string) => {
-    switch (cat) {
-      case "gold":
-        return "طلا و سکه";
-      case "currency":
-        return "ارزها";
-      case "cryptocurrency":
-        return "رمزارزها";
-      default:
-        return "همه";
-    }
-  };
-
   return (
     <>
       <Header />
-
-      {/* افکت دنبال کننده ماوس */}
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`,
         }}
       />
-
-      {/* بخش اصلی */}
       <div
         className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
       >
-        {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto px-4 py-12 relative z-10">
-          {/* هدر صفحه */}
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -159,8 +139,6 @@ export default function PricesTableCards() {
               پیگیری آنی قیمت طلا، ارز و رمزارزها ✨
             </p>
           </motion.div>
-
-          {/* فیلتر و جستجو */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -247,8 +225,6 @@ export default function PricesTableCards() {
                 </Select.Root>
               </div>
             </div>
-
-            {/* آمار سریع */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div className="text-center p-3 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{data.gold?.length || 0}</div>
@@ -268,8 +244,6 @@ export default function PricesTableCards() {
               </div>
             </div>
           </motion.div>
-
-          {/* کارت‌ها */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <AnimatePresence>
               {items.map((item, index) => (
@@ -282,7 +256,6 @@ export default function PricesTableCards() {
                   whileHover={{ scale: 1.05, y: -5, transition: { type: "spring", stiffness: 400, damping: 25 } }}
                   className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 hover:shadow-3xl transition-all duration-300 group relative"
                 >
-                  {/* هدر کارت */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       {getIcon(item.symbol, category)}
@@ -303,8 +276,6 @@ export default function PricesTableCards() {
                       {item.change_percent >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                     </div>
                   </div>
-
-                  {/* اطلاعات قیمت */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-400 text-sm">قیمت:</span>
@@ -328,8 +299,6 @@ export default function PricesTableCards() {
                       </span>
                     </div>
                   </div>
-
-                  {/* افکت hover */}
                   <div
                     className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none ${
                       item.change_percent >= 0 ? "bg-green-500" : "bg-red-500"
@@ -339,17 +308,13 @@ export default function PricesTableCards() {
               ))}
             </AnimatePresence>
           </motion.div>
-
-          {/* پیام عدم وجود نتیجه */}
           {items.length === 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
               <DollarSign className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400 mb-2">نتیجه‌ای یافت نشد</h3>
-              <p className="text-gray-500 dark:text-gray-500">هیچ موردی با "{search}" مطابقت ندارد</p>
+              <p className="text-gray-500 dark:text-gray-500">هیچ موردی با &quot;{search}&quot; مطابقت ندارد</p>
             </motion.div>
           )}
-
-          {/* اطلاعات پایین صفحه */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="text-center mt-12">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 max-w-2xl mx-auto">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">📊 اطلاعات بازار</h3>

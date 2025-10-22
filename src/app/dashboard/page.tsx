@@ -1,26 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import theme from "@/lib/theme";
-import ThemeToggle from "@/components/ThemeToggle";
+import theme from "@/shared/lib/theme";
+import ThemeToggle from "@/shared/components/ThemeToggle";
 import { ArrowLeft, User, LogOut, Sparkles, Settings, Activity } from "lucide-react";
 import Link from "next/link";
 
-// نوع داده کاربر
 type User = { id: string; username: string; email?: string };
 
 export default function DashboardPage() {
   const router = useRouter();
-
-  // State های اصلی
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // ردیابی موقعیت ماوس
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -30,16 +25,12 @@ export default function DashboardPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  /**
-   * گرفتن access token از سرور یا refresh token
-   */
-  const fetchAccessToken = async () => {
+  const fetchAccessToken = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/refresh");
       const data = await res.json();
 
       if (res.ok) {
-        setToken(data.accessToken);
         const payload = JSON.parse(atob(data.accessToken.split(".")[1]));
         setUser({ 
           id: payload.id, 
@@ -54,21 +45,17 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchAccessToken();
-  }, []);
+  }, [fetchAccessToken]);
 
-  /**
-   * خروج کاربر
-   */
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
   };
 
-  // نمایش spinner در زمان لودینگ
   if (loading)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -83,15 +70,12 @@ export default function DashboardPage() {
 
   return (
     <>
-      {/* افکت دنبال کننده ماوس */}
       <div 
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
         }}
       />
-
-      {/* هدر سایت */}
       <header dir="ltr"
        className={`fixed w-full flex justify-between p-4 h-16 top-0 z-50  bg-transparent`}>
         <Link
@@ -113,19 +97,13 @@ export default function DashboardPage() {
           <ThemeToggle />
         </div>
       </header>
-
-      {/* بخش اصلی */}
       <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
-        
-        {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto px-4 py-12 relative z-10">
-          
-          {/* هدر صفحه */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -151,8 +129,6 @@ export default function DashboardPage() {
           </motion.div>
 
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            
-            {/* کارت اطلاعات کاربر */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -193,14 +169,11 @@ export default function DashboardPage() {
                 </div>
               </div>
             </motion.div>
-
-            {/* پنل کناری */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-1 space-y-6"
             >
-              {/* کارت اقدامات سریع */}
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                   <Settings size={20} />
@@ -227,8 +200,6 @@ export default function DashboardPage() {
                   </motion.button>
                 </div>
               </div>
-
-              {/* کارت خروج */}
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">مدیریت حساب</h3>
                 <motion.button
@@ -245,8 +216,6 @@ export default function DashboardPage() {
               </div>
             </motion.div>
           </div>
-
-          {/* آمار و اطلاعات */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

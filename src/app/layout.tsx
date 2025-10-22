@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import theme from "@/lib/theme";
+import theme from "@/shared/lib/theme";
 import "@fontsource/major-mono-display";
 import { Analytics } from "@vercel/analytics/next"
 

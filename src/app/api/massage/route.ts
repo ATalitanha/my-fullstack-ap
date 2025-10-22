@@ -1,6 +1,6 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/shared/lib/prisma";
 import { NextResponse } from "next/server";
-import { errorResponse } from "@/lib/error";
+import { errorResponse } from "@/shared/lib/error";
 
 /**
  * 📌 API: دریافت تمام پیام‌ها

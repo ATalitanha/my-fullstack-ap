@@ -4,15 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChangeLog } from "@/components/change-log";
-import ThemeToggle from "@/components/ThemeToggle";
+import ThemeToggle from "@/shared/components/ThemeToggle";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
 
-/**
- * The main homepage component for the application.
- * It displays a list of tools and allows users to search and filter them.
- * It also includes a theme toggle and a changelog modal.
- * @returns {JSX.Element} The rendered homepage.
- */
 export default function HomePage() {
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,7 +16,7 @@ export default function HomePage() {
   useEffect(() => {
     setIsLoading(false);
     
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     
@@ -106,8 +100,6 @@ export default function HomePage() {
 
   return (
     <>
-      
-      {/* افکت دنبال کننده ماوس */}
       <div 
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{
@@ -131,7 +123,6 @@ export default function HomePage() {
           </button>
           <ThemeToggle />
         </motion.div>
-        {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -160,8 +151,6 @@ export default function HomePage() {
             مجموعه‌ای کامل از ابزارهای کاربردی و هوشمند برای بهبود productivity روزانه شما ✨
           </p>
         </motion.div>
-
-        {/* نوار جستجو */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -177,8 +166,6 @@ export default function HomePage() {
             className="w-full px-12 py-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
           />
         </motion.div>
-
-        {/* فیلتر دسته‌بندی */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -209,8 +196,6 @@ export default function HomePage() {
             </button>
           ))}
         </motion.div>
-
-        {/* گرید کارت‌ها */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -218,7 +203,7 @@ export default function HomePage() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl relative z-10"
         >
           <AnimatePresence mode="popLayout">
-            {filteredLinks.map((link, i) => (
+            {filteredLinks.map((link) => (
               <motion.div
                 key={link.href}
                 layout
@@ -234,7 +219,6 @@ export default function HomePage() {
                 whileTap={{ scale: 0.98 }}
                 className="relative group"
               >
-                {/* افکت‌های ویژه */}
                 {link.popular && (
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
@@ -258,15 +242,10 @@ export default function HomePage() {
                     href={link.href}
                     className="flex flex-col items-center justify-center h-44 text-center font-semibold text-lg relative overflow-hidden"
                   >
-                    {/* گرادیانت پویا */}
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${link.color} opacity-0 group-hover:opacity-10 transition-all duration-500`}
                     />
-                    
-                    {/* افکت hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* محتوا */}
                     <div className="relative z-10 space-y-3">
                       <div className="text-3xl">{link.icon}</div>
                       <span className="text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors block">
@@ -282,8 +261,6 @@ export default function HomePage() {
             ))}
           </AnimatePresence>
         </motion.div>
-
-        {/* حالت عدم وجود نتیجه */}
         {filteredLinks.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -295,16 +272,11 @@ export default function HomePage() {
               نتیجه‌ای یافت نشد
             </h3>
             <p className="text-gray-500 dark:text-gray-500">
-              هیچ ابزاری با "{searchTerm}" مطابقت ندارد
+              هیچ ابزاری با &quot;{searchTerm}&quot; مطابقت ندارد
             </p>
           </motion.div>
         )}
-
-        {/* دکمه‌های پایین */}
-        
       </main>
-
-      {/* مودال تغییرات */}
       <ChangeLog
         isOpen={isChangeLogOpen}
         onClose={() => setIsChangeLogOpen(false)}
