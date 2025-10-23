@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 const UpdateTodoSchema = z.object({
   title: z.string().min(1, "Title is required").optional(),
-  content: z.string().optional(),
   completed: z.boolean().optional(),
 });
 
@@ -46,11 +45,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   try {
     const body = await req.json();
-    const { title, content, completed } = UpdateTodoSchema.parse(body);
+    const { title, completed } = UpdateTodoSchema.parse(body);
 
     const todo = await prisma.todo.update({
       where: { id: params.id, userId },
-      data: { title, content, completed },
+      data: { title, completed },
     });
 
     return NextResponse.json(todo);

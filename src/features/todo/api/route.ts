@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 const TodoSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  content: z.string().optional(),
 });
 
 async function getUserId(req: NextRequest) {
@@ -41,12 +40,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, content } = TodoSchema.parse(body);
+    const { title } = TodoSchema.parse(body);
 
     const todo = await prisma.todo.create({
       data: {
         title,
-        content,
         userId,
       },
     });
