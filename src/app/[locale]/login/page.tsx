@@ -6,8 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import { Sparkles, LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
+  const t = useTranslations('LoginPage');
   const router = useRouter();
 
   // State های فرم
@@ -48,10 +50,10 @@ export default function LoginPage() {
         localStorage.setItem("token", data.token);
         router.push("/dashboard");
       } else {
-        setError(data.error || "Incorrect email or password.");
+        setError(data.error || t('incorrectCredentials'));
       }
     } catch {
-      setError("An error occurred while connecting to the server.");
+      setError(t('serverError'));
     } finally {
       setLoading(false);
     }
@@ -97,17 +99,17 @@ export default function LoginPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-4"
               >
                 <Sparkles size={16} />
-                <span>Login to your account</span>
+                <span>{t('pageSubtitle')}</span>
               </motion.div>
               
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                  Login
+                  {t('pageTitle')}
                 </span>
               </h1>
               
               <p className="text-gray-600 dark:text-gray-400 text-lg">
-                Log in to your account and use the features ✨
+                {t('pageDescription')}
               </p>
             </motion.div>
 
@@ -139,14 +141,14 @@ export default function LoginPage() {
                 {/* فیلد ایمیل */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    Email Address
+                    {t('emailAddress')}
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <Mail size={20} />
                     </div>
                     <input
-                      placeholder="example@email.com"
+                      placeholder={t('emailPlaceholder')}
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -162,14 +164,14 @@ export default function LoginPage() {
                 {/* فیلد رمز عبور */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    Password
+                    {t('password')}
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <Lock size={20} />
                     </div>
                     <input
-                      placeholder="Enter your password"
+                      placeholder={t('passwordPlaceholder')}
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -203,12 +205,12 @@ export default function LoginPage() {
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Logging in...
+                      {t('loggingIn')}
                     </>
                   ) : (
                     <>
                       <LogIn size={20} />
-                      Login
+                      {t('login')}
                     </>
                   )}
                 </motion.button>
@@ -222,13 +224,13 @@ export default function LoginPage() {
                 className="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
               >
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Don't have an account?{" "}
+                  {t('noAccount')}{" "}
                   <motion.a
                     whileHover={{ scale: 1.05 }}
                     href="/signup"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
                   >
-                    Sign up
+                    {t('signUp')}
                   </motion.a>
                 </p>
               </motion.div>
@@ -244,7 +246,7 @@ export default function LoginPage() {
                   href="/forgot-password"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  Forgot your password?
+                  {t('forgotPassword')}
                 </a>
               </motion.div> */}
             </div>
@@ -257,7 +259,7 @@ export default function LoginPage() {
               className="text-center mt-6"
             >
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Your information is protected by security standards
+                {t('securityInfo')}
               </p>
             </motion.div>
           </motion.div>

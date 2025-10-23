@@ -6,6 +6,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
 import { Sparkles, Send, MessageCircle, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 type Message = {
   id: string | number;
@@ -19,6 +20,7 @@ type ResponseMessage = {
 };
 
 export default function MessageForm() {
+  const t = useTranslations('MessengerPage');
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,9 +56,9 @@ export default function MessageForm() {
       const data = await res.json();
       setMessages(data || []);
     } catch {
-      showResponse({ text: "❌ Error fetching messages", type: "error" });
+      showResponse({ text: t('errorFetchingMessages'), type: "error" });
     }
-  }, [showResponse]);
+  }, [showResponse, t]);
 
   useEffect(() => {
     fetchMessages();
@@ -73,7 +75,7 @@ export default function MessageForm() {
     setResponse(null);
 
     if (!title.trim() || !body.trim()) {
-      showResponse({ text: "❌ Please fill out all fields.", type: "error" });
+      showResponse({ text: t('fillAllFields'), type: "error" });
       return;
     }
 
@@ -86,7 +88,7 @@ export default function MessageForm() {
       });
       const data = await res.json();
       if (res.ok) {
-        showResponse({ text: "✅ Message sent successfully", type: "success" });
+        showResponse({ text: t('messageSentSuccess'), type: "success" });
         setTitle("");
         setBody("");
         setFormTouched(false);
@@ -98,12 +100,12 @@ export default function MessageForm() {
         }, 200);
       } else {
         showResponse({
-          text: `❌ Error: ${data.message || "Failed to send"}`,
+          text: `${t('errorPrefix')}: ${data.message || t('failedToSend')}`,
           type: "error",
         });
       }
     } catch {
-      showResponse({ text: "❌ Server connection error", type: "error" });
+      showResponse({ text: t('serverConnectionError'), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -144,18 +146,18 @@ export default function MessageForm() {
       const data = await res.json();
       if (res.ok) {
         showResponse({
-          text: toDeleteId === "all" ? "✅ All messages deleted" : "✅ Message deleted",
+          text: toDeleteId === "all" ? t('allMessagesDeleted') : t('messageDeleted'),
           type: "success",
         });
         fetchMessages();
       } else {
         showResponse({
-          text: `❌ Error deleting: ${data.message || "Failed"}`,
+          text: `${t('errorDeleting')}: ${data.message || t('failed')}`,
           type: "error",
         });
       }
     } catch {
-      showResponse({ text: "❌ Server connection error", type: "error" });
+      showResponse({ text: t('serverConnectionError'), type: "error" });
     } finally {
       setDeletingId(null);
       setToDeleteId(null);
@@ -187,15 +189,15 @@ export default function MessageForm() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>Messaging and Management System</span>
+              <span>{t('pageSubtitle')}</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                Send Message
+                {t('pageTitle')}
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              Send and manage your messages in a beautiful and user-friendly environment ✨
+              {t('pageDescription')}
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -210,18 +212,18 @@ export default function MessageForm() {
                     <Send className="text-blue-600 dark:text-blue-400" size={24} />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-                    Send New Message
+                    {t('sendNewMessage')}
                   </h2>
                 </div>
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Message Title
+                      {t('messageTitle')}
                     </label>
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="Enter your message title..."
+                        placeholder={t('titlePlaceholder')}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         onBlur={() => setTouchedTitle(true)}
@@ -241,18 +243,18 @@ export default function MessageForm() {
                           role="alert"
                         >
                           <AlertCircle size={16} />
-                          Please enter a title.
+                          {t('titleRequired')}
                         </motion.p>
                       )}
                     </AnimatePresence>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Message Body
+                      {t('messageBody')}
                     </label>
                     <div className="relative">
                       <textarea
-                        placeholder="Enter your message body..."
+                        placeholder={t('bodyPlaceholder')}
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
                         onBlur={() => setTouchedBody(true)}
@@ -279,7 +281,7 @@ export default function MessageForm() {
                           role="alert"
                         >
                           <AlertCircle size={16} />
-                          Please enter a message body.
+                          {t('bodyRequired')}
                         </motion.p>
                       )}
                     </AnimatePresence>
@@ -294,12 +296,12 @@ export default function MessageForm() {
                     {loading ? (
                       <>
                         <LoadingDots />
-                        Sending...
+                        {t('sending')}
                       </>
                     ) : (
                       <>
                         <Send size={20} />
-                        Send Message
+                        {t('sendMessage')}
                       </>
                     )}
                   </motion.button>
@@ -319,9 +321,9 @@ export default function MessageForm() {
                         <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Stored Messages</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">{t('storedMessages')}</h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {messages.length} messages
+                          {t('messageCount', { count: messages.length })}
                         </p>
                       </div>
                     </div>
@@ -337,7 +339,7 @@ export default function MessageForm() {
                       ) : (
                         <Trash2 size={16} />
                       )}
-                      Delete All
+                      {t('deleteAll')}
                     </motion.button>
                   </div>
                 </div>
@@ -345,7 +347,7 @@ export default function MessageForm() {
                   {loading && messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-32">
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
-                      <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+                      <p className="text-gray-500 dark:text-gray-400">{t('loading')}</p>
                     </div>
                   ) : messages.length === 0 ? (
                     <motion.div
@@ -354,8 +356,8 @@ export default function MessageForm() {
                       className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
                     >
                       <MessageCircle size={48} className="mb-3 opacity-50" />
-                      <p>No messages yet</p>
-                      <p className="text-sm mt-1">Send the first message!</p>
+                      <p>{t('noMessagesYet')}</p>
+                      <p className="text-sm mt-1">{t('sendFirstMessage')}</p>
                     </motion.div>
                   ) : (
                     <div className="space-y-4">
@@ -384,7 +386,7 @@ export default function MessageForm() {
                                 onClick={() => onDeleteClick(msg.id)}
                                 disabled={deletingId === msg.id}
                                 className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
-                                title="Delete message"
+                                title={t('deleteMessage')}
                               >
                                 {deletingId === msg.id ? (
                                   <LoadingDots />
@@ -444,8 +446,8 @@ export default function MessageForm() {
         onConfirm={confirmDelete}
         message={
           toDeleteId === "all"
-            ? "Are you sure you want to delete all messages? This action is irreversible."
-            : "Are you sure you want to delete this message?"
+            ? t('confirmDeleteAll')
+            : t('confirmDeleteOne')
         }
       />
     </>

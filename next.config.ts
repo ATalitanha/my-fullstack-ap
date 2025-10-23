@@ -1,11 +1,11 @@
-import { Configuration } from 'webpack';
+const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Disable ESLint checks during build
   },
-  webpack: (config: Configuration) => {
+  webpack: (config) => {
     // Add prisma client to externals to resolve an issue during build
     const externals = Array.isArray(config.externals)
       ? config.externals
@@ -18,4 +18,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);
