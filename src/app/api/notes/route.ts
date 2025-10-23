@@ -1,47 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import jwt from "jsonwebtoken";
-import { encryptText, decryptText } from "@/utils/crypto";
+import { z } from "zod";
+import prisma from "@/shared/lib/prisma";
+import { decryptText, encryptText } from "@/shared/lib/crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
+interface JwtPayload {
+  id: string;
+}
+
 /**
- * گرفتن userId از توکن JWT
- * @param req - درخواست HTTP
- * @returns userId یا null اگر توکن نامعتبر باشد
+ * Get userId from JWT token
+ * @param req - The HTTP request
+ * @returns userId or null if token is invalid
  */
-function getUserIdFromToken(req: NextRequest) {
+function getUserIdFromToken(req: NextRequest): string | null {
   const token = req.headers.get("authorization")?.split(" ")[1];
   if (!token) return null;
   try {
-    const payload: any = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return payload.id;
   } catch (error) {
-    console.error("توکن نامعتبر:", error);
+    console.error("Invalid token:", error);
     return null;
   }
 }
 
 /**
- * API برای دریافت نوت‌های کاربر
- * متد: GET
- * هدر: Authorization: Bearer <token>
+ * @description API to get user's notes
+ * @method GET
+ * @header Authorization: Bearer <token>
  */
 export async function GET(req: NextRequest) {
   try {
     const userId = getUserIdFromToken(req);
     if (!userId) {
-      return NextResponse.json({ error: "دسترسی غیرمجاز" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
 
-    // دریافت نوت‌ها به ترتیب جدیدترین
+    // Get notes in descending order of creation
     const notes = await prisma.note.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
       select: { id: true, title: true, content: true, createdAt: true, updatedAt: true },
     });
 
-    // دیکریپت عنوان و محتوا
+    // Decrypt title and content
     const decrypted = notes.map(n => ({
       ...n,
       title: decryptText(n.title),
@@ -51,35 +56,39 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ notes: decrypted }, { status: 200 });
 
   } catch (error) {
-    console.error("خطا در GET /note:", error);
-    return NextResponse.json({ error: "توکن نامعتبر یا خطای سرور" }, { status: 401 });
+    console.error("Error in GET /note:", error);
+    return NextResponse.json({ error: "Invalid token or server error" }, { status: 401 });
   }
 }
 
+const createNoteSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
+});
+
 /**
- * API برای ایجاد نوت جدید
- * متد: POST
- * هدر: Authorization: Bearer <token>
- * ورودی: { title: string, content: string }
+ * @description API to create a new note
+ * @method POST
+ * @header Authorization: Bearer <token>
+ * @input { title: string, content: string }
  */
 export async function POST(req: NextRequest) {
   try {
     const userId = getUserIdFromToken(req);
     if (!userId) {
-      return NextResponse.json({ error: "دسترسی غیرمجاز" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
 
-    const { title, content } = await req.json();
+    const body = await req.json();
+    const validation = createNoteSchema.safeParse(body);
 
-    // اعتبارسنجی ورودی‌ها
-    if (!title || !content) {
-      return NextResponse.json(
-        { error: "فیلدهای title و content الزامی هستند" },
-        { status: 400 }
-      );
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error.format() }, { status: 400 });
     }
 
-    // ایجاد نوت جدید
+    const { title, content } = validation.data;
+
+    // Create new note
     const note = await prisma.note.create({
       data: {
         userId,
@@ -98,7 +107,7 @@ export async function POST(req: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error("خطا در POST /note:", error);
-    return NextResponse.json({ error: "توکن نامعتبر یا خطای سرور" }, { status: 401 });
+    console.error("Error in POST /note:", error);
+    return NextResponse.json({ error: "Invalid token or server error" }, { status: 401 });
   }
 }

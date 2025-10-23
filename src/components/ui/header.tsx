@@ -1,5 +1,4 @@
 // components/ui/header.tsx
-import theme from "@/lib/theme";
 import BackMenu from "../backMenu";
 import ThemeToggle from "../ThemeToggle";
 

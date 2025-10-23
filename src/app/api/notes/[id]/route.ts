@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import prisma from "@/shared/lib/prisma";
 import jwt from "jsonwebtoken";
-import { encryptText, decryptText } from "@/utils/crypto";
+import { encryptText, decryptText } from "@/shared/lib/crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
