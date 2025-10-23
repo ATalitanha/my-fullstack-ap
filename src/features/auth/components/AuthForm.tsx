@@ -41,7 +41,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
         <input
           type="text"
           name="username"
-          placeholder="Username"
+          placeholder="نام کاربری"
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded"
           required
@@ -50,7 +50,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
       <input
         type="email"
         name="email"
-        placeholder="Email"
+        placeholder="ایمیل"
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded"
         required
@@ -58,14 +58,14 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
       <input
         type="password"
         name="password"
-        placeholder="Password"
+        placeholder="رمز عبور"
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded"
         required
       />
       {error && <p className="text-red-500">{error}</p>}
       <Button type="submit" disabled={isLoading}>
-        {isLoading ? 'Loading...' : isLogin ? 'Login' : 'Sign Up'}
+        {isLoading ? 'در حال بارگذاری...' : isLogin ? 'ورود' : 'ثبت نام'}
       </Button>
     </form>
   );

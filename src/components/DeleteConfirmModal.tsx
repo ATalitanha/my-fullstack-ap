@@ -30,8 +30,8 @@ export default function ConfirmModal({
   isOpen,
   onCancel,
   onConfirm,
-  message = "آیا مطمئن هستید؟",
-  confirmText = "تایید",
+  message = "Are you sure?",
+  confirmText = "Confirm",
   confirmColor = "bg-blue-600 hover:bg-blue-700",
 }: ConfirmModalProps) {
   // مدیریت کلیدهای Enter و Escape هنگام باز بودن مودال
@@ -81,7 +81,7 @@ export default function ConfirmModal({
                 onClick={onCancel}
                 className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
               >
-                لغو
+                Cancel
               </button>
               <button
                 onClick={onConfirm}

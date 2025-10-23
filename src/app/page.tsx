@@ -27,54 +27,54 @@ export default function HomePage() {
   const links = [
     {
       href: "/cal",
-      label: "Calculator",
+      label: "ماشین حساب",
       color: "from-blue-500 to-blue-700",
       icon: "🧮",
-      category: "Tools",
+      category: "ابزارها",
       popular: true
     },
     {
       href: "/messenger",
-      label: "Text Transfer",
+      label: "انتقال متن",
       color: "from-teal-500 to-teal-700",
       icon: "💬",
-      category: "Communication"
+      category: "ارتباطات"
     },
     {
       href: "/todo",
-      label: "To-Do List",
+      label: "لیست کارها",
       color: "from-amber-500 to-orange-600",
       icon: "✅",
-      category: "Productivity",
+      category: "بهره وری",
       popular: true
     },
     {
       href: "/notes",
-      label: "Notes",
+      label: "یادداشت ها",
       color: "from-purple-500 to-indigo-600",
       icon: "📝",
-      category: "Productivity"
+      category: "بهره وری"
     },
     {
       href: "/dashboard",
-      label: "User Account",
+      label: "حساب کاربری",
       color: "from-pink-500 to-rose-600",
       icon: "👤",
-      category: "Account"
+      category: "حساب"
     },
     {
       href: "/login",
-      label: "Login / Signup",
+      label: "ورود / ثبت نام",
       color: "from-sky-500 to-cyan-600",
       icon: "🔐",
-      category: "Account"
+      category: "حساب"
     },
     {
       href: "/Prices-table",
-      label: "Live Gold & Currency Prices",
+      label: "قیمت لحظه ای طلا و ارز",
       color: "from-green-500 to-emerald-600",
       icon: "📊",
-      category: "Finance",
+      category: "مالی",
       new: true
     },
   ];
@@ -119,7 +119,7 @@ export default function HomePage() {
             className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
           >
             <Sparkles size={18} />
-            Version Changes
+            تغییرات نسخه
           </button>
         </motion.div>
         <div className="absolute inset-0 overflow-hidden">
@@ -137,13 +137,13 @@ export default function HomePage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
           >
             <Sparkles size={16} />
-            <span>A Collection of the Best Tools</span>
+            <span>مجموعه ای از بهترین ابزارها</span>
           </motion.div>
           <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span>
+            به <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span> خوش آمدید
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-            A complete set of practical and smart tools to improve your daily productivity ✨
+            مجموعه ای کامل از ابزارهای کاربردی و هوشمند برای بهبود بهره وری روزانه شما ✨
           </p>
         </motion.div>
         <motion.div
@@ -155,7 +155,7 @@ export default function HomePage() {
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="Search tools..."
+            placeholder="جستجوی ابزارها..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
@@ -174,7 +174,7 @@ export default function HomePage() {
                 : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"
               }`}
           >
-            All
+            همه
           </button>
           {categories.map(category => (
             <button
@@ -216,7 +216,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
                       <TrendingUp size={12} />
-                      <span>Popular</span>
+                      <span>محبوب</span>
                     </div>
                   </div>
                 )}
@@ -224,7 +224,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
                       <Zap size={12} />
-                      <span>New</span>
+                      <span>جدید</span>
                     </div>
                   </div>
                 )}
@@ -260,10 +260,10 @@ export default function HomePage() {
           >
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
-              No results found
+              نتیجه ای یافت نشد
             </h3>
             <p className="text-gray-500 dark:text-gray-500">
-              No tools match &quot;{searchTerm}&quot;
+              هیچ ابزاری با &quot;{searchTerm}&quot; مطابقت ندارد
             </p>
           </motion.div>
         )}

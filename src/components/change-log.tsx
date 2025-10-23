@@ -76,7 +76,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                تغییرات
+                Change Log
               </motion.h2>
               <motion.button
                 onClick={onClose}
@@ -108,7 +108,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     onClick={() => handleAccordionChange(`item-${index}`)}
                   >
                     <span className="font-medium text-black dark:text-gray-100">
-                      نسخه {log.version}
+                      Version {log.version}
                     </span>
                     <motion.div
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}

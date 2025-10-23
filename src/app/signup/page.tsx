@@ -48,10 +48,10 @@ export default function SignupPage() {
       if (res.ok) {
         router.push("/login");
       } else {
-        setError(data.message || "ثبت نام ناموفق بود");
+        setError(data.message || "Registration failed");
       }
     } catch {
-      setError("خطایی در ارتباط با سرور رخ داد.");
+      setError("An error occurred while connecting to the server.");
     } finally {
       setLoading(false);
     }
@@ -97,17 +97,17 @@ export default function SignupPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-4"
               >
                 <Sparkles size={16} />
-                <span>ایجاد حساب کاربری جدید</span>
+                <span>Create a new account</span>
               </motion.div>
               
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                  ثبت نام
+                  Sign Up
                 </span>
               </h1>
               
               <p className="text-gray-600 dark:text-gray-400 text-lg">
-                حساب کاربری خود را ایجاد کنید و از تمام امکانات استفاده نمایید ✨
+                Create your account and use all the features ✨
               </p>
             </motion.div>
 
@@ -139,14 +139,14 @@ export default function SignupPage() {
                 {/* فیلد نام کاربری */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    نام کاربری
+                    Username
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <User size={20} />
                     </div>
                     <input
-                      placeholder="نام کاربری خود را وارد کنید"
+                      placeholder="Enter your username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       required
@@ -161,7 +161,7 @@ export default function SignupPage() {
                 {/* فیلد ایمیل */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    آدرس ایمیل
+                    Email Address
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -184,14 +184,14 @@ export default function SignupPage() {
                 {/* فیلد رمز عبور */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    رمز عبور
+                    Password
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <Lock size={20} />
                     </div>
                     <input
-                      placeholder="رمز عبور قوی انتخاب کنید"
+                      placeholder="Choose a strong password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -219,12 +219,12 @@ export default function SignupPage() {
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      در حال ثبت نام...
+                      Signing up...
                     </>
                   ) : (
                     <>
                       <UserPlus size={20} />
-                      ایجاد حساب کاربری
+                      Create Account
                     </>
                   )}
                 </motion.button>
@@ -238,13 +238,13 @@ export default function SignupPage() {
                 className="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
               >
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  قبلاً حساب دارید؟{" "}
+                  Already have an account?{" "}
                   <motion.a
                     whileHover={{ scale: 1.05 }}
                     href="/login"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
                   >
-                    وارد شوید
+                    Log in
                   </motion.a>
                 </p>
               </motion.div>
@@ -258,7 +258,7 @@ export default function SignupPage() {
               className="text-center mt-6"
             >
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                اطلاعات شما با استانداردهای امنیتی محافظت می‌شود
+                Your information is protected by security standards
               </p>
             </motion.div>
           </motion.div>
