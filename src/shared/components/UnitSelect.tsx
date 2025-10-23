@@ -16,8 +16,8 @@ const UnitSelect = ({ units, selectedUnit, onChange }: UnitSelectProps) => {
       className="p-2 border rounded"
     >
       {units.map((unit) => (
-        <option key={unit.symbol} value={unit.symbol}>
-          {unit.name}
+        <option key={unit.value} value={unit.value}>
+          {unit.label}
         </option>
       ))}
     </select>
