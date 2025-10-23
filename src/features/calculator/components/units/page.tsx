@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/shared/components/ui/header";
 import { UNITS } from "@/shared/lib/db";
-import { convertValue } from "@/lib/converter";
-import UnitSelect from "@/components/UnitSelect";
-import CategorySelect from "@/components/CategorySelect";
+import { convertValue } from "@/shared/lib/converter";
+import UnitSelect from "@/shared/components/UnitSelect";
+import CategorySelect from "@/shared/components/CategorySelect";
 import { Sparkles, ArrowRightLeft, Calculator } from "lucide-react";
 
 export default function UnitConverterPage() {
@@ -39,7 +39,7 @@ export default function UnitConverterPage() {
       setResult("ورودی نامعتبر");
       return;
     }
-    setResult(convertValue(category, from, to, num));
+    setResult(convertValue(num, from, to).toString());
   };
 
   // توابع افزایش و کاهش مقدار ورودی
@@ -169,7 +169,7 @@ export default function UnitConverterPage() {
             {/* سلکت‌های واحد مبدأ و مقصد */}
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 w-full">
               <div className="flex-1">
-                <UnitSelect value={from} setValue={setFrom} units={filteredUnits} />
+                <UnitSelect selectedUnit={from} onChange={setFrom} units={filteredUnits} />
               </div>
               
               <motion.div
@@ -180,7 +180,7 @@ export default function UnitConverterPage() {
               </motion.div>
               
               <div className="flex-1">
-                <UnitSelect value={to} setValue={setTo} units={filteredUnits} />
+                <UnitSelect selectedUnit={to} onChange={setTo} units={filteredUnits} />
               </div>
             </div>
 
