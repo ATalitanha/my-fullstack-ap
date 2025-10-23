@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     const note = await prisma.note.update({
       where: { id: params.id, userId },
-      data: { title, content },
+      data: { title, content: content || "" },
     });
 
     return NextResponse.json(note);
