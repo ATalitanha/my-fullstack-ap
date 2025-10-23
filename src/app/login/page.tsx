@@ -48,10 +48,10 @@ export default function LoginPage() {
         localStorage.setItem("token", data.token);
         router.push("/dashboard");
       } else {
-        setError(data.error || "ایمیل یا رمز عبور اشتباه است.");
+        setError(data.error || "Incorrect email or password.");
       }
     } catch {
-      setError("خطایی در ارتباط با سرور رخ داد.");
+      setError("An error occurred while connecting to the server.");
     } finally {
       setLoading(false);
     }
@@ -97,17 +97,17 @@ export default function LoginPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-4"
               >
                 <Sparkles size={16} />
-                <span>ورود به حساب کاربری</span>
+                <span>Login to your account</span>
               </motion.div>
               
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                  ورود به سیستم
+                  Login
                 </span>
               </h1>
               
               <p className="text-gray-600 dark:text-gray-400 text-lg">
-                به حساب کاربری خود وارد شوید و از امکانات استفاده کنید ✨
+                Log in to your account and use the features ✨
               </p>
             </motion.div>
 
@@ -139,7 +139,7 @@ export default function LoginPage() {
                 {/* فیلد ایمیل */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    آدرس ایمیل
+                    Email Address
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -162,14 +162,14 @@ export default function LoginPage() {
                 {/* فیلد رمز عبور */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    رمز عبور
+                    Password
                   </label>
                   <div className="relative">
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <Lock size={20} />
                     </div>
                     <input
-                      placeholder="رمز عبور خود را وارد کنید"
+                      placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -203,12 +203,12 @@ export default function LoginPage() {
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      در حال ورود...
+                      Logging in...
                     </>
                   ) : (
                     <>
                       <LogIn size={20} />
-                      ورود به حساب
+                      Login
                     </>
                   )}
                 </motion.button>
@@ -222,13 +222,13 @@ export default function LoginPage() {
                 className="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
               >
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  حساب کاربری ندارید؟{" "}
+                  Don't have an account?{" "}
                   <motion.a
                     whileHover={{ scale: 1.05 }}
                     href="/signup"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
                   >
-                    ثبت‌نام کنید
+                    Sign up
                   </motion.a>
                 </p>
               </motion.div>
@@ -244,7 +244,7 @@ export default function LoginPage() {
                   href="/forgot-password"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  رمز عبور خود را فراموش کرده‌اید؟
+                  Forgot your password?
                 </a>
               </motion.div> */}
             </div>
@@ -257,7 +257,7 @@ export default function LoginPage() {
               className="text-center mt-6"
             >
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                اطلاعات شما با استانداردهای امنیتی محافظت می‌شود
+                Your information is protected by security standards
               </p>
             </motion.div>
           </motion.div>

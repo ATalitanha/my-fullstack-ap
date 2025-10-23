@@ -12,7 +12,7 @@ export default function TodoList() {
   const { todos, isLoading, error, updateTodo, deleteTodo } = useTodo();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <p>در حال بارگذاری...</p>;
   }
 
   if (error) {
@@ -33,7 +33,7 @@ export default function TodoList() {
             {todo.title}
           </span>
           <Button onClick={() => deleteTodo(todo.id)} >
-            Delete
+            حذف
           </Button>
         </li>
       ))}
