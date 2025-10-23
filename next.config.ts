@@ -7,11 +7,13 @@ const nextConfig = {
   },
   webpack: (config: Configuration) => {
     // Add prisma client to externals to resolve an issue during build
-    if (config.externals) {
-      config.externals.push('.prisma/client');
-    } else {
-      config.externals = ['.prisma/client'];
-    }
+    const externals = Array.isArray(config.externals)
+      ? config.externals
+      : (config.externals ? [config.externals] : []);
+
+    externals.push('.prisma/client');
+    config.externals = externals;
+
     return config;
   },
 };

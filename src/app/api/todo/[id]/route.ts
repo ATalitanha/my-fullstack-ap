@@ -8,8 +8,12 @@ import { TodoService } from '@/features/todo/server/todo.service';
 import { updateTodoSchema } from '@/features/todo/todo.schema';
 import { getUserIdFromToken } from '@/shared/lib/auth';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params;
     const userId = getUserIdFromToken(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -23,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 
     const todoService = new TodoService();
-    const todo = await todoService.updateTodo(params.id, userId, validation.data);
+    const todo = await todoService.updateTodo(id, userId, validation.data);
 
     if (!todo) {
       return NextResponse.json({ error: 'Todo not found' }, { status: 404 });
@@ -36,15 +40,19 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id:string}> }
+) {
   try {
+    const { id } = await params;
     const userId = getUserIdFromToken(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const todoService = new TodoService();
-    const success = await todoService.deleteTodo(params.id, userId);
+    const success = await todoService.deleteTodo(id, userId);
 
     if (!success) {
       return NextResponse.json({ error: 'Todo not found' }, { status: 404 });
