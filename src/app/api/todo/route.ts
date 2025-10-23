@@ -1,107 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import jwt from "jsonwebtoken";
-import { encryptText, decryptText } from "@/utils/crypto";
-
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 /**
- * API برای دریافت لیست تودوهای کاربر
- * متد: GET
- * هدر: Authorization: Bearer <token>
+ * Reason: Refactored to be a thin controller that uses the TodoService.
+ * This approach separates the API layer from business logic, improving testability
+ * and maintainability. It now validates input with Zod and delegates to the service.
  */
+import { NextRequest, NextResponse } from 'next/server';
+import { TodoService } from '@/features/todo/server/todo.service';
+import { createTodoSchema } from '@/features/todo/todo.schema';
+import { getUserIdFromToken } from '@/shared/lib/auth';
+
 export async function GET(req: NextRequest) {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) {
-    return NextResponse.json({ error: "توکن یافت نشد" }, { status: 401 });
-  }
-
   try {
-    // بررسی صحت توکن JWT
-    const payload: any = jwt.verify(token, JWT_SECRET);
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // دریافت تودوهای کاربر از دیتابیس
-    const todos = await prisma.todo.findMany({
-      where: { userId: payload.id },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        completed: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    // رمزگشایی عنوان‌ها
-    const decrypted = todos.map((t) => ({
-      ...t,
-      title: decryptText(t.title),
-    }));
-
-    return NextResponse.json({ todos: decrypted }, { status: 200 });
-
+    const todoService = new TodoService();
+    const todos = await todoService.getTodos(userId);
+    return NextResponse.json({ todos });
   } catch (error) {
-    console.error("خطا در GET /todo:", error);
-    return NextResponse.json({ error: "توکن نامعتبر یا خطای سرور" }, { status: 401 });
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-/**
- * API برای ایجاد یک تودوی جدید
- * متد: POST
- * ورودی: { title: string }
- * هدر: Authorization: Bearer <token>
- */
 export async function POST(req: NextRequest) {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) {
-    return NextResponse.json({ error: "توکن یافت نشد" }, { status: 401 });
-  }
-
   try {
-    // بررسی صحت توکن JWT
-    const payload: any = jwt.verify(token, JWT_SECRET);
-
-    // گرفتن داده ورودی
-    const { title } = await req.json();
-
-    // اعتبارسنجی ورودی
-    if (!title || typeof title !== "string") {
-      return NextResponse.json(
-        { error: "فیلد title الزامی است" },
-        { status: 400 }
-      );
+    const userId = getUserIdFromToken(req);
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // ذخیره تودوی جدید با عنوان رمزگذاری‌شده
-    const todo = await prisma.todo.create({
-      data: {
-        userId: payload.id,
-        title: encryptText(title),
-      },
-      select: {
-        id: true,
-        title: true,
-        completed: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const body = await req.json();
+    const validation = createTodoSchema.safeParse(body);
 
-    // بازگردانی عنوان رمزگشایی‌شده
-    return NextResponse.json(
-      {
-        todo: {
-          ...todo,
-          title: decryptText(todo.title),
-        },
-      },
-      { status: 201 }
-    );
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error.format() }, { status: 400 });
+    }
 
+    const todoService = new TodoService();
+    const todo = await todoService.createTodo(userId, validation.data);
+
+    return NextResponse.json({ todo }, { status: 201 });
   } catch (error) {
-    console.error("خطا در POST /todo:", error);
-    return NextResponse.json({ error: "توکن نامعتبر یا خطای سرور" }, { status: 401 });
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

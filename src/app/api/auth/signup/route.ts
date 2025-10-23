@@ -1,62 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import bcrypt from "bcrypt";
-import { encryptText, encryptEmail } from "@/utils/crypto";
-
 /**
- * API برای ثبت‌نام کاربر جدید
- * متد: POST
- * ورودی: { username: string, email: string, password: string }
+ * Reason: Refactored to use the AuthService for user creation.
+ * This keeps the controller lean and focused on handling HTTP requests and responses,
+ * while the service layer manages the business logic of user registration.
  */
+import { NextRequest, NextResponse } from 'next/server';
+import { AuthService } from '@/features/auth/server/auth.service';
+import { signupSchema } from '@/features/auth/auth.schema';
+
 export async function POST(req: NextRequest) {
   try {
-    const { username, email, password } = await req.json();
+    const body = await req.json();
+    const validation = signupSchema.safeParse(body);
 
-    // بررسی اینکه همه فیلدها پر شده باشند
-    if (!username || !email || !password) {
-      return NextResponse.json(
-        { error: "تمامی فیلدها الزامی هستند" },
-        { status: 400 }
-      );
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error.format() }, { status: 400 });
     }
 
-    // هش کردن پسورد با bcrypt (salt rounds = 10)
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const authService = new AuthService();
+    const user = await authService.signup(validation.data);
 
-    // رمزنگاری نام کاربری با IV تصادفی
-    const encryptedUsername = encryptText(username);
-
-    // رمزنگاری ایمیل با IV ثابت برای جستجو و تطبیق
-    const encryptedEmail = encryptEmail(email);
-
-    // ذخیره کاربر جدید در دیتابیس
-    const user = await prisma.user.create({
-      data: {
-        username: encryptedUsername,
-        email: encryptedEmail,
-        password: hashedPassword,
-      },
-    });
-
-    return NextResponse.json(
-      { user: { id: user.id } },
-      { status: 201 }
-    );
-
-  } catch (error: any) {
-    console.error("خطا در ثبت‌نام:", error);
-
-    // بررسی خطاهای معمول (مثل تکراری بودن ایمیل)
-    if (error.code === "P2002") {
-      return NextResponse.json(
-        { error: "ایمیل یا نام کاربری قبلاً ثبت شده است" },
-        { status: 400 }
-      );
+    return NextResponse.json({ user: { id: user.id } }, { status: 201 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+    if (message.includes('already exists')) {
+      return NextResponse.json({ error: message }, { status: 400 });
     }
-
-    return NextResponse.json(
-      { error: "خطای سرور یا پایگاه داده" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
