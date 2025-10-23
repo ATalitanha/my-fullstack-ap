@@ -4,8 +4,8 @@ import theme from "@/lib/theme";
 import "@fontsource/major-mono-display";
 import { Analytics } from "@vercel/analytics/next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, createTranslator } from 'next-intl/server';
+import { NextIntlClientProvider, createTranslator } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 export async function generateMetadata({params: {locale}}: {params: {locale: string}}): Promise<Metadata> {
   const messages = (await import(`../../../messages/${locale}.json`)).default;
