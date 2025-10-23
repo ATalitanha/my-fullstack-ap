@@ -6,8 +6,8 @@ import { evaluate } from "mathjs";
 
 // کامپوننت‌ها
 import Header from "@/shared/components/ui/header";
-import CalculatorDisplay from "@/components/CalculatorDisplay";
-import HistoryList from "@/components/HistoryList";
+import CalculatorDisplay from "@/shared/components/CalculatorDisplay";
+import HistoryList from "@/shared/components/HistoryList";
 import theme from "@/shared/lib/theme";
 
 // هوک و ثابت‌ها
