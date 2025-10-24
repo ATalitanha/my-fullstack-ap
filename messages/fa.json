@@ -1,0 +1,71 @@
+{
+  "Index": {
+    "title": "تنها  اپ",
+    "description": "مجموعه ای از ابزارهای بهره وری"
+  },
+  "Login": {
+    "accountLogin": "ورود به حساب کاربری",
+    "login": "ورود",
+    "featureUsage": "وارد حساب کاربری خود شوید و از امکانات استفاده کنید ✨",
+    "incorrectCredentials": "ایمیل یا رمز عبور نادرست است.",
+    "serverError": "خطایی در اتصال به سرور رخ داد.",
+    "emailLabel": "آدرس ایمیل",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "رمز عبور",
+    "passwordPlaceholder": "رمز عبور خود را وارد کنید",
+    "loggingIn": "در حال ورود...",
+    "loginButton": "ورود",
+    "noAccount": "حساب کاربری ندارید؟",
+    "signUp": "ثبت نام کنید",
+    "securityInfo": "اطلاعات شما توسط استانداردهای امنیتی محافظت می شود"
+  },
+  "Signup": {
+    "createAccount": "ایجاد حساب کاربری جدید",
+    "signUp": "ثبت نام",
+    "featureUsage": "حساب کاربری خود را ایجاد کنید و از تمام امکانات استفاده کنید ✨",
+    "registrationFailed": "ثبت نام ناموفق بود",
+    "usernameLabel": "نام کاربری",
+    "usernamePlaceholder": "نام کاربری خود را وارد کنید",
+    "emailLabel": "آدرس ایمیل",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "رمز عبور",
+    "passwordPlaceholder": "یک رمز عبور قوی انتخاب کنید",
+    "signingUp": "در حال ثبت نام...",
+    "createAccountButton": "ایجاد حساب",
+    "hasAccount": "قبلاً حساب کاربری دارید؟",
+    "logIn": "وارد شوید",
+    "securityInfo": "اطلاعات شما توسط استانداردهای امنیتی محافظت می شود"
+  },
+  "ChangeLog": {
+    "title": "لیست تغییرات",
+    "version": "نسخه"
+  },
+  "HomePage": {
+    "changelog": "تغییرات نسخه",
+    "bestTools": "مجموعه ای از بهترین ابزارها",
+    "welcome": "به TanhaApp خوش آمدید",
+    "description": "مجموعه ای کامل از ابزارهای کاربردی و هوشمند برای بهبود بهره وری روزانه شما ✨",
+    "searchPlaceholder": "جستجوی ابزارها...",
+    "all": "همه",
+    "popular": "محبوب",
+    "new": "جدید",
+    "noResults": "نتیجه ای یافت نشد",
+    "noToolsMatch": "هیچ ابزاری با",
+    "tools": {
+      "calculator": "ماشین حساب",
+      "textTransfer": "انتقال متن",
+      "todoList": "لیست کارها",
+      "notes": "یادداشت ها",
+      "account": "حساب کاربری",
+      "loginSignup": "ورود / ثبت نام",
+      "goldCurrencyPrices": "قیمت لحظه ای طلا و ارز"
+    },
+    "categories": {
+      "tools": "ابزارها",
+      "communication": "ارتباطات",
+      "productivity": "بهره وری",
+      "account": "حساب",
+      "financial": "مالی"
+    }
+  }
+}

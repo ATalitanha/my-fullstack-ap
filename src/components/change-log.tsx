@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 /**
  * Props for the ChangeLog component.
@@ -21,6 +22,7 @@ type ChangeLogProps = {
  * @returns {JSX.Element} The changelog modal.
  */
 export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
+  const t = useTranslations('ChangeLog');
   // داده‌های تغییرات
   const [changeLogs, setChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
   // نگهداری نسخه‌ای که باز شده (اکاردئون)
@@ -76,7 +78,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Change Log
+                {t('title')}
               </motion.h2>
               <motion.button
                 onClick={onClose}
@@ -108,7 +110,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     onClick={() => handleAccordionChange(`item-${index}`)}
                   >
                     <span className="font-medium text-black dark:text-gray-100">
-                      Version {log.version}
+                      {t('version')} {log.version}
                     </span>
                     <motion.div
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}

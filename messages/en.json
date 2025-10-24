@@ -1,0 +1,71 @@
+{
+  "Index": {
+    "title": "TanhaApp",
+    "description": "A suite of productivity tools"
+  },
+  "Login": {
+    "accountLogin": "Login to your account",
+    "login": "Login",
+    "featureUsage": "Log in to your account and use the features ✨",
+    "incorrectCredentials": "Incorrect email or password.",
+    "serverError": "An error occurred while connecting to the server.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loggingIn": "Logging in...",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "securityInfo": "Your information is protected by security standards"
+  },
+  "Signup": {
+    "createAccount": "Create a new account",
+    "signUp": "Sign Up",
+    "featureUsage": "Create your account and use all the features ✨",
+    "registrationFailed": "Registration failed",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Choose a strong password",
+    "signingUp": "Signing up...",
+    "createAccountButton": "Create Account",
+    "hasAccount": "Already have an account?",
+    "logIn": "Log in",
+    "securityInfo": "Your information is protected by security standards"
+  },
+  "ChangeLog": {
+    "title": "Change Log",
+    "version": "Version"
+  },
+  "HomePage": {
+    "changelog": "Changelog",
+    "bestTools": "A collection of the best tools",
+    "welcome": "Welcome to TanhaApp",
+    "description": "A complete suite of smart and practical tools to improve your daily productivity ✨",
+    "searchPlaceholder": "Search for tools...",
+    "all": "All",
+    "popular": "Popular",
+    "new": "New",
+    "noResults": "No results found",
+    "noToolsMatch": "No tools match",
+    "tools": {
+      "calculator": "Calculator",
+      "textTransfer": "Text Transfer",
+      "todoList": "Todo List",
+      "notes": "Notes",
+      "account": "Account",
+      "loginSignup": "Login / Signup",
+      "goldCurrencyPrices": "Live Gold and Currency Prices"
+    },
+    "categories": {
+      "tools": "Tools",
+      "communication": "Communication",
+      "productivity": "Productivity",
+      "account": "Account",
+      "financial": "Financial"
+    }
+  }
+}

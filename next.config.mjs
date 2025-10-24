@@ -1,11 +1,9 @@
-import { Configuration } from 'webpack';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Disable ESLint checks during build
   },
-  webpack: (config: Configuration) => {
+  webpack: (config) => {
     // Add prisma client to externals to resolve an issue during build
     const externals = Array.isArray(config.externals)
       ? config.externals
@@ -18,4 +16,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
