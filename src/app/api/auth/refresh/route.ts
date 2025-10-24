@@ -12,6 +12,8 @@ interface JwtPayload {
   username: string;
 }
 
+export const dynamic = 'force-dynamic'
+
 /**
  * @description API to reissue Access Token
  * @method GET
