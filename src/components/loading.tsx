@@ -4,7 +4,7 @@
  */
 const LoadingDots = () => (
   // کانتینر دایره‌ها با فلکس برای چینش افقی و وسط‌چین
-  <div className="flex justify-center items-center h-24 space-x-2">
+  <div className="flex justify-center items-center h-24 space-x-2" data-testid="loading-dots">
     {/* سه دایره که انیمیشن bounce دارند */}
     {[...Array(3)].map((_, i) => (
       <span
@@ -17,7 +17,7 @@ const LoadingDots = () => (
       />
     ))}
     {/* تعریف keyframes برای انیمیشن bounce */}
-    <style jsx>{`
+    <style>{`
       @keyframes bounce {
         0%, 80%, 100% {
           transform: scale(0);

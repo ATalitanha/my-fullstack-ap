@@ -22,7 +22,7 @@ export function convertValue(category: string, from: string, to: string, value: 
   } else {
     const fromUnit = UNITS.find((u) => u.value === from);
     const toUnit = UNITS.find((u) => u.value === to);
-    if (fromUnit?.factor && toUnit?.factor) {
+    if (fromUnit?.factor && toUnit?.factor && fromUnit?.category === toUnit?.category) {
       res = value * (fromUnit.factor / toUnit.factor);
     }
   }
@@ -33,6 +33,10 @@ export function convertValue(category: string, from: string, to: string, value: 
   // اگر اعشار داره -> تا 6 رقم مهم
   const formatted =
     Number.isInteger(res) ? res.toString() : parseFloat(res.toFixed(6)).toString();
+
+  if (category === "temperature") {
+    return `${formatted} ${to.toUpperCase()}`;
+  }
 
   return `${formatted} ${UNITS.find((u) => u.value === to)?.label ?? ""}`;
 }
