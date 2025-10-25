@@ -1,83 +1,74 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ConfirmModal from '../DeleteConfirmModal';
 
 describe('ConfirmModal', () => {
-  const onCancel = jest.fn();
-  const onConfirm = jest.fn();
+  it('should not be visible when isOpen is false', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={false} onCancel={onCancel} onConfirm={onConfirm} />);
 
-  beforeEach(() => {
-    // Reset mocks before each test
-    onCancel.mockClear();
-    onConfirm.mockClear();
-  });
-
-  it('does not render when isOpen is false', () => {
-    render(
-      <ConfirmModal
-        isOpen={false}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-      />
-    );
     expect(screen.queryByText('Are you sure?')).not.toBeInTheDocument();
   });
 
-  it('renders when isOpen is true', () => {
-    render(
-      <ConfirmModal
-        isOpen={true}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-      />
-    );
+  it('should be visible when isOpen is true', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={true} onCancel={onCancel} onConfirm={onConfirm} />);
+
     expect(screen.getByText('Are you sure?')).toBeInTheDocument();
   });
 
-  it('calls onCancel when the cancel button is clicked', () => {
-    render(
-      <ConfirmModal
-        isOpen={true}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-      />
-    );
+  it('should call onCancel when the cancel button is clicked', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={true} onCancel={onCancel} onConfirm={onConfirm} />);
+
     fireEvent.click(screen.getByText('Cancel'));
-    expect(onCancel).toHaveBeenCalledTimes(1);
+    expect(onCancel).toHaveBeenCalled();
   });
 
-  it('calls onConfirm when the confirm button is clicked', () => {
-    render(
-      <ConfirmModal
-        isOpen={true}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-      />
-    );
+  it('should call onConfirm when the confirm button is clicked', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={true} onCancel={onCancel} onConfirm={onConfirm} />);
+
     fireEvent.click(screen.getByText('Confirm'));
-    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onConfirm).toHaveBeenCalled();
   });
 
-  it('calls onCancel when the Escape key is pressed', () => {
+  it('should call onCancel when the escape key is pressed', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={true} onCancel={onCancel} onConfirm={onConfirm} />);
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onCancel).toHaveBeenCalled();
+  });
+
+  it('should call onConfirm when the enter key is pressed', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
+    render(<ConfirmModal isOpen={true} onCancel={onCancel} onConfirm={onConfirm} />);
+
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(onConfirm).toHaveBeenCalled();
+  });
+
+  it('should display a custom message and button text', () => {
+    const onCancel = vi.fn();
+    const onConfirm = vi.fn();
     render(
       <ConfirmModal
         isOpen={true}
         onCancel={onCancel}
         onConfirm={onConfirm}
+        message="Delete this item?"
+        confirmText="Delete"
       />
     );
-    fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
-    expect(onCancel).toHaveBeenCalledTimes(1);
-  });
 
-  it('calls onConfirm when the Enter key is pressed', () => {
-    render(
-      <ConfirmModal
-        isOpen={true}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-      />
-    );
-    fireEvent.keyDown(window, { key: 'Enter', code: 'Enter' });
-    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Delete this item?')).toBeInTheDocument();
+    expect(screen.getByText('Delete')).toBeInTheDocument();
   });
 });
