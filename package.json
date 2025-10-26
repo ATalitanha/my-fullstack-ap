@@ -8,7 +8,7 @@
     "start": "next start",
     "format": "pnpm biome format --write ./src",
     "lint": "pnpm biome lint --apply-unsafe ./src",
-    "test": "vitest",
+    "test": "prisma generate && vitest",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
