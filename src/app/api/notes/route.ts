@@ -4,8 +4,6 @@ import { z } from "zod";
 import prisma from "@/shared/lib/prisma";
 import { decryptText, encryptText } from "@/shared/lib/crypto";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 interface JwtPayload {
   id: string;
 }
@@ -19,6 +17,7 @@ function getUserIdFromToken(req: NextRequest): string | null {
   const token = req.headers.get("authorization")?.split(" ")[1];
   if (!token) return null;
   try {
+    const JWT_SECRET = process.env.JWT_SECRET!;
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return payload.id;
   } catch (error) {
@@ -32,9 +31,9 @@ function getUserIdFromToken(req: NextRequest): string | null {
  * @method GET
  * @header Authorization: Bearer <token>
  */
-export async function GET(req: NextRequest, { getUserIdFromToken: getUserId = getUserIdFromToken } = {}) {
+export async function GET(req: NextRequest) {
   try {
-    const userId = getUserId(req);
+    const userId = getUserIdFromToken(req);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
@@ -72,9 +71,9 @@ const createNoteSchema = z.object({
  * @header Authorization: Bearer <token>
  * @input { title: string, content: string }
  */
-export async function POST(req: NextRequest, { getUserIdFromToken: getUserId = getUserIdFromToken } = {}) {
+export async function POST(req: NextRequest) {
   try {
-    const userId = getUserId(req);
+    const userId = getUserIdFromToken(req);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }

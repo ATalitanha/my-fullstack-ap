@@ -26,18 +26,6 @@ const JWT_SECRET = 'test-secret';
 process.env.JWT_SECRET = JWT_SECRET;
 const USER_ID = 'test-user-id';
 
-// Test-specific token verification
-function getUserIdFromToken(req: NextRequest): string | null {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-    if (!token) return null;
-    try {
-      const payload = jwt.verify(token, JWT_SECRET) as { id: string };
-      return payload.id;
-    } catch (error) {
-      return null;
-    }
-  }
-
 function createMockRequest(
   method: 'GET' | 'POST',
   body?: unknown,
@@ -79,7 +67,7 @@ describe('Notes API', () => {
       (prisma.note.findMany as vi.Mock).mockResolvedValue(mockNotes);
 
       const req = createMockRequest('GET', null, token);
-      const res = await GET(req, { getUserIdFromToken });
+      const res = await GET(req);
       const data = await res.json();
 
       expect(res.status).toBe(200);
@@ -99,7 +87,7 @@ describe('Notes API', () => {
     it('should return 400 for invalid input', async () => {
         const token = jwt.sign({ id: USER_ID }, JWT_SECRET);
         const req = createMockRequest('POST', { title: '' }, token);
-        const res = await POST(req, { getUserIdFromToken });
+        const res = await POST(req);
         expect(res.status).toBe(400);
     });
 
@@ -119,7 +107,7 @@ describe('Notes API', () => {
         (prisma.note.create as vi.Mock).mockResolvedValue(createdNote);
 
         const req = createMockRequest('POST', noteData, token);
-        const res = await POST(req, { getUserIdFromToken });
+        const res = await POST(req);
         const data = await res.json();
 
         expect(res.status).toBe(201);
