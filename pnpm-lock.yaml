@@ -17,6 +17,9 @@ importers:
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.0)
+      '@next/font':
+        specifier: ^14.2.15
+        version: 14.2.15(next@16.0.0(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@prisma/client':
         specifier: ^6.16.3
         version: 6.18.0(prisma@6.18.0(typescript@5.9.3))(typescript@5.9.3)
@@ -50,9 +53,6 @@ importers:
       mathjs:
         specifier: ^14.6.0
         version: 14.9.1
-      mathsteps:
-        specifier: ^0.2.0
-        version: 0.2.0
       nerdamer:
         specifier: ^1.1.13
         version: 1.1.13
@@ -683,6 +683,11 @@ packages:
 
   '@next/env@16.0.0':
     resolution: {integrity: sha512-s5j2iFGp38QsG1LWRQaE2iUY3h1jc014/melHFfLdrsMJPqxqDQwWNwyQTcNoUSGZlCVZuM7t7JDMmSyRilsnA==}
+
+  '@next/font@14.2.15':
+    resolution: {integrity: sha512-QopYhBmCDDrNDynbi+ZD1hDZXmQXVFo7TmAFp4DQgO/kogz1OLbQ92hPigJbj572eZ3GaaVxNIyYVn3/eAsehg==}
+    peerDependencies:
+      next: '*'
 
   '@next/swc-darwin-arm64@16.0.0':
     resolution: {integrity: sha512-/CntqDCnk5w2qIwMiF0a9r6+9qunZzFmU0cBX4T82LOflE72zzH6gnOjCwUXYKOBlQi8OpP/rMj8cBIr18x4TA==}
@@ -2452,9 +2457,6 @@ packages:
   commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
 
-  complex.js@2.0.1:
-    resolution: {integrity: sha512-zu2kFxCi8x66budGAEfHcLk0+dcT4EdtiwJ9oIFrvDq8ARJ4T4F3hC0qXc5tn+FzIOYaEOZfO6ew6t6wmGfwpg==}
-
   complex.js@2.4.2:
     resolution: {integrity: sha512-qtx7HRhPGSCBtGiST4/WGHuW+zeaND/6Ld+db6PbrulIB1i2Ev/2UPiqcmpQNPSyfBKraC0EOvOKCB5dGZKt3g==}
 
@@ -2504,9 +2506,6 @@ packages:
 
   decimal.js@10.6.0:
     resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
-
-  decimal.js@7.1.1:
-    resolution: {integrity: sha512-JAYTBScouq/tbesTv17VT4/Zf4kOguK6LRp9lK8IasQpzC1u4X5z+fNIasI3Le+kBXpo83hyTp6asVgTHIDlGw==}
 
   deepmerge-ts@7.1.5:
     resolution: {integrity: sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==}
@@ -2647,9 +2646,6 @@ packages:
 
   forwarded-parse@2.1.2:
     resolution: {integrity: sha512-alTFZZQDKMporBH77856pXgzhEzaUVmLCDk+egLgIgHst3Tpndzz8MnKe+GzRJRfvVdn69HhpW7cmXzvtLvJAw==}
-
-  fraction.js@4.0.0:
-    resolution: {integrity: sha512-VFj4e6g5arfi1iH4YOHao6Aq8ZB9e+R4mW8dUZA0qeLqVQWKMc4+4N/U1eTWPuddMsXd0MjwGRFRzBW2G7msBA==}
 
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
@@ -2960,15 +2956,6 @@ packages:
     resolution: {integrity: sha512-xhqv8Xjf+caWG3WlaPekg4v8QFOR3D5+8ycfcjMcPcnCNDgAONQLaLfyGgrggJrcHx2yUGCpACRpiD4GmXwX+Q==}
     engines: {node: '>= 18'}
     hasBin: true
-
-  mathjs@3.11.2:
-    resolution: {integrity: sha512-usttjbeFeA+ubBzc8KIIzDQyAbnBAXvQ9ZPZc7LYLZ1Blji7FaKdW+ATnSO5HIuCdybbII6zsGnen68FT026Gw==}
-    engines: {node: '>= 0.1'}
-    hasBin: true
-
-  mathsteps@0.2.0:
-    resolution: {integrity: sha512-x/BBVJ7n+RsUj4EOcKuCBCvrQWWvP8i6v5x8nr73qYU8yph6LZWT1ELPKnnUDEEqxe6lrncQB7HacknStMJJ5g==}
-    engines: {node: '>=6.0.0'}
 
   mdn-data@2.12.2:
     resolution: {integrity: sha512-IEn+pegP1aManZuckezWCO+XZQDplx1366JoVhTpMpBB1sPey/SbveZQUosKiKiGYjg1wH4pMlNgXbCiYgihQA==}
@@ -3372,9 +3359,6 @@ packages:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
 
-  seed-random@2.2.0:
-    resolution: {integrity: sha512-34EQV6AAHQGhoc0tn/96a9Fsi6v2xdqe/dMUwljGRaFOzR3EgRmECvD0O8vi8X+/uQ50LGHfkNu/Eue5TPKZkQ==}
-
   seedrandom@3.0.5:
     resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
 
@@ -3505,9 +3489,6 @@ packages:
   three@0.180.0:
     resolution: {integrity: sha512-o+qycAMZrh+TsE01GqWUxUIKR1AL0S8pq7zDkYOQw8GqfX8b8VoCKYUoHbhiX5j+7hr8XsuHDVU6+gkQJQKg9w==}
 
-  tiny-emitter@1.0.2:
-    resolution: {integrity: sha512-y87VH5ncX+MzK2rqEF6v7Ad8gOdQDV1jiFT5bXUrWGBTFN9EFLrvufpWryNipgFDCzQ4fTOTPUCZGLYoQ2D9UA==}
-
   tiny-emitter@2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
 
@@ -3574,10 +3555,6 @@ packages:
   type-fest@0.7.1:
     resolution: {integrity: sha512-Ne2YiiGN8bmrmJJEuTWTLJR32nh/JdL1+PSicowtNb0WFpn59GK8/lfD61bVtzguz7b3PBt74nxpv/Pw5po5Rg==}
     engines: {node: '>=8'}
-
-  typed-function@0.10.5:
-    resolution: {integrity: sha512-5BI8zKF/aZhsXJJKcRvcOuDCzBVY4R08Ok8ilRWHpQ5Np+LwzWeGzaIUNUw++d19Vvv8iqzvaN9/h5WDdY8cmg==}
-    engines: {node: '>= 0.10'}
 
   typed-function@4.2.1:
     resolution: {integrity: sha512-EGjWssW7Tsk4DGfE+5yluuljS1OGYWiI1J6e8puZz9nTMM51Oug8CD5Zo4gWMsOhq5BI+1bF+rWTm4Vbj3ivRA==}
@@ -4251,6 +4228,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@next/env@16.0.0': {}
+
+  '@next/font@14.2.15(next@16.0.0(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+    dependencies:
+      next: 16.0.0(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   '@next/swc-darwin-arm64@16.0.0':
     optional: true
@@ -6178,8 +6159,6 @@ snapshots:
 
   commondir@1.0.1: {}
 
-  complex.js@2.0.1: {}
-
   complex.js@2.4.2: {}
 
   confbox@0.2.2: {}
@@ -6219,8 +6198,6 @@ snapshots:
       ms: 2.1.3
 
   decimal.js@10.6.0: {}
-
-  decimal.js@7.1.1: {}
 
   deepmerge-ts@7.1.5: {}
 
@@ -6348,8 +6325,6 @@ snapshots:
   flatted@3.3.3: {}
 
   forwarded-parse@2.1.2: {}
-
-  fraction.js@4.0.0: {}
 
   fraction.js@5.3.4: {}
 
@@ -6651,19 +6626,6 @@ snapshots:
       seedrandom: 3.0.5
       tiny-emitter: 2.1.0
       typed-function: 4.2.1
-
-  mathjs@3.11.2:
-    dependencies:
-      complex.js: 2.0.1
-      decimal.js: 7.1.1
-      fraction.js: 4.0.0
-      seed-random: 2.2.0
-      tiny-emitter: 1.0.2
-      typed-function: 0.10.5
-
-  mathsteps@0.2.0:
-    dependencies:
-      mathjs: 3.11.2
 
   mdn-data@2.12.2: {}
 
@@ -7090,8 +7052,6 @@ snapshots:
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
 
-  seed-random@2.2.0: {}
-
   seedrandom@3.0.5: {}
 
   semver@6.3.1: {}
@@ -7219,8 +7179,6 @@ snapshots:
 
   three@0.180.0: {}
 
-  tiny-emitter@1.0.2: {}
-
   tiny-emitter@2.1.0: {}
 
   tinybench@2.9.0: {}
@@ -7279,8 +7237,6 @@ snapshots:
   tslib@2.8.1: {}
 
   type-fest@0.7.1: {}
-
-  typed-function@0.10.5: {}
 
   typed-function@4.2.1: {}
 

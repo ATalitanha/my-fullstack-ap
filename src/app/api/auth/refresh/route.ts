@@ -41,12 +41,9 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: "User not found" }, { status: 401 });
 		}
 
-		// Decrypt username for the new token
-		const decryptedUsername = decryptText(user.username);
-
 		// Generate new access token
 		const newAccessToken = jwt.sign(
-			{ id: user.id, username: decryptedUsername },
+			{ id: user.id, username: payload.username },
 			JWT_SECRET,
 			{ expiresIn: ACCESS_TOKEN_EXPIRY },
 		);

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import theme from "@/lib/theme";
-import "@fontsource/major-mono-display";
+import { Major_Mono_Display } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/next";
+
+const majorMonoDisplay = Major_Mono_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {
@@ -34,7 +39,7 @@ export default function RootLayout({
 		>
 			<body
 				className={`antialiased
-          ${theme}`}
+          ${theme} ${majorMonoDisplay.className}`}
 			>
 				{children}
 				<Analytics />

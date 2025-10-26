@@ -10,9 +10,8 @@ describe("useClientOnly", () => {
 		expect(result.current).toBe(false);
 
 		// After the component mounts, useEffect should run and set the state to true
-		await act(async () => {
+		act(() => {
 			// Wait for the next tick of the event loop
-			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		expect(result.current).toBe(true);
