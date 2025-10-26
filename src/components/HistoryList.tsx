@@ -10,9 +10,9 @@ import { HistoryItem } from "@/hooks/useCalculatorHistory";
  * @property {() => void} onClear - Function to call when the clear history button is clicked.
  */
 interface Props {
-  history: HistoryItem[];
-  loading: boolean;
-  onClear: () => void; // فقط برای باز کردن دیالوگ، حذف مستقیم انجام نمیشه
+	history: HistoryItem[];
+	loading: boolean;
+	onClear: () => void; // فقط برای باز کردن دیالوگ، حذف مستقیم انجام نمیشه
 }
 
 /**
@@ -21,19 +21,19 @@ interface Props {
  * @returns {JSX.Element} The history list component.
  */
 const HistoryList = ({ history, loading, onClear }: Props) => {
-  // ref برای اسکرول اتوماتیک به پایین لیست
-  const scrollRef = useRef<HTMLDivElement>(null);
+	// ref برای اسکرول اتوماتیک به پایین لیست
+	const scrollRef = useRef<HTMLDivElement>(null);
 
-  // When the history changes, scroll to the bottom of the list.
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [history]);
+	// When the history changes, scroll to the bottom of the list.
+	useEffect(() => {
+		if (scrollRef.current) {
+			scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+		}
+	}, [history]);
 
-  return (
-    <div
-      className="
+	return (
+		<div
+			className="
         rounded-xl
         bg-white/10 dark:bg-black/30
         backdrop-blur-lg
@@ -45,26 +45,26 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         max-h-60
         flex flex-col
       "
-    >
-      {/* هدر تاریخچه و دکمه پاک‌کردن */}
-      <div className="flex justify-between mb-3 items-center">
-        <span className="font-black text-black dark:text-gray-300 text-lg">
-          تاریخچه
-        </span>
-        <button
-          onClick={onClear}
-          className="font-black text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-3 py-1 rounded-lg transition-colors shadow-md"
-          aria-label="پاک‌کردن تاریخچه"
-          type="button"
-        >
-          پاک‌کردن تاریخچه
-        </button>
-      </div>
+		>
+			{/* هدر تاریخچه و دکمه پاک‌کردن */}
+			<div className="flex justify-between mb-3 items-center">
+				<span className="font-black text-black dark:text-gray-300 text-lg">
+					تاریخچه
+				</span>
+				<button
+					onClick={onClear}
+					className="font-black text-red-500 dark:text-red-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs px-3 py-1 rounded-lg transition-colors shadow-md"
+					aria-label="پاک‌کردن تاریخچه"
+					type="button"
+				>
+					پاک‌کردن تاریخچه
+				</button>
+			</div>
 
-      {/* کانتینر لیست تاریخچه */}
-      <div
-        ref={scrollRef}
-        className="
+			{/* کانتینر لیست تاریخچه */}
+			<div
+				ref={scrollRef}
+				className="
           flex-1
           overflow-y-auto
           pr-3
@@ -73,43 +73,43 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
           hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
           transition-all
         "
-        style={{ scrollbarGutter: "stable" }}
-      >
-        {/* حالت لودینگ */}
-        {loading ? (
-          <div className="flex justify-center items-center h-28">
-            <LoadingDots />
-          </div>
-        ) : history.length === 0 ? (
-          // حالت خالی بودن تاریخچه
-          <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-10 w-10 mb-2 opacity-50"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12h6m-3-3v6m-6 3h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"
-              />
-            </svg>
-            هیچ تاریخی وجود ندارد.
-          </div>
-        ) : (
-          // نمایش آیتم‌های تاریخچه با انیمیشن ورود و خروج
-          <AnimatePresence>
-            {history.map((item) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="
+				style={{ scrollbarGutter: "stable" }}
+			>
+				{/* حالت لودینگ */}
+				{loading ? (
+					<div className="flex justify-center items-center h-28">
+						<LoadingDots />
+					</div>
+				) : history.length === 0 ? (
+					// حالت خالی بودن تاریخچه
+					<div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-10 w-10 mb-2 opacity-50"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth={1.5}
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M9 12h6m-3-3v6m-6 3h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"
+							/>
+						</svg>
+						هیچ تاریخی وجود ندارد.
+					</div>
+				) : (
+					// نمایش آیتم‌های تاریخچه با انیمیشن ورود و خروج
+					<AnimatePresence>
+						{history.map((item) => (
+							<motion.div
+								key={item.id}
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -10 }}
+								transition={{ duration: 0.3 }}
+								className="
                   border-b border-white/20 py-3 last:border-none
                   text-black dark:text-gray-300
                   hover:bg-white/20 dark:hover:bg-white/30
@@ -120,16 +120,16 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
                   select-text
                   font-mono
                 "
-                title={`${item.expression} = ${item.result}`} // نمایش مقدار کامل روی hover
-              >
-                {`${item.expression} = ${item.result}`}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        )}
-      </div>
-    </div>
-  );
+								title={`${item.expression} = ${item.result}`} // نمایش مقدار کامل روی hover
+							>
+								{`${item.expression} = ${item.result}`}
+							</motion.div>
+						))}
+					</AnimatePresence>
+				)}
+			</div>
+		</div>
+	);
 };
 
 export default HistoryList;

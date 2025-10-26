@@ -6,22 +6,22 @@ import prisma from "@/shared/lib/prisma";
  * متد: GET
  */
 export async function GET() {
-  try {
-    // دریافت همه محاسبات از دیتابیس مرتب‌شده بر اساس تاریخ ایجاد (جدیدترین اول)
-    const history = await prisma.calculation.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+	try {
+		// دریافت همه محاسبات از دیتابیس مرتب‌شده بر اساس تاریخ ایجاد (جدیدترین اول)
+		const history = await prisma.calculation.findMany({
+			orderBy: { createdAt: "desc" },
+		});
 
-    return NextResponse.json(history, { status: 200 });
-  } catch (error) {
-    // ثبت لاگ خطا در سرور
-    console.error("خطا در دریافت تاریخچه محاسبات:", error);
+		return NextResponse.json(history, { status: 200 });
+	} catch (error) {
+		// ثبت لاگ خطا در سرور
+		console.error("خطا در دریافت تاریخچه محاسبات:", error);
 
-    return NextResponse.json(
-      { error: "خطای داخلی سرور در دریافت تاریخچه محاسبات" },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(
+			{ error: "خطای داخلی سرور در دریافت تاریخچه محاسبات" },
+			{ status: 500 },
+		);
+	}
 }
 
 /**
@@ -30,37 +30,34 @@ export async function GET() {
  * ورودی: { expression: string, result: number }
  */
 export async function POST(req: NextRequest) {
-  try {
-    // دریافت داده‌ها از درخواست
-    const body = await req.json();
-    const { expression, result } = body;
+	try {
+		// دریافت داده‌ها از درخواست
+		const body = await req.json();
+		const { expression, result } = body;
 
-    // بررسی صحت ورودی‌ها
-    if (!expression || result === undefined) {
-      return NextResponse.json(
-        { success: false, error: "فیلدهای expression و result الزامی هستند" },
-        { status: 400 }
-      );
-    }
+		// بررسی صحت ورودی‌ها
+		if (!expression || result === undefined) {
+			return NextResponse.json(
+				{ success: false, error: "فیلدهای expression و result الزامی هستند" },
+				{ status: 400 },
+			);
+		}
 
-    // ذخیره محاسبه جدید در دیتابیس
-    const created = await prisma.calculation.create({
-      data: { expression, result },
-    });
+		// ذخیره محاسبه جدید در دیتابیس
+		const created = await prisma.calculation.create({
+			data: { expression, result },
+		});
 
-    return NextResponse.json(
-      { success: true, data: created },
-      { status: 201 }
-    );
-  } catch (error) {
-    // ثبت لاگ خطا در سرور
-    console.error("خطا در ایجاد محاسبه:", error);
+		return NextResponse.json({ success: true, data: created }, { status: 201 });
+	} catch (error) {
+		// ثبت لاگ خطا در سرور
+		console.error("خطا در ایجاد محاسبه:", error);
 
-    return NextResponse.json(
-      { success: false, error: "خطای داخلی سرور در ایجاد محاسبه" },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(
+			{ success: false, error: "خطای داخلی سرور در ایجاد محاسبه" },
+			{ status: 500 },
+		);
+	}
 }
 
 /**
@@ -68,21 +65,21 @@ export async function POST(req: NextRequest) {
  * متد: DELETE
  */
 export async function DELETE() {
-  try {
-    // حذف همه رکوردهای محاسبات
-    await prisma.calculation.deleteMany();
+	try {
+		// حذف همه رکوردهای محاسبات
+		await prisma.calculation.deleteMany();
 
-    return NextResponse.json(
-      { success: true, message: "تمام محاسبات حذف شدند" },
-      { status: 200 }
-    );
-  } catch (error) {
-    // ثبت لاگ خطا در سرور
-    console.error("خطا در حذف محاسبات:", error);
+		return NextResponse.json(
+			{ success: true, message: "تمام محاسبات حذف شدند" },
+			{ status: 200 },
+		);
+	} catch (error) {
+		// ثبت لاگ خطا در سرور
+		console.error("خطا در حذف محاسبات:", error);
 
-    return NextResponse.json(
-      { success: false, error: "خطای داخلی سرور در حذف محاسبات" },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(
+			{ success: false, error: "خطای داخلی سرور در حذف محاسبات" },
+			{ status: 500 },
+		);
+	}
 }

@@ -39,4 +39,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-my-fullstack-ap
+# environment variables
+.env.local

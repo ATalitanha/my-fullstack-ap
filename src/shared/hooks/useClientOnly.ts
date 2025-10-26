@@ -3,14 +3,14 @@
  * This is useful for components that rely on browser-specific APIs,
  * preventing server-side rendering mismatches.
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useClientOnly() {
-  const [isClient, setIsClient] = useState(false);
+	const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
-  return isClient;
+	return isClient;
 }
