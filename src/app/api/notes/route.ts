@@ -4,8 +4,6 @@ import { z } from "zod";
 import prisma from "@/shared/lib/prisma";
 import { decryptText, encryptText } from "@/shared/lib/crypto";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 interface JwtPayload {
   id: string;
 }
@@ -19,6 +17,7 @@ function getUserIdFromToken(req: NextRequest): string | null {
   const token = req.headers.get("authorization")?.split(" ")[1];
   if (!token) return null;
   try {
+    const JWT_SECRET = process.env.JWT_SECRET!;
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return payload.id;
   } catch (error) {

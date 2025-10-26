@@ -6,8 +6,6 @@
 import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 interface JwtPayload {
   id: string;
 }
@@ -17,6 +15,7 @@ export function getUserIdFromToken(req: NextRequest): string | null {
   if (!token) return null;
 
   try {
+    const JWT_SECRET = process.env.JWT_SECRET!;
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return payload.id;
   } catch {
