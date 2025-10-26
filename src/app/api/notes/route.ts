@@ -32,9 +32,9 @@ function getUserIdFromToken(req: NextRequest): string | null {
  * @method GET
  * @header Authorization: Bearer <token>
  */
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { getUserIdFromToken: getUserId = getUserIdFromToken } = {}) {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = getUserId(req);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
@@ -72,9 +72,9 @@ const createNoteSchema = z.object({
  * @header Authorization: Bearer <token>
  * @input { title: string, content: string }
  */
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, { getUserIdFromToken: getUserId = getUserIdFromToken } = {}) {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = getUserId(req);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
