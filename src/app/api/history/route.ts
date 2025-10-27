@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/shared/lib/prisma";
+import { verifyJwt } from "@/shared/lib/jwt";
 
 /**
  * API برای دریافت تاریخچه‌ی محاسبات
  * متد: GET
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		// دریافت همه محاسبات از دیتابیس مرتب‌شده بر اساس تاریخ ایجاد (جدیدترین اول)
 		const history = await prisma.calculation.findMany({
@@ -30,6 +36,11 @@ export async function GET() {
  * ورودی: { expression: string, result: number }
  */
 export async function POST(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		// دریافت داده‌ها از درخواست
 		const body = await req.json();
@@ -64,7 +75,12 @@ export async function POST(req: NextRequest) {
  * API برای حذف تمام تاریخچه محاسبات
  * متد: DELETE
  */
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		// حذف همه رکوردهای محاسبات
 		await prisma.calculation.deleteMany();

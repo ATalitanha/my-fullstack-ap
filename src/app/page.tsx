@@ -27,54 +27,54 @@ export default function HomePage() {
 	const links = [
 		{
 			href: "/cal",
-			label: "ماشین حساب",
+			label: "Calculator",
 			color: "from-blue-500 to-blue-700",
 			icon: "🧮",
-			category: "ابزارها",
+			category: "Tools",
 			popular: true,
 		},
 		{
 			href: "/messenger",
-			label: "انتقال متن",
+			label: "Text Transfer",
 			color: "from-teal-500 to-teal-700",
 			icon: "💬",
-			category: "ارتباطات",
+			category: "Communication",
 		},
 		{
 			href: "/todo",
-			label: "لیست کارها",
+			label: "To-Do List",
 			color: "from-amber-500 to-orange-600",
 			icon: "✅",
-			category: "بهره وری",
+			category: "Productivity",
 			popular: true,
 		},
 		{
 			href: "/notes",
-			label: "یادداشت ها",
+			label: "Notes",
 			color: "from-purple-500 to-indigo-600",
 			icon: "📝",
-			category: "بهره وری",
+			category: "Productivity",
 		},
 		{
 			href: "/dashboard",
-			label: "حساب کاربری",
+			label: "User Account",
 			color: "from-pink-500 to-rose-600",
 			icon: "👤",
-			category: "حساب",
+			category: "Account",
 		},
 		{
 			href: "/login",
-			label: "ورود / ثبت نام",
+			label: "Login / Sign Up",
 			color: "from-sky-500 to-cyan-600",
 			icon: "🔐",
-			category: "حساب",
+			category: "Account",
 		},
 		{
 			href: "/Prices-table",
-			label: "قیمت لحظه ای طلا و ارز",
+			label: "Live Gold and Currency Prices",
 			color: "from-green-500 to-emerald-600",
 			icon: "📊",
-			category: "مالی",
+			category: "Financial",
 			new: true,
 		},
 	];
@@ -108,7 +108,7 @@ export default function HomePage() {
 						className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
 					>
 						<Sparkles size={18} />
-						تغییرات نسخه
+						Changelog
 					</button>
 				</m.div>
 				<div className="absolute inset-0 overflow-hidden">
@@ -126,18 +126,17 @@ export default function HomePage() {
 						className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
 					>
 						<Sparkles size={16} />
-						<span>مجموعه ای از بهترین ابزارها</span>
+						<span>A collection of the best tools</span>
 					</m.div>
 					<h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-						به{" "}
+						Welcome to{" "}
 						<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
 							TanhaApp
 						</span>{" "}
-						خوش آمدید
 					</h1>
 					<p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-						مجموعه ای کامل از ابزارهای کاربردی و هوشمند برای بهبود بهره وری
-						روزانه شما ✨
+						A complete collection of practical and intelligent tools to
+						improve your daily productivity ✨
 					</p>
 				</m.div>
 				<m.div
@@ -152,7 +151,7 @@ export default function HomePage() {
 					/>
 					<input
 						type="text"
-						placeholder="جستجوی ابزارها..."
+						placeholder="Search for tools..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 						className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
@@ -168,7 +167,7 @@ export default function HomePage() {
 						onClick={() => setSearchTerm("")}
 						className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${searchTerm === "" ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25" : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"}`}
 					>
-						همه
+						All
 					</button>
 					{categories.map((category) => (
 						<button
@@ -207,7 +206,7 @@ export default function HomePage() {
 									<div className="absolute -top-2 -right-2 z-20">
 										<div className="flex items-center gap-1 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
 											<TrendingUp size={12} />
-											<span>محبوب</span>
+											<span>Popular</span>
 										</div>
 									</div>
 								)}
@@ -215,7 +214,7 @@ export default function HomePage() {
 									<div className="absolute -top-2 -right-2 z-20">
 										<div className="flex items-center gap-1 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
 											<Zap size={12} />
-											<span>جدید</span>
+											<span>New</span>
 										</div>
 									</div>
 								)}
@@ -251,10 +250,10 @@ export default function HomePage() {
 					>
 						<div className="text-6xl mb-4">🔍</div>
 						<h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
-							نتیجه ای یافت نشد
+							No results found
 						</h3>
 						<p className="text-gray-500 dark:text-gray-500">
-							هیچ ابزاری با &quot;{searchTerm}&quot; مطابقت ندارد
+							No tools match &quot;{searchTerm}&quot;
 						</p>
 					</m.div>
 				)}

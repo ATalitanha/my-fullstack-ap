@@ -41,41 +41,40 @@ vi.mock("@/components/change-log", () => ({
 describe("HomePage", () => {
 	it("should render the component", () => {
 		render(<HomePage />);
-		expect(
-			screen.getByText((content, element) => {
-				return (
-					element.tagName.toLowerCase() === "h1" && content.startsWith("به")
-				);
-			}),
-		).toBeInTheDocument();
+		const headingElement = screen.getByRole("heading", {
+			level: 1,
+			name: /welcome to TanhaApp/i,
+		});
+		expect(headingElement).toBeInTheDocument();
+		expect(headingElement.textContent).toContain("Welcome to TanhaApp");
 	});
 
 	it("should filter links by search term", async () => {
 		render(<HomePage />);
-		const searchInput = screen.getByPlaceholderText("جستجوی ابزارها...");
+		const searchInput = screen.getByPlaceholderText("Search for tools...");
 		await act(async () => {
-			fireEvent.change(searchInput, { target: { value: "ماشین حساب" } });
+			fireEvent.change(searchInput, { target: { value: "Calculator" } });
 		});
-		expect(screen.getByText("ماشین حساب")).toBeInTheDocument();
+		expect(screen.getByText("Calculator")).toBeInTheDocument();
 		await vi.waitFor(() => {
-			expect(screen.queryByText("انتقال متن")).not.toBeInTheDocument();
+			expect(screen.queryByText("Text Transfer")).not.toBeInTheDocument();
 		});
 	});
 
 	it("should filter links by category", async () => {
 		render(<HomePage />);
 		await act(async () => {
-			fireEvent.click(screen.getByRole("button", { name: "ارتباطات" }));
+			fireEvent.click(screen.getByRole("button", { name: "Communication" }));
 		});
-		expect(screen.getByText("انتقال متن")).toBeInTheDocument();
+		expect(screen.getByText("Text Transfer")).toBeInTheDocument();
 		await vi.waitFor(() => {
-			expect(screen.queryByText("ماشین حساب")).not.toBeInTheDocument();
+			expect(screen.queryByText("Calculator")).not.toBeInTheDocument();
 		});
 	});
 
 	it("should open and close the changelog modal", async () => {
 		render(<HomePage />);
-		fireEvent.click(screen.getByText("تغییرات نسخه"));
+		fireEvent.click(screen.getByText("Changelog"));
 
 		const modal = await screen.findByTestId("changelog-modal");
 		expect(modal).toBeInTheDocument();

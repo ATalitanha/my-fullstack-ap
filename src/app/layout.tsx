@@ -30,8 +30,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html
-			lang="fa"
-			dir="rtl"
+			lang="en"
 			className="scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70
         scrollbar-thumb-rounded scrollbar-track-gray-100 dark:scrollbar-track-transparent 
         hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80

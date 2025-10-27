@@ -1,13 +1,19 @@
 import prisma from "@/shared/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { errorResponse } from "@/lib/error";
+import { verifyJwt } from "@/shared/lib/jwt";
 
 /**
  * 📌 API: دریافت تمام پیام‌ها
  * متد: GET
  * خروجی: لیست تمام پیام‌ها
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		const messages = await prisma.message.findMany();
 		return NextResponse.json(messages, { status: 200 });
@@ -23,7 +29,12 @@ export async function GET() {
  * ورودی: بدنه‌ی درخواست به صورت JSON
  * خروجی: پیام ذخیره‌شده همراه با متن موفقیت
  */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		const bodyText = await req.text();
 		const data = JSON.parse(bodyText);
@@ -48,7 +59,12 @@ export async function POST(req: Request) {
  *   - { id: number } → حذف پیام مشخص‌شده با id
  * خروجی: پیام موفقیت یا خطای مناسب
  */
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
+	const user = verifyJwt(req);
+	if (!user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
 	try {
 		const bodyText = await req.text();
 		const data = JSON.parse(bodyText);
