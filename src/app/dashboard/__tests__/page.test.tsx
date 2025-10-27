@@ -18,16 +18,8 @@ vi.mock("lucide-react", () => ({
 	ArrowLeft: () => <div data-testid="arrow-left-icon" />,
 	Sun: () => <div data-testid="sun-icon" />,
 	Moon: () => <div data-testid="moon-icon" />,
-}));
-
-vi.mock("framer-motion", () => ({
-	motion: {
-		div: ({ children, ...props }) => <div {...props}>{children}</div>,
-		button: ({ children, ...props }) => <button {...props}>{children}</button>,
-		a: ({ children, ...props }) => <a {...props}>{children}</a>,
-		h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
-	},
-	AnimatePresence: ({ children }) => <>{children}</>,
+	ChevronLeft: () => <div data-testid="chevron-left-icon" />,
+	Bell: () => <div data-testid="bell-icon" />,
 }));
 
 Object.defineProperty(window, "matchMedia", {
@@ -61,12 +53,12 @@ describe("DashboardPage", () => {
 		});
 
 		render(<DashboardPage />);
-		expect(screen.getByText("Loading...")).toBeInTheDocument();
+		expect(screen.getByText("در حال بارگذاری...")).toBeInTheDocument();
 
 		const usernameElement = await screen.findByText("testuser");
 		expect(usernameElement).toBeInTheDocument();
 
-		expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+		expect(screen.queryByText("در حال بارگذاری...")).not.toBeInTheDocument();
 	});
 
 	it("should redirect to the login page if not authenticated", async () => {
@@ -97,7 +89,7 @@ describe("DashboardPage", () => {
 
 		await screen.findByText("testuser");
 
-		fireEvent.click(screen.getByRole("button", { name: /Logout/i }));
+		fireEvent.click(screen.getByRole("button", { name: /خروج از حساب/i }));
 
 		await waitFor(() => {
 			expect(mockPush).toHaveBeenCalledWith("/login");

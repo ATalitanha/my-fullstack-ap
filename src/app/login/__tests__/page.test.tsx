@@ -46,7 +46,7 @@ describe("LoginPage", () => {
 
 	it("should render the component", () => {
 		render(<LoginPage />);
-		expect(screen.getByText("Login to your account")).toBeInTheDocument();
+		expect(screen.getByText("ورود به حساب کاربری")).toBeInTheDocument();
 	});
 
 	it("should submit the form and redirect on successful login", async () => {
@@ -61,10 +61,10 @@ describe("LoginPage", () => {
 			fireEvent.change(screen.getByPlaceholderText("example@email.com"), {
 				target: { value: "test@example.com" },
 			});
-			fireEvent.change(screen.getByPlaceholderText("Enter your password"), {
+			fireEvent.change(screen.getByPlaceholderText("رمز عبور خود را وارد کنید"), {
 				target: { value: "password" },
 			});
-			fireEvent.submit(screen.getByRole("button", { name: /Login/i }));
+			fireEvent.submit(screen.getByRole("button", { name: /ورود/i }));
 		});
 
 		expect(mockFetch).toHaveBeenCalledWith("/api/auth/login", {
@@ -84,7 +84,7 @@ describe("LoginPage", () => {
 		render(<LoginPage />);
 
 		await act(async () => {
-			fireEvent.submit(screen.getByRole("button", { name: /Login/i }));
+			fireEvent.submit(screen.getByRole("button", { name: /ورود/i }));
 		});
 
 		expect(screen.getByText("Invalid credentials")).toBeInTheDocument();

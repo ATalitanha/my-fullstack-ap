@@ -6,11 +6,16 @@ vi.mock("next/link", () => ({
 	default: ({ children, href }) => <a href={href}>{children}</a>,
 }));
 
+// Update the mock to include all icons used in the component
 vi.mock("lucide-react", () => ({
 	Search: () => <div data-testid="search-icon" />,
-	Sparkles: () => <div data-testid="sparkles-icon" />,
-	Zap: () => <div data-testid="zap-icon" />,
-	TrendingUp: () => <div data-testid="trending-up-icon" />,
+	Calculator: () => <div data-testid="calculator-icon" />,
+	MessageSquare: () => <div data-testid="message-square-icon" />,
+	ListTodo: () => <div data-testid="list-todo-icon" />,
+	StickyNote: () => <div data-testid="sticky-note-icon" />,
+	User: () => <div data-testid="user-icon" />,
+	LogIn: () => <div data-testid="log-in-icon" />,
+	BarChart: () => <div data-testid="bar-chart-icon" />,
 	Sun: () => <div data-testid="sun-icon" />,
 	Moon: () => <div data-testid="moon-icon" />,
 }));
@@ -21,67 +26,33 @@ Object.defineProperty(window, "matchMedia", {
 		matches: false,
 		media: query,
 		onchange: null,
-		addListener: vi.fn(), // deprecated
-		removeListener: vi.fn(), // deprecated
+		addListener: vi.fn(),
+		removeListener: vi.fn(),
 		addEventListener: vi.fn(),
 		removeEventListener: vi.fn(),
 		dispatchEvent: vi.fn(),
 	})),
 });
 
-vi.mock("@/components/change-log", () => ({
-	ChangeLog: ({ isOpen, onClose }) =>
-		isOpen ? (
-			<div data-testid="changelog-modal">
-				<button onClick={onClose}>Close</button>
-			</div>
-		) : null,
-}));
-
 describe("HomePage", () => {
-	it("should render the component", () => {
+	it("should render the component with the correct title", () => {
 		render(<HomePage />);
 		const headingElement = screen.getByRole("heading", {
 			level: 1,
-			name: /welcome to TanhaApp/i,
+			name: /اپلیکیشن تنها/i,
 		});
 		expect(headingElement).toBeInTheDocument();
-		expect(headingElement.textContent).toContain("Welcome to TanhaApp");
+		expect(headingElement.textContent).toBe("اپلیکیشن تنها");
 	});
 
 	it("should filter links by search term", async () => {
 		render(<HomePage />);
-		const searchInput = screen.getByPlaceholderText("Search for tools...");
+		const searchInput = screen.getByPlaceholderText("جستجوی ابزارها...");
 		await act(async () => {
-			fireEvent.change(searchInput, { target: { value: "Calculator" } });
+			fireEvent.change(searchInput, { target: { value: "ماشین حساب" } });
 		});
-		expect(screen.getByText("Calculator")).toBeInTheDocument();
-		await vi.waitFor(() => {
-			expect(screen.queryByText("Text Transfer")).not.toBeInTheDocument();
-		});
-	});
-
-	it("should filter links by category", async () => {
-		render(<HomePage />);
-		await act(async () => {
-			fireEvent.click(screen.getByRole("button", { name: "Communication" }));
-		});
-		expect(screen.getByText("Text Transfer")).toBeInTheDocument();
-		await vi.waitFor(() => {
-			expect(screen.queryByText("Calculator")).not.toBeInTheDocument();
-		});
-	});
-
-	it("should open and close the changelog modal", async () => {
-		render(<HomePage />);
-		fireEvent.click(screen.getByText("Changelog"));
-
-		const modal = await screen.findByTestId("changelog-modal");
-		expect(modal).toBeInTheDocument();
-
-		fireEvent.click(screen.getByText("Close"));
-		await vi.waitFor(() => {
-			expect(screen.queryByTestId("changelog-modal")).not.toBeInTheDocument();
-		});
+		expect(screen.getByText("ماشین حساب")).toBeInTheDocument();
+		// Ensure the correct character is used for "یادداشت‌ها"
+		expect(screen.queryByText("یادداشت‌ها")).not.toBeInTheDocument();
 	});
 });

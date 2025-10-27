@@ -23,17 +23,6 @@ vi.mock("lucide-react", () => ({
 	Moon: () => <div data-testid="moon-icon" />,
 }));
 
-vi.mock("framer-motion", () => ({
-	motion: {
-		div: ({ children, ...props }) => <div {...props}>{children}</div>,
-		button: ({ children, ...props }) => <button {...props}>{children}</button>,
-		a: ({ children, ...props }) => <a {...props}>{children}</a>,
-		h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
-		p: ({ children, ...props }) => <p {...props}>{children}</p>,
-	},
-	AnimatePresence: ({ children }) => <>{children}</>,
-}));
-
 Object.defineProperty(window, "matchMedia", {
 	writable: true,
 	value: vi.fn().mockImplementation((query) => ({
@@ -129,21 +118,18 @@ describe("NotesPage", () => {
 		render(<NotesPage />);
 
 		await waitFor(() => {
-			expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+			expect(screen.queryByText("در حال بارگذاری...")).not.toBeInTheDocument();
 		});
 
-		fireEvent.change(screen.getByPlaceholderText("Enter note title..."), {
+		fireEvent.change(screen.getByPlaceholderText("عنوان را وارد کنید..."), {
 			target: { value: "New Note" },
 		});
-		fireEvent.change(
-			screen.getByPlaceholderText("Write your note content..."),
-			{
-				target: { value: "New Content" },
-			},
-		);
-		fireEvent.submit(screen.getByRole("button", { name: /Add Note/i }));
+		fireEvent.change(screen.getByPlaceholderText("محتوا را بنویسید..."), {
+			target: { value: "New Content" },
+		});
+		fireEvent.submit(screen.getByRole("button", { name: /افزودن/i }));
 
-		await screen.findByText("✅ Note added");
+		await screen.findByText("یادداشت با موفقیت اضافه شد");
 		await screen.findByText("New Note");
 	});
 
@@ -170,10 +156,10 @@ describe("NotesPage", () => {
 
 		await screen.findByText("Test Note 1");
 
-		fireEvent.click(screen.getAllByTitle("Delete note")[0]);
-		fireEvent.click(screen.getByText("Delete"));
+		fireEvent.click(screen.getAllByTitle("حذف یادداشت")[0]);
+		fireEvent.click(screen.getByText("حذف کن"));
 
-		await screen.findByText("✅ Note deleted");
+		await screen.findByText("یادداشت با موفقیت حذف شد");
 		expect(screen.queryByText("Test Note 1")).not.toBeInTheDocument();
 	});
 });

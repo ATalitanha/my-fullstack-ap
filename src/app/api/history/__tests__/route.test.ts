@@ -1,7 +1,8 @@
 /** @vitest-environment node */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET, POST, DELETE } from "../route";
 import { NextRequest } from "next/server";
+import { verifyJwt } from "@/shared/lib/jwt";
 
 const mockFindMany = vi.fn();
 const mockCreate = vi.fn();
@@ -17,13 +18,25 @@ vi.mock("@/shared/lib/prisma", () => ({
 	},
 }));
 
+vi.mock("@/shared/lib/jwt");
+
+const mockUser = { id: "test-user-id" };
+const mockToken = "mock-token";
+
 describe("History API", () => {
+	beforeEach(() => {
+		(verifyJwt as vi.Mock).mockReturnValue(mockUser);
+	});
+
 	describe("GET", () => {
 		it("should return the history", async () => {
 			const mockHistory = [{ id: "1", expression: "2+2", result: "4" }];
 			mockFindMany.mockResolvedValueOnce(mockHistory);
 
-			const response = await GET();
+			const req = new NextRequest("http://localhost", {
+				headers: { Authorization: `Bearer ${mockToken}` },
+			});
+			const response = await GET(req);
 			const data = await response.json();
 
 			expect(response.status).toBe(200);
@@ -33,7 +46,10 @@ describe("History API", () => {
 		it("should handle errors", async () => {
 			mockFindMany.mockRejectedValueOnce(new Error("Test error"));
 
-			const response = await GET();
+			const req = new NextRequest("http://localhost", {
+				headers: { Authorization: `Bearer ${mockToken}` },
+			});
+			const response = await GET(req);
 			const data = await response.json();
 
 			expect(response.status).toBe(500);
@@ -49,6 +65,7 @@ describe("History API", () => {
 			const req = new NextRequest("http://localhost", {
 				method: "POST",
 				body: JSON.stringify(mockItem),
+				headers: { Authorization: `Bearer ${mockToken}` },
 			});
 
 			const response = await POST(req);
@@ -62,6 +79,7 @@ describe("History API", () => {
 			const req = new NextRequest("http://localhost", {
 				method: "POST",
 				body: JSON.stringify({ expression: "2+2" }),
+				headers: { Authorization: `Bearer ${mockToken}` },
 			});
 
 			const response = await POST(req);
@@ -77,6 +95,7 @@ describe("History API", () => {
 			const req = new NextRequest("http://localhost", {
 				method: "POST",
 				body: JSON.stringify({ expression: "2+2", result: "4" }),
+				headers: { Authorization: `Bearer ${mockToken}` },
 			});
 
 			const response = await POST(req);
@@ -91,7 +110,11 @@ describe("History API", () => {
 		it("should delete all history items", async () => {
 			mockDeleteMany.mockResolvedValueOnce({});
 
-			const response = await DELETE();
+			const req = new NextRequest("http://localhost", {
+				headers: { Authorization: `Bearer ${mockToken}` },
+			});
+
+			const response = await DELETE(req);
 			const data = await response.json();
 
 			expect(response.status).toBe(200);
@@ -101,7 +124,10 @@ describe("History API", () => {
 		it("should handle errors", async () => {
 			mockDeleteMany.mockRejectedValueOnce(new Error("Test error"));
 
-			const response = await DELETE();
+			const req = new NextRequest("http://localhost", {
+				headers: { Authorization: `Bearer ${mockToken}` },
+			});
+			const response = await DELETE(req);
 			const data = await response.json();
 
 			expect(response.status).toBe(500);

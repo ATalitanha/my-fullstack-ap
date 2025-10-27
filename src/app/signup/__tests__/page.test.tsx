@@ -45,7 +45,7 @@ describe("SignupPage", () => {
 
 	it("should render the component", () => {
 		render(<SignupPage />);
-		expect(screen.getByText("Create a new account")).toBeInTheDocument();
+		expect(screen.getByText("ایجاد حساب کاربری جدید")).toBeInTheDocument();
 	});
 
 	it("should submit the form and redirect on successful signup", async () => {
@@ -57,19 +57,22 @@ describe("SignupPage", () => {
 		render(<SignupPage />);
 
 		await act(async () => {
-			fireEvent.change(screen.getByPlaceholderText("Enter your username"), {
-				target: { value: "testuser" },
-			});
+			fireEvent.change(
+				screen.getByPlaceholderText("نام کاربری خود را وارد کنید"),
+				{
+					target: { value: "testuser" },
+				},
+			);
 			fireEvent.change(screen.getByPlaceholderText("example@email.com"), {
 				target: { value: "test@example.com" },
 			});
 			fireEvent.change(
-				screen.getByPlaceholderText("Choose a strong password"),
+				screen.getByPlaceholderText("یک رمز عبور قوی انتخاب کنید"),
 				{
 					target: { value: "password" },
 				},
 			);
-			fireEvent.submit(screen.getByRole("button", { name: /Create Account/i }));
+			fireEvent.submit(screen.getByRole("button", { name: /ایجاد حساب/i }));
 		});
 
 		expect(mockFetch).toHaveBeenCalledWith("/api/auth/signup", {
@@ -93,7 +96,7 @@ describe("SignupPage", () => {
 		render(<SignupPage />);
 
 		await act(async () => {
-			fireEvent.submit(screen.getByRole("button", { name: /Create Account/i }));
+			fireEvent.submit(screen.getByRole("button", { name: /ایجاد حساب/i }));
 		});
 
 		expect(screen.getByText("User already exists")).toBeInTheDocument();
