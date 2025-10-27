@@ -22,6 +22,16 @@ vi.mock("lucide-react", () => ({
 	Bell: () => <div data-testid="bell-icon" />,
 }));
 
+vi.mock("framer-motion", () => ({
+	motion: {
+		div: ({ children, ...props }) => <div {...props}>{children}</div>,
+		button: ({ children, ...props }) => <button {...props}>{children}</button>,
+		a: ({ children, ...props }) => <a {...props}>{children}</a>,
+		h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+	},
+	AnimatePresence: ({ children }) => <>{children}</>,
+}));
+
 Object.defineProperty(window, "matchMedia", {
 	writable: true,
 	value: vi.fn().mockImplementation((query) => ({
@@ -89,7 +99,7 @@ describe("DashboardPage", () => {
 
 		await screen.findByText("testuser");
 
-		fireEvent.click(screen.getByRole("button", { name: /خروج از حساب/i }));
+		fireEvent.click(screen.getByRole("button", { name: /خروج/i }));
 
 		await waitFor(() => {
 			expect(mockPush).toHaveBeenCalledWith("/login");

@@ -1,89 +1,98 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
-import { AlertTriangle } from "lucide-react";
 
-interface DeleteConfirmModalProps {
-	isOpen: boolean;
-	onCancel: () => void;
-	onConfirm: () => void;
-	title?: string;
-	message?: string;
-	confirmText?: string;
-	cancelText?: string;
+/**
+ * Props for the ConfirmModal component.
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {() => void} onCancel - Function to call when the cancel button is clicked.
+ * @property {() => void} onConfirm - Function to call when the confirm button is clicked.
+ * @property {string} [message] - The message to display in the modal.
+ * @property {string} [confirmText] - The text for the confirm button.
+ * @property {string} [confirmColor] - The color of the confirm button.
+ */
+interface ConfirmModalProps {
+  isOpen: boolean; // آیا مودال باز است یا نه
+  onCancel: () => void; // تابع فراخوانی برای لغو
+  onConfirm: () => void; // تابع فراخوانی برای تایید
+  message?: string; // پیام نمایش داده شده
+  confirmText?: string; // متن دکمه تایید
+  confirmColor?: string; // رنگ دکمه تایید
 }
 
 /**
- * A modal dialog to confirm a delete action.
- * It overlays the screen and requires the user to confirm or cancel.
- * @param {DeleteConfirmModalProps} props - The component props.
- * @returns {JSX.Element | null} The modal component or null if not open.
+ * A confirmation modal component that can be used to confirm user actions.
+ * @param {ConfirmModalProps} props - The props for the component.
+ * @returns {JSX.Element} The confirmation modal.
  */
-export default function DeleteConfirmModal({
-	isOpen,
-	onCancel,
-	onConfirm,
-	title = "تایید حذف",
-	message = "آیا از انجام این عمل مطمئن هستید؟ این عمل غیرقابل بازگشت است.",
-	confirmText = "حذف کن",
-	cancelText = "انصراف",
-}: DeleteConfirmModalProps) {
-	useEffect(() => {
-		if (!isOpen) return;
+export default function ConfirmModal({
+  isOpen,
+  onCancel,
+  onConfirm,
+  message = "Are you sure?",
+  confirmText = "Confirm",
+  confirmColor = "bg-blue-600 hover:bg-blue-700",
+}: ConfirmModalProps) {
+  // مدیریت کلیدهای Enter و Escape هنگام باز بودن مودال
+  useEffect(() => {
+    if (!isOpen) return;
 
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				onCancel();
-			} else if (e.key === "Enter") {
-				onConfirm();
-			}
-		};
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onConfirm();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        onCancel();
+      }
+    };
 
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isOpen, onCancel, onConfirm]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onCancel, onConfirm]);
 
-	if (!isOpen) return null;
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* بک‌دراپ نیمه‌شفاف */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            onClick={onCancel} // کلیک روی بک‌دراپ لغو می‌کند
+          />
 
-	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-			onClick={onCancel}
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="confirm-dialog-title"
-		>
-			<div
-				className="w-full max-w-md p-6 mx-4 bg-white rounded-lg shadow-xl dark:bg-gray-800"
-				onClick={(e) => e.stopPropagation()}
-			>
-				<div className="flex flex-col items-center text-center">
-					<div className="p-3 mb-4 bg-red-100 rounded-full dark:bg-red-900/50">
-						<AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
-					</div>
-					<h2
-						id="confirm-dialog-title"
-						className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100"
-					>
-						{title}
-					</h2>
-					<p className="mb-6 text-gray-600 dark:text-gray-300">{message}</p>
-				</div>
-				<div className="flex justify-center gap-4">
-					<button
-						onClick={onCancel}
-						className="flex-1 px-6 py-2 font-semibold text-gray-800 transition-colors bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-					>
-						{cancelText}
-					</button>
-					<button
-						onClick={onConfirm}
-						className="flex-1 px-6 py-2 font-semibold text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"
-					>
-						{confirmText}
-					</button>
-				</div>
-			</div>
-		</div>
-	);
+          {/* پنجره مودال */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed top-1/2 left-1/2 z-50 w-80 max-w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl text-gray-100 select-none"
+          >
+            {/* پیام مودال */}
+            <p className="mb-5 text-center text-lg font-bold">{message}</p>
+
+            {/* دکمه‌های لغو و تایید */}
+            <div className="flex justify-center gap-5">
+              <button
+                onClick={onCancel}
+                className="px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onConfirm}
+                className={`px-5 py-2 rounded-lg text-white transition shadow-md ${confirmColor}`}
+              >
+                {confirmText}
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
 }

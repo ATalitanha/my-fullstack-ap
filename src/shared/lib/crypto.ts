@@ -2,8 +2,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 
 // کلید 32 بایتی از env (Base64)
 const KEY = Buffer.from(process.env.NOTE_ENC_KEY!, "base64");
-if (KEY.length !== 32)
-	throw new Error("NOTE_ENC_KEY must be 32 bytes (base64).");
+if (KEY.length !== 32) throw new Error("NOTE_ENC_KEY must be 32 bytes (base64).");
 
 /* ---------------------------------------------
   AES-GCM برای متن (username یا متن نوت)
@@ -16,20 +15,13 @@ if (KEY.length !== 32)
  * @returns {string} The encrypted string, formatted as "iv.ciphertext.tag".
  */
 export function encryptText(plain: string): string {
-	const iv = randomBytes(12);
-	const cipher = createCipheriv("aes-256-gcm", KEY, iv);
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", KEY, iv);
 
-	const ciphertext = Buffer.concat([
-		cipher.update(plain, "utf8"),
-		cipher.final(),
-	]);
-	const tag = cipher.getAuthTag();
+  const ciphertext = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
 
-	return [
-		iv.toString("base64"),
-		ciphertext.toString("base64"),
-		tag.toString("base64"),
-	].join(".");
+  return [iv.toString("base64"), ciphertext.toString("base64"), tag.toString("base64")].join(".");
 }
 
 /**
@@ -38,19 +30,18 @@ export function encryptText(plain: string): string {
  * @returns {string} The decrypted string.
  */
 export function decryptText(packed: string): string {
-	const [ivB64, ctB64, tagB64] = packed.split(".");
-	if (!ivB64 || !ctB64 || !tagB64)
-		throw new Error("Malformed encrypted payload.");
+  const [ivB64, ctB64, tagB64] = packed.split(".");
+  if (!ivB64 || !ctB64 || !tagB64) throw new Error("Malformed encrypted payload.");
 
-	const iv = Buffer.from(ivB64, "base64");
-	const ciphertext = Buffer.from(ctB64, "base64");
-	const tag = Buffer.from(tagB64, "base64");
+  const iv = Buffer.from(ivB64, "base64");
+  const ciphertext = Buffer.from(ctB64, "base64");
+  const tag = Buffer.from(tagB64, "base64");
 
-	const decipher = createDecipheriv("aes-256-gcm", KEY, iv);
-	decipher.setAuthTag(tag);
+  const decipher = createDecipheriv("aes-256-gcm", KEY, iv);
+  decipher.setAuthTag(tag);
 
-	const plain = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
-	return plain.toString("utf8");
+  const plain = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+  return plain.toString("utf8");
 }
 
 /* ---------------------------------------------
@@ -67,12 +58,9 @@ const IV_EMAIL = Buffer.alloc(16, 0); // 16 بایت صفر
  * @returns {string} The encrypted email address, as a base64 string.
  */
 export function encryptEmail(email: string): string {
-	const cipher = createCipheriv("aes-256-cbc", KEY, IV_EMAIL);
-	const encrypted = Buffer.concat([
-		cipher.update(email, "utf8"),
-		cipher.final(),
-	]);
-	return encrypted.toString("base64");
+  const cipher = createCipheriv("aes-256-cbc", KEY, IV_EMAIL);
+  const encrypted = Buffer.concat([cipher.update(email, "utf8"), cipher.final()]);
+  return encrypted.toString("base64");
 }
 
 /**
@@ -81,10 +69,7 @@ export function encryptEmail(email: string): string {
  * @returns {string} The decrypted email address.
  */
 export function decryptEmail(enc: string): string {
-	const decipher = createDecipheriv("aes-256-cbc", KEY, IV_EMAIL);
-	const decrypted = Buffer.concat([
-		decipher.update(Buffer.from(enc, "base64")),
-		decipher.final(),
-	]);
-	return decrypted.toString("utf8");
+  const decipher = createDecipheriv("aes-256-cbc", KEY, IV_EMAIL);
+  const decrypted = Buffer.concat([decipher.update(Buffer.from(enc, "base64")), decipher.final()]);
+  return decrypted.toString("utf8");
 }

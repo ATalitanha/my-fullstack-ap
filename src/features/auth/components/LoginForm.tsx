@@ -3,10 +3,10 @@
  * This component wraps the reusable AuthForm, providing a clean and simple
  * interface for the login page.
  */
-"use client";
+'use client';
 
-import AuthForm from "./AuthForm";
+import AuthForm from './AuthForm';
 
 export default function LoginForm() {
-	return <AuthForm isLogin={true} />;
+  return <AuthForm isLogin={true} />;
 }

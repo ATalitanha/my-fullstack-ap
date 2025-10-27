@@ -1,39 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap");
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8f9fa;
-  --foreground: #212529;
-  --primary: #007bff;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --danger: #dc3545;
-  --warning: #ffc107;
-  --info: #17a2b8;
+	--background: #f8f9fa;
+	--foreground: #212529;
+	--primary: #007bff;
+	--secondary: #6c757d;
+	--success: #28a745;
+	--danger: #dc3545;
+	--warning: #ffc107;
+	--info: #17a2b8;
 }
 
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-	--font-sans: 'Vazirmatn', sans-serif;
-	--font-mono: 'Vazirmatn', sans-serif;
+	--font-sans: "Vazirmatn", sans-serif;
+	--font-mono: "Vazirmatn", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121212;
-    --foreground: #e0e0e0;
-    --primary: #0d6efd;
-    --secondary: #adb5bd;
-  }
+	:root {
+		--background: #121212;
+		--foreground: #e0e0e0;
+		--primary: #0d6efd;
+		--secondary: #adb5bd;
+	}
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Vazirmatn', sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: "Vazirmatn", sans-serif;
 }
 
 input[type="number"]::-webkit-inner-spin-button,

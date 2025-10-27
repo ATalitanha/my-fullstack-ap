@@ -4,9 +4,9 @@
  * @property {string[]} changes - An array of changes for the version.
  */
 export interface ChangeLog {
-	version: string;
-	changes: string[];
-}
+    version: string,
+    changes: string[],
+};
 
 /**
  * Represents a unit of measurement.
@@ -16,8 +16,8 @@ export interface ChangeLog {
  * @property {number} [factor] - The conversion factor for the unit.
  */
 export type Unit = {
-	category: string;
-	label: string;
-	value: string;
-	factor?: number;
+  category: string;
+  label: string;
+  value: string;
+  factor?: number;
 };

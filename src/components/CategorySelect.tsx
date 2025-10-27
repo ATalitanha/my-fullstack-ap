@@ -1,78 +1,114 @@
 "use client";
 
+// ایمپورت‌های لازم از Radix UI و آیکون‌ها
 import * as Select from "@radix-ui/react-select";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-
-export const CATEGORIES = [
-	{ value: "length", label: "📏 طول" },
-	{ value: "weight", label: "⚖️ وزن" },
-	{ value: "volume", label: "🧪 حجم" },
-	{ value: "temperature", label: "🌡️ دما" },
-	{ value: "time", label: "⏱️ زمان" },
-	{ value: "speed", label: "🏎️ سرعت" },
-	{ value: "energy", label: "⚡ انرژی" },
-	{ value: "pressure", label: "🔧 فشار" },
-	{ value: "area", label: "🗺️ مساحت" },
-	{ value: "light", label: "💡 روشنایی" },
-	{ value: "storage", label: "💾 داده" },
-	{ value: "power", label: "🔋 توان" },
-	{ value: "frequency", label: "🎵 فرکانس" },
-	{ value: "angle", label: "📐 زاویه" },
-];
-
-interface CategorySelectProps {
-	category: string;
-	setCategory: (category: string) => void;
-}
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 /**
- * A dropdown select component for choosing a unit conversion category.
- *
- * @param {CategorySelectProps} props - The component props.
+ * An array of category objects used for unit conversions.
+ * Each object contains a value, a label, and an icon.
+ * @type {{value: string, label: string}[]}
+ */
+export const CATEGORIES = [
+  { value: "length", label: "📏 طول" },
+  { value: "weight", label: "⚖️ وزن" },
+  { value: "volume", label: "🧪 حجم" },
+  { value: "temperature", label: "🌡️ دما" },
+  { value: "time", label: "⏱️ زمان" },
+  { value: "speed", label: "🏎️ سرعت" },
+  { value: "energy", label: "⚡ انرژی" },
+  { value: "pressure", label: "🔧 فشار" },
+  { value: "area", label: "🗺️ مساحت" },
+  { value: "light", label: "💡 روشنایی" },
+  { value: "storage", label: "💾 داده" },
+  { value: "power", label: "🔋 توان" },
+  { value: "frequency", label: "🎵 فرکانس" },
+  { value: "angle", label: "📐 زاویه" },
+];
+
+/**
+ * A select component that allows the user to choose a category for unit conversion.
+ * @param {object} props - The component props.
+ * @param {string} props.category - The currently selected category.
+ * @param {(category: string) => void} props.setCategory - A function to set the selected category.
  * @returns {JSX.Element} The category select component.
  */
 export default function CategorySelect({
-	category,
-	setCategory,
-}: CategorySelectProps) {
-	return (
-		<Select.Root value={category} onValueChange={setCategory}>
-			<Select.Trigger className="flex items-center justify-between w-full px-4 py-3 text-lg bg-gray-100 border-2 border-transparent rounded-md dark:bg-gray-700 focus:border-primary focus:outline-none">
-				<Select.Value placeholder="یک دسته انتخاب کنید...">
-					{CATEGORIES.find((c) => c.value === category)?.label}
-				</Select.Value>
-				<Select.Icon>
-					<ChevronDownIcon className="w-5 h-5" />
-				</Select.Icon>
-			</Select.Trigger>
-			<Select.Portal>
-				<Select.Content
-					side="bottom"
-					position="popper"
-					className="z-50 w-[var(--radix-select-trigger-width)] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800"
-				>
-					<Select.ScrollUpButton className="flex items-center justify-center h-8 cursor-default">
-						<ChevronUpIcon />
-					</Select.ScrollUpButton>
-					<Select.Viewport className="p-2">
-						<Select.Label className="px-3 py-2 text-sm text-gray-500">
-							دسته‌بندی‌ها
-						</Select.Label>
-						{CATEGORIES.map(({ value, label }) => (
-							<Select.Item
-								key={value}
-								value={value}
-								className="px-3 py-2 rounded-md cursor-pointer hover:bg-primary/10 focus:outline-none focus:bg-primary/10"
-							>
-								<Select.ItemText>{label}</Select.ItemText>
-							</Select.Item>
-						))}
-					</Select.Viewport>
-					<Select.ScrollDownButton className="flex items-center justify-center h-8 cursor-default">
-						<ChevronDownIcon />
-					</Select.ScrollDownButton>
-				</Select.Content>
-			</Select.Portal>
-		</Select.Root>
-	);
+  category,
+  setCategory,
+}: {
+  category: string;                  // دسته‌بندی انتخاب شده فعلی
+  setCategory: (cat: string) => void; // تابع تغییر دسته‌بندی
+}) {
+  return (
+    <Select.Root value={category} onValueChange={setCategory}>
+
+      {/* تریگر: نمایش دسته‌بندی انتخاب شده و آیکون فلش */}
+      <Select.Trigger
+        className="
+          w-full p-5 h-[70px] rounded-2xl
+          bg-white/30 dark:bg-gray-800/50
+          flex justify-between items-center
+          shadow-md
+        "
+      >
+        {/* نمایش برچسب دسته‌بندی انتخاب شده */}
+        <Select.Value>
+          {CATEGORIES.find((c) => c.value === category)?.label}
+        </Select.Value>
+
+        {/* آیکون فلش پایین */}
+        <Select.Icon>
+          <ChevronDownIcon />
+        </Select.Icon>
+      </Select.Trigger>
+
+      {/* منوی پاپ‌آپ */}
+      <Select.Portal>
+        <Select.Content
+          side="bottom"               // نمایش زیر تریگر
+          align="start"               // تراز با شروع تریگر
+          avoidCollisions={false}     // جلوگیری از تغییر خودکار موقعیت
+          position="popper"           // استفاده از Popper برای پوزیشنینگ
+          className="
+            bg-white dark:bg-gray-800
+            rounded-2xl shadow-lg z-50
+            min-w-[var(--radix-select-trigger-width)]  // عرض برابر با تریگر
+          "
+        >
+          {/* ویوپورت آیتم‌ها با اسکرول */}
+          <Select.Viewport
+            className="
+              p-2 max-h-44 overflow-y-auto
+              scrollbar-thin
+              scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70
+              scrollbar-thumb-rounded
+              scrollbar-track-transparent
+              hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
+              transition-all
+            "
+            style={{ scrollbarGutter: "stable" }} // جلوگیری از پرش اسکرول
+          >
+            {/* رندر تک‌تک آیتم‌های دسته‌بندی */}
+            {CATEGORIES.map((c) => (
+              <Select.Item
+                key={c.value}           // کلید یکتا
+                value={c.value}         // مقدار آیتم
+                onFocus={(e) => e.preventDefault()} // جلوگیری از فوکوس پیش‌فرض
+                className="
+                  p-3 rounded-lg cursor-pointer
+                  hover:bg-blue-500 text-gray-500 dark:text-white
+                  hover:text-white dark:hover:text-gray-700
+                "
+              >
+                {/* نمایش برچسب آیتم */}
+                <Select.ItemText>{c.label}</Select.ItemText>
+              </Select.Item>
+            ))}
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+
+    </Select.Root>
+  );
 }

@@ -1,4 +1,4 @@
-import { UNITS } from "@/lib/db";
+import { UNITS } from "@/lib/units";
 
 /**
  * Converts a value from one unit to another within a given category.
@@ -8,45 +8,35 @@ import { UNITS } from "@/lib/db";
  * @param {number} value - The value to convert.
  * @returns {string} The converted value with the unit label, or an error message.
  */
-export function convertValue(
-	category: string,
-	from: string,
-	to: string,
-	value: number,
-): string {
-	let res: number | null = null;
+export function convertValue(category: string, from: string, to: string, value: number): string {
+  let res: number | null = null;
 
-	if (category === "temperature") {
-		if (from === to) res = value;
-		else if (from === "c" && to === "f") res = (value * 9) / 5 + 32;
-		else if (from === "c" && to === "k") res = value + 273.15;
-		else if (from === "f" && to === "c") res = ((value - 32) * 5) / 9;
-		else if (from === "f" && to === "k") res = ((value - 32) * 5) / 9 + 273.15;
-		else if (from === "k" && to === "c") res = value - 273.15;
-		else if (from === "k" && to === "f") res = ((value - 273.15) * 9) / 5 + 32;
-	} else {
-		const fromUnit = UNITS.find((u) => u.value === from);
-		const toUnit = UNITS.find((u) => u.value === to);
-		if (
-			fromUnit?.factor &&
-			toUnit?.factor &&
-			fromUnit?.category === toUnit?.category
-		) {
-			res = value * (fromUnit.factor / toUnit.factor);
-		}
-	}
+  if (category === "temperature") {
+    if (from === to) res = value;
+    else if (from === "c" && to === "f") res = value * 9/5 + 32;
+    else if (from === "c" && to === "k") res = value + 273.15;
+    else if (from === "f" && to === "c") res = (value - 32) * 5/9;
+    else if (from === "f" && to === "k") res = (value - 32) * 5/9 + 273.15;
+    else if (from === "k" && to === "c") res = value - 273.15;
+    else if (from === "k" && to === "f") res = (value - 273.15) * 9/5 + 32;
+  } else {
+    const fromUnit = UNITS.find((u) => u.value === from);
+    const toUnit = UNITS.find((u) => u.value === to);
+    if (fromUnit?.factor && toUnit?.factor && fromUnit?.category === toUnit?.category) {
+      res = value * (fromUnit.factor / toUnit.factor);
+    }
+  }
 
-	if (res === null) return "خطا در تبدیل";
+  if (res === null) return "خطا در تبدیل";
 
-	// 🎯 فرمت خروجی: اگر اعشار نداره -> عدد صحیح
-	// اگر اعشار داره -> تا 6 رقم مهم
-	const formatted = Number.isInteger(res)
-		? res.toString()
-		: parseFloat(res.toFixed(6)).toString();
+  // 🎯 فرمت خروجی: اگر اعشار نداره -> عدد صحیح
+  // اگر اعشار داره -> تا 6 رقم مهم
+  const formatted =
+    Number.isInteger(res) ? res.toString() : parseFloat(res.toFixed(6)).toString();
 
-	if (category === "temperature") {
-		return `${formatted} ${to.toUpperCase()}`;
-	}
+  if (category === "temperature") {
+    return `${formatted} ${to.toUpperCase()}`;
+  }
 
-	return `${formatted} ${UNITS.find((u) => u.value === to)?.label ?? ""}`;
+  return `${formatted} ${UNITS.find((u) => u.value === to)?.label ?? ""}`;
 }
