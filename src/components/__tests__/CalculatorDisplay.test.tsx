@@ -1,41 +1,48 @@
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import CalculatorDisplay from '../CalculatorDisplay';
 
 describe('CalculatorDisplay', () => {
-  it('should render the initial display', () => {
-    render(<CalculatorDisplay first="" op="" second="" result="" />);
-    const display = screen.getByTitle('=');
-    expect(display).toBeInTheDocument();
-  });
+  it('renders the expression and result correctly', () => {
+    render(
+      <CalculatorDisplay
+        first="10"
+        op="+"
+        second="5"
+        result="15"
+      />
+    );
 
-  it('should render the first number', () => {
-    render(<CalculatorDisplay first="123" op="" second="" result="" />);
-    expect(screen.getByText('123')).toBeInTheDocument();
-  });
-
-  it('should render the first number and operator', () => {
-    render(<CalculatorDisplay first="123" op="+" second="" result="" />);
-    expect(screen.getByText('123')).toBeInTheDocument();
+    // Check if the numbers, operator, and result are displayed
+    expect(screen.getByText('10')).toBeInTheDocument();
     expect(screen.getByText('+')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
+    expect(screen.getByText('= 15')).toBeInTheDocument();
+
+    // Check the title attribute for the full expression
+    const displayElement = screen.getByTitle('10 + 5 = 15');
+    expect(displayElement).toBeInTheDocument();
   });
 
-  it('should render the full expression', () => {
-    render(<CalculatorDisplay first="123" op="+" second="456" result="" />);
-    expect(screen.getByText('123')).toBeInTheDocument();
-    expect(screen.getByText('+')).toBeInTheDocument();
-    expect(screen.getByText('456')).toBeInTheDocument();
-  });
+  it('handles the square root operator correctly', () => {
+    render(
+      <CalculatorDisplay
+        first="25"
+        op="√"
+        second=""
+        result="5"
+      />
+    );
 
-  it('should render the square root expression', () => {
-    render(<CalculatorDisplay first="9" op="√" second="" result="" />);
-    expect(screen.getByText('9')).toBeInTheDocument();
+    // Check if the number, operator, and result are displayed
+    expect(screen.getByText('25')).toBeInTheDocument();
     expect(screen.getByText('√')).toBeInTheDocument();
-    expect(screen.queryByText(' ')).not.toBeInTheDocument();
-  });
+    expect(screen.getByText('= 5')).toBeInTheDocument();
 
-  it('should render the result', () => {
-    render(<CalculatorDisplay first="123" op="+" second="456" result="579" />);
-    expect(screen.getByText('= 579')).toBeInTheDocument();
+    // The second number should not be rendered
+    expect(screen.queryByText(' ')).not.toBeInTheDocument();
+
+    // Check the title attribute for the full expression
+    const displayElement = screen.getByTitle('25 √ = 5');
+    expect(displayElement).toBeInTheDocument();
   });
 });

@@ -1,118 +1,111 @@
 /**
  * @jest-environment node
  */
-import { GET, POST } from '@/app/api/notes/route';
+import { GET, POST } from '../route';
 import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 import prisma from '@/shared/lib/prisma';
-import { decryptText, encryptText } from '@/shared/lib/crypto';
-import { vi } from 'vitest';
+import { encryptText, decryptText } from '@/shared/lib/crypto';
 
-vi.mock('@/shared/lib/prisma', () => ({
-  default: {
-    note: {
-      findMany: vi.fn(),
-      create: vi.fn(),
-    },
+// Mock dependencies
+jest.mock('jsonwebtoken');
+jest.mock('@/shared/lib/prisma', () => ({
+  note: {
+    findMany: jest.fn(),
+    create: jest.fn(),
   },
 }));
+jest.mock('@/shared/lib/crypto');
 
-vi.mock('@/shared/lib/crypto', () => ({
-  encryptText: vi.fn((text) => `encrypted:${text}`),
-  decryptText: vi.fn((text) => text.replace('encrypted:', '')),
-}));
+const mockedJwt = jwt as jest.Mocked<typeof jwt>;
+const mockedPrisma = prisma as jest.Mocked<typeof prisma>;
+const mockedEncryptText = encryptText as jest.Mock;
+const mockedDecryptText = decryptText as jest.Mock;
 
-const JWT_SECRET = 'test-secret';
-process.env.JWT_SECRET = JWT_SECRET;
-const USER_ID = 'test-user-id';
+const MOCK_USER_ID = 'user-123';
+const MOCK_TOKEN = 'mock-token';
 
-function createMockRequest(
-  method: 'GET' | 'POST',
-  body?: unknown,
-  token?: string | null
-): NextRequest {
-  const headers = new Headers();
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  if (body) {
-    headers.set('Content-Type', 'application/json');
-  }
-
-  return new NextRequest(`http://localhost/api/notes`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-}
-
-describe('Notes API', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
+describe('/api/notes', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedJwt.verify.mockReturnValue({ id: MOCK_USER_ID });
+    mockedDecryptText.mockImplementation(text => `decrypted_${text}`);
+    mockedEncryptText.mockImplementation(text => `encrypted_${text}`);
   });
 
-  // Tests for GET endpoint
-  describe('GET /api/notes', () => {
-    it('should return 401 if unauthorized', async () => {
-      const req = createMockRequest('GET', null, null);
-      const res = await GET(req);
-      expect(res.status).toBe(401);
+  describe('GET', () => {
+    it('should return 401 if no token is provided', async () => {
+      const req = new NextRequest('http://localhost/api/notes');
+      const response = await GET(req);
+      const body = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(body.error).toBe('Unauthorized access');
     });
 
-    it('should return notes for an authenticated user', async () => {
-      const token = jwt.sign({ id: USER_ID }, JWT_SECRET);
+    it('should return a list of decrypted notes on success', async () => {
       const mockNotes = [
-        { id: '1', title: 'encrypted:Note 1', content: 'encrypted:Content 1', userId: USER_ID, createdAt: new Date(), updatedAt: new Date() },
+        { id: '1', title: 'title1', content: 'content1', userId: MOCK_USER_ID, createdAt: new Date(), updatedAt: new Date() },
+        { id: '2', title: 'title2', content: 'content2', userId: MOCK_USER_ID, createdAt: new Date(), updatedAt: new Date() },
       ];
-      (prisma.note.findMany as vi.Mock).mockResolvedValue(mockNotes);
+      (mockedPrisma.note.findMany as jest.Mock).mockResolvedValue(mockNotes);
 
-      const req = createMockRequest('GET', null, token);
-      const res = await GET(req);
-      const data = await res.json();
+      const req = new NextRequest('http://localhost/api/notes', {
+        headers: { Authorization: `Bearer ${MOCK_TOKEN}` },
+      });
+      const response = await GET(req);
+      const body = await response.json();
 
-      expect(res.status).toBe(200);
-      expect(data.notes[0].title).toBe('Note 1');
-      expect(data.notes[0].content).toBe('Content 1');
+      expect(response.status).toBe(200);
+      expect(mockedPrisma.note.findMany).toHaveBeenCalledWith({
+        where: { userId: MOCK_USER_ID },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, title: true, content: true, createdAt: true, updatedAt: true },
+      });
+      expect(mockedDecryptText).toHaveBeenCalledTimes(4); // title and content for each of two notes
+      expect(body.notes[0].title).toBe('decrypted_title1');
     });
   });
 
-  // Tests for POST endpoint
-  describe('POST /api/notes', () => {
-    it('should return 401 if unauthorized', async () => {
-        const req = createMockRequest('POST', { title: 'New Note', content: 'Content' }, null);
-        const res = await POST(req);
-        expect(res.status).toBe(401);
+  describe('POST', () => {
+    it('should return 401 if no token is provided', async () => {
+        const req = new NextRequest('http://localhost/api/notes', { method: 'POST' });
+        const response = await POST(req);
+        const body = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(body.error).toBe('Unauthorized access');
     });
 
     it('should return 400 for invalid input', async () => {
-        const token = jwt.sign({ id: USER_ID }, JWT_SECRET);
-        const req = createMockRequest('POST', { title: '' }, token);
-        const res = await POST(req);
-        expect(res.status).toBe(400);
+      const req = new NextRequest('http://localhost/api/notes', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${MOCK_TOKEN}` },
+        body: JSON.stringify({ title: '', content: '' }),
+      });
+      const response = await POST(req);
+
+      expect(response.status).toBe(400);
     });
 
-    it('should create and return a new note for an authenticated user', async () => {
-        const token = jwt.sign({ id: USER_ID }, JWT_SECRET);
-        const noteData = { title: 'New Note', content: 'New Content' };
-        const createdNote = {
-            id: '2',
-            ...noteData,
-            title: `encrypted:${noteData.title}`,
-            content: `encrypted:${noteData.content}`,
-            userId: USER_ID,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
+    it('should create and return a new note on success', async () => {
+      const newNoteData = { title: 'New Title', content: 'New Content' };
+      const createdNote = { id: '3', title: `encrypted_${newNoteData.title}`, content: `encrypted_${newNoteData.content}`, userId: MOCK_USER_ID, createdAt: new Date(), updatedAt: new Date() };
+      (mockedPrisma.note.create as jest.Mock).mockResolvedValue(createdNote);
 
-        (prisma.note.create as vi.Mock).mockResolvedValue(createdNote);
+      const req = new NextRequest('http://localhost/api/notes', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${MOCK_TOKEN}` },
+        body: JSON.stringify(newNoteData),
+      });
+      const response = await POST(req);
+      const body = await response.json();
 
-        const req = createMockRequest('POST', noteData, token);
-        const res = await POST(req);
-        const data = await res.json();
-
-        expect(res.status).toBe(201);
-        expect(data.note.title).toBe(noteData.title);
-        expect(data.note.content).toBe(noteData.content);
+      expect(response.status).toBe(201);
+      expect(mockedEncryptText).toHaveBeenCalledWith('New Title');
+      expect(mockedEncryptText).toHaveBeenCalledWith('New Content');
+      expect(mockedPrisma.note.create).toHaveBeenCalled();
+      expect(body.note.title).toBe('decrypted_encrypted_New Title');
     });
   });
 });
