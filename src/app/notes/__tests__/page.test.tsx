@@ -129,18 +129,18 @@ describe("NotesPage", () => {
 		render(<NotesPage />);
 
 		await waitFor(() => {
-			expect(screen.queryByText("در حال بارگذاری...")).not.toBeInTheDocument();
+			expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
 		});
 
-		fireEvent.change(screen.getByPlaceholderText("عنوان یادداشت..."), {
+		fireEvent.change(screen.getByPlaceholderText("Enter note title..."), {
 			target: { value: "New Note" },
 		});
-		fireEvent.change(screen.getByPlaceholderText("محتوای یادداشت..."), {
+		fireEvent.change(screen.getByPlaceholderText("Write your note content..."), {
 			target: { value: "New Content" },
 		});
-		fireEvent.submit(screen.getByRole("button", { name: /افزودن یادداشت/i }));
+		fireEvent.submit(screen.getByRole("button", { name: /Add Note/i }));
 
-		await screen.findByText("✅ یادداشت اضافه شد");
+		await screen.findByText("✅ Note added");
 		await screen.findByText("New Note");
 	});
 
@@ -167,10 +167,10 @@ describe("NotesPage", () => {
 
 		await screen.findByText("Test Note 1");
 
-		fireEvent.click(screen.getAllByTitle("حذف یادداشت")[0]);
-		fireEvent.click(screen.getByText("حذف"));
+		fireEvent.click(screen.getAllByTitle("Delete note")[0]);
+		fireEvent.click(screen.getByText("Delete"));
 
-		await screen.findByText("✅ یادداشت حذف شد");
+		await screen.findByText("✅ Note deleted");
 		expect(screen.queryByText("Test Note 1")).not.toBeInTheDocument();
 	});
 });

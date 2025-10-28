@@ -44,7 +44,7 @@ describe("History API", () => {
 			const data = await response.json();
 
 			expect(response.status).toBe(500);
-			expect(data.error).toBe("خطا در دریافت پیام‌ها");
+			expect(data.error).toBe("An error occurred while fetching history.");
 		});
 	});
 
@@ -73,7 +73,6 @@ describe("History API", () => {
 
 			const req = new NextRequest("http://localhost", {
 				method: "DELETE",
-				body: JSON.stringify({ id: "1" }),
 				headers: {},
 			});
 

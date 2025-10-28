@@ -63,12 +63,12 @@ describe("DashboardPage", () => {
 		});
 
 		render(<DashboardPage />);
-		expect(screen.getByText("در حال بارگذاری...")).toBeInTheDocument();
+		expect(screen.getByText("Loading...")).toBeInTheDocument();
 
 		const usernameElement = await screen.findByText("testuser");
 		expect(usernameElement).toBeInTheDocument();
 
-		expect(screen.queryByText("در حال بارگذاری...")).not.toBeInTheDocument();
+		expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
 	});
 
 	it("should redirect to the login page if not authenticated", async () => {
@@ -99,7 +99,7 @@ describe("DashboardPage", () => {
 
 		await screen.findByText("testuser");
 
-		fireEvent.click(screen.getByRole("button", { name: /خروج/i }));
+		fireEvent.click(screen.getByRole("button", { name: /Logout/i }));
 
 		await waitFor(() => {
 			expect(mockPush).toHaveBeenCalledWith("/login");

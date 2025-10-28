@@ -42,37 +42,37 @@ describe('HomePage', () => {
   it('should render the component', () => {
     render(<HomePage />);
     expect(screen.getByText((content, element) => {
-      return element.tagName.toLowerCase() === 'h1' && content.startsWith('به');
+      return element.tagName.toLowerCase() === 'h1' && content.startsWith('Welcome');
     })).toBeInTheDocument();
   });
 
   it('should filter links by search term', async () => {
     render(<HomePage />);
-    const searchInput = screen.getByPlaceholderText('جستجوی ابزارها...');
+    const searchInput = screen.getByPlaceholderText('Search tools...');
     await act(async () => {
-      fireEvent.change(searchInput, { target: { value: 'ماشین حساب' } });
+      fireEvent.change(searchInput, { target: { value: 'Calculator' } });
     });
-    expect(screen.getByText('ماشین حساب')).toBeInTheDocument();
+    expect(screen.getByText('Calculator')).toBeInTheDocument();
     await vi.waitFor(() => {
-      expect(screen.queryByText('انتقال متن')).not.toBeInTheDocument();
+      expect(screen.queryByText('Messenger')).not.toBeInTheDocument();
     });
   });
 
   it('should filter links by category', async () => {
     render(<HomePage />);
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'ارتباطات' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Communication' }));
     });
-    expect(screen.getByText('انتقال متن')).toBeInTheDocument();
+    expect(screen.getByText('Messenger')).toBeInTheDocument();
     await vi.waitFor(() => {
-      expect(screen.queryByText('ماشین حساب')).not.toBeInTheDocument();
+      expect(screen.queryByText('Calculator')).not.toBeInTheDocument();
     });
   });
 
   it('should open and close the changelog modal', async () => {
     render(<HomePage />);
     await act(async () => {
-      fireEvent.click(screen.getByText('تغییرات نسخه'));
+      fireEvent.click(screen.getByText('Changelog'));
     });
     expect(screen.getByTestId('changelog-modal')).toBeInTheDocument();
     await act(async () => {

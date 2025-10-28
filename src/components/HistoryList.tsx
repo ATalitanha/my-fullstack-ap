@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LoadingDots from "@/components/loading";
 import { HistoryItem } from "@/hooks/useCalculatorHistory";
+import { History } from "lucide-react";
 
 /**
  * Props for the HistoryList component.
@@ -83,20 +84,7 @@ const HistoryList = ({ history, loading, onClear }: Props) => {
         ) : history.length === 0 ? (
           // حالت خالی بودن تاریخچه
           <div className="flex flex-col items-center justify-center h-28 text-black dark:text-gray-500 font-black italic">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-10 w-10 mb-2 opacity-50"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12h6m-3-3v6m-6 3h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"
-              />
-            </svg>
+            <History className="h-10 w-10 mb-2 opacity-50" />
             هیچ تاریخی وجود ندارد.
           </div>
         ) : (
