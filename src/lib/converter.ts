@@ -1,4 +1,4 @@
-import { UNITS } from "@/lib/db";
+import { UNITS } from "@/lib/units";
 
 /**
  * Converts a value from one unit to another within a given category.

@@ -12,7 +12,7 @@ describe('convertValue', () => {
   });
 
   // Mock UNITS for non-temperature conversions
-  vi.mock('@/lib/db', () => ({
+  vi.mock('@/lib/units', () => ({
     UNITS: [
       { category: 'length', value: 'm', label: 'm', factor: 1 },
       { category: 'length', value: 'cm', label: 'cm', factor: 0.01 },
