@@ -6,11 +6,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TodoService } from '@/features/todo/server/todo.service';
 import { createTodoSchema } from '@/features/todo/todo.schema';
-import { getUserIdFromToken } from '@/shared/lib/auth';
+import { verifyToken } from '@/shared/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
-    const userId = getUserIdFromToken(req);
+    const token = req.headers.get("authorization")?.split(" ")[1];
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    }
+    const userId = verifyToken(token);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -26,7 +30,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const userId = getUserIdFromToken(req);
+    const token = req.headers.get("authorization")?.split(" ")[1];
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    }
+    const userId = verifyToken(token);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

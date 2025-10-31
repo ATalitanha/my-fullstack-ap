@@ -1,31 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import { z } from "zod";
 import prisma from "@/shared/lib/prisma";
 import { decryptText, encryptText } from "@/shared/lib/crypto";
-
-const JWT_SECRET = process.env.JWT_SECRET!;
-
-interface JwtPayload {
-  id: string;
-}
-
-/**
- * Get userId from JWT token
- * @param req - The HTTP request
- * @returns userId or null if token is invalid
- */
-function getUserIdFromToken(req: NextRequest): string | null {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) return null;
-  try {
-    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    return payload.id;
-  } catch (error) {
-    console.error("Invalid token:", error);
-    return null;
-  }
-}
+import { verifyToken } from "@/shared/lib/auth";
 
 /**
  * @description API to get user's notes
@@ -34,7 +11,11 @@ function getUserIdFromToken(req: NextRequest): string | null {
  */
 export async function GET(req: NextRequest) {
   try {
-    const userId = getUserIdFromToken(req);
+    const token = req.headers.get("authorization")?.split(" ")[1];
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    }
+    const userId = verifyToken(token);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
@@ -74,7 +55,11 @@ const createNoteSchema = z.object({
  */
 export async function POST(req: NextRequest) {
   try {
-    const userId = getUserIdFromToken(req);
+    const token = req.headers.get("authorization")?.split(" ")[1];
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    }
+    const userId = verifyToken(token);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
