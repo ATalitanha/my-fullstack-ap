@@ -4,6 +4,7 @@ import theme from "@/lib/theme";
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react";
 import HybridLoading from "./loading";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 
 
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <Suspense fallback={<HybridLoading />}>{children}</Suspense>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
