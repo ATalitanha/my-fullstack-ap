@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import prisma from "@/shared/lib/prisma";
 import bcrypt from "bcrypt";
-import { encryptText, encryptEmail } from "@/utils/crypto";
+import { encryptText, encryptEmail } from "@/shared/lib/crypto";
 
 /**
  * API برای ثبت‌نام کاربر جدید
