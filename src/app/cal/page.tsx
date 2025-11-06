@@ -6,9 +6,22 @@ import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import Link from "next/link";
 import { Calculator, ArrowRight, Sparkles, Ruler, Zap } from "lucide-react";
+import HybridLoading from "../loading";
 
 export default function Cal() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -48,6 +61,12 @@ export default function Cal() {
       delay: 0.3
     }
   ];
+
+  if (isLoading) {
+    return (
+      <HybridLoading/>
+    );
+  }
 
   return (
     <>

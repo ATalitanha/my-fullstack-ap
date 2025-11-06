@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
 import { evaluate } from "mathjs";
 import { Sparkles, History, Trash2, RotateCcw } from "lucide-react";
+import HybridLoading from "@/app/loading";
 
 type HistoryItem = {
   id: string;
@@ -46,6 +47,18 @@ export default function AdvancedCalculatorPage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [scientific, setScientific] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -167,6 +180,12 @@ export default function AdvancedCalculatorPage() {
   }, [handleAllClear, handleBackspace, handleEvaluate]);
 
   const lastHistory = useMemo(() => history.slice(0, 20), [history]);
+
+  if (isLoading) {
+    return (
+      <HybridLoading/>
+    );
+  }
 
   return (
     <>

@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 /**
  * Represents a changelog entry.
  * @property {string} version - The version number.
@@ -21,3 +23,16 @@ export type Unit = {
   value: string;
   factor?: number;
 };
+
+export interface BaseComponentProps {
+  className?: string;
+  children?: ReactNode;
+}
+
+export interface ButtonProps extends BaseComponentProps {
+  onClick?: () => void;
+  disabled?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
+  type?: 'button' | 'submit' | 'reset';
+  size?: 'sm' | 'md' | 'lg';
+}

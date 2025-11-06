@@ -1,20 +1,12 @@
 'use client';
 
 
-import { usePathname } from 'next/navigation'
 
 export default function HybridLoading() {
-    const pathname = usePathname();
-
-    // صفحاتی که لودینگ اولیه نمی‌خواهند
-    const noInitialLoadingPaths = ['/todo', '/notes'];
 
 
 
-    // اگر صفحه جزو صفحات بدون لودینگ است یا لودینگ تمام شده
-    if (noInitialLoadingPaths.includes(pathname)) {
-        return null;
-    }
+    
 
     return (
 

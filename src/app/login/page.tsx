@@ -1,20 +1,28 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import { Sparkles, LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useAuth } from '@/shared/hooks/useAuth';
 
 export default function LoginPage() {
+
+  const { user, loading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/dashboard');
+    }
+  }, [user, loading, router]);
 
   // State های فرم
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -34,7 +42,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setIsSubmitting(true);
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -53,7 +61,7 @@ export default function LoginPage() {
     } catch {
       setError("خطایی در ارتباط با سرور رخ داد.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -194,13 +202,13 @@ export default function LoginPage() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  disabled={loading}
+                  disabled={isSubmitting}
                   className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
                   text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 
                   transition-all duration-200 flex items-center justify-center gap-2 
                   disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {loading ? (
+                  {isSubmitting ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       در حال ورود...

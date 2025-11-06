@@ -6,8 +6,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import { Sparkles, UserPlus, Mail, Lock, User, AlertCircle } from "lucide-react";
+import { useAuth } from "@/shared/hooks/useAuth";
 
 export default function SignupPage() {
+
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, loading, router]);
+
   // مقادیر فرم
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -15,10 +26,8 @@ export default function SignupPage() {
   
   // وضعیت خطا و لودینگ
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const router = useRouter();
 
   // ردیابی موقعیت ماوس
   useEffect(() => {
@@ -34,7 +43,6 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
     try {
       const res = await fetch("/api/auth/signup", {
@@ -46,14 +54,13 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/login");
+        router.push('/login')
       } else {
         setError(data.message || "ثبت نام ناموفق بود");
       }
     } catch {
       setError("خطایی در ارتباط با سرور رخ داد.");
     } finally {
-      setLoading(false);
     }
   };
 

@@ -7,6 +7,8 @@ import theme from "@/lib/theme";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ArrowLeft, User, LogOut, Sparkles, Settings, Activity } from "lucide-react";
 import Link from "next/link";
+import Header from "@/components/ui/header";
+import HybridLoading from "../loading";
 
 type User = { id: string; username: string; email?: string };
 
@@ -56,12 +58,7 @@ export default function DashboardPage() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
-        <p className="text-gray-600 dark:text-gray-300 animate-pulse">
-          Loading...
-        </p>
-      </div>
+      <HybridLoading/>
     );
 
   if (!user) return null;
@@ -74,25 +71,7 @@ export default function DashboardPage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
         }}
       />
-      <header dir="ltr"
-        className={`fixed w-full flex justify-between p-4 h-16 top-0 z-50 bg-transparent`}>
-        <Link
-          href="/"
-          className="flex justify-center items-center p-2 w-10 h-10 rounded-xl transition-all duration-200"
-        >
-          <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-        </Link>
-        <div className="flex items-center gap-3">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2 px-3 py-1 rounded-full 0 text-blue-600 dark:text-blue-400 text-sm"
-          >
-            <User size={14} />
-            <span>{user.username}</span>
-          </motion.div>
-          <ThemeToggle />
-        </div>
-      </header>
+      <Header/>
       <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />

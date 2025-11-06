@@ -8,6 +8,7 @@ import { convertValue } from "@/lib/converter";
 import UnitSelect from "@/components/UnitSelect";
 import CategorySelect from "@/components/CategorySelect";
 import { Sparkles, ArrowRightLeft, Calculator } from "lucide-react";
+import HybridLoading from "@/app/loading";
 
 export default function UnitConverterPage() {
   // حالت‌ها (state) صفحه
@@ -17,6 +18,18 @@ export default function UnitConverterPage() {
   const [value, setValue] = useState("");
   const [result, setResult] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   // ردیابی موقعیت ماوس
   useEffect(() => {
@@ -45,6 +58,12 @@ export default function UnitConverterPage() {
   // توابع افزایش و کاهش مقدار ورودی
   const increment = () => setValue((prev) => String(Number(prev || 0) + 1));
   const decrement = () => setValue((prev) => String(Number(prev || 0) - 1));
+
+  if (isLoading) {
+      return (
+        <HybridLoading/>
+      );
+    }
 
   return (
     <>

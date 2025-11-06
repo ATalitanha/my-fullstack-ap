@@ -14,6 +14,7 @@ import theme from "@/lib/theme";
 import { useCalculatorHistory } from "@/hooks/useCalculatorHistory";
 import { BUTTONS, OPERATIONS, Operation, OperatorBtn } from "@/constants";
 import { AlertTriangle, Trash2, Sparkles } from "lucide-react";
+import HybridLoading from "@/app/loading";
 
 export default function Calculator() {
   // وضعیت‌های داخلی
@@ -25,6 +26,18 @@ export default function Calculator() {
   const [showConfirm, setShowConfirm] = useState(false); // نمایش پنجره تایید پاک کردن تاریخچه
   const [parenError, setParenError] = useState(false);   // خطا در پرانتزها
   const [evalError, setEvalError] = useState<string | null>(null); // خطای محاسبه
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   // تاریخچه ماشین‌حساب
   const {
@@ -260,6 +273,14 @@ export default function Calculator() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleInput, handleOperation, calcResult, resetCalc, requestClearHistory, result, showConfirm, confirmClear, cancelClear]);
+
+
+  if (isLoading) {
+    return (
+      <HybridLoading/>
+    );
+  }
+
 
   return (
     <>

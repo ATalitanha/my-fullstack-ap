@@ -7,15 +7,10 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
 
-interface JwtPayload {
-  id: string;
-  username: string;
-}
-
 /**
- * @description API to reissue Access Token
- * @method GET
- * @input refreshToken from HttpOnly cookie
+ * API برای صدور مجدد Access Token
+ * متد: GET
+ * ورودی: refreshToken از کوکی HttpOnly
  */
 export async function GET(req: NextRequest) {
   try {
@@ -23,15 +18,15 @@ export async function GET(req: NextRequest) {
 
     if (!refreshToken) {
       return NextResponse.json(
-        { error: "Refresh token not found" },
+        { error: "رفرش توکن موجود نیست" },
         { status: 401 }
       );
     }
 
-    // Verify and decode refresh token
-    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as JwtPayload;
+    // بررسی و دیکد refresh token
+    const payload: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 
-    // Find user in the database
+    // پیدا کردن کاربر در دیتابیس
     const user = await prisma.user.findUnique({
       where: { id: payload.id },
       select: { id: true, username: true },
@@ -39,27 +34,33 @@ export async function GET(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "User not found" },
+        { error: "کاربر یافت نشد" },
         { status: 401 }
       );
     }
 
-    // Decrypt username for the new token
+    // رمزگشایی نام کاربری برای توکن جدید
     const decryptedUsername = decryptText(user.username);
 
-    // Generate new access token
+    // تولید access token جدید
     const newAccessToken = jwt.sign(
       { id: user.id, username: decryptedUsername },
       JWT_SECRET,
       { expiresIn: ACCESS_TOKEN_EXPIRY }
     );
 
-    return NextResponse.json({ accessToken: newAccessToken }, { status: 200 });
+    return NextResponse.json({
+      success: true,
+      data: {
+        user: { id: user.id, username: decryptedUsername }
+      },
+      accessToken: newAccessToken
+    }, { status: 200 });
 
   } catch (error) {
-    console.error("Error in GET /auth/refresh:", error);
+    console.error("خطا در GET /auth/refresh:", error);
     return NextResponse.json(
-      { error: "Invalid refresh token or server error" },
+      { error: "رفرش توکن نامعتبر یا خطای سرور" },
       { status: 401 }
     );
   }

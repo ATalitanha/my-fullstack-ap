@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import theme from "@/lib/theme";
-import "@fontsource/major-mono-display";
 import { Analytics } from "@vercel/analytics/next"
+import { Suspense } from "react";
+import HybridLoading from "./loading";
 
 
 
@@ -30,7 +31,7 @@ export default function RootLayout({
           ${theme}`
         }
       >
-        {children}
+        <Suspense fallback={<HybridLoading />}>{children}</Suspense>
         <Analytics />
       </body>
     </html>

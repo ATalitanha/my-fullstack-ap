@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChangeLog } from "@/components/change-log";
-import ThemeToggle from "@/components/ThemeToggle";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
+import Header from "@/components/ui/header";
 
 export default function HomePage() {
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
@@ -56,20 +56,6 @@ export default function HomePage() {
       category: "Productivity"
     },
     {
-      href: "/dashboard",
-      label: "User Account",
-      color: "from-pink-500 to-rose-600",
-      icon: "👤",
-      category: "Account"
-    },
-    {
-      href: "/login",
-      label: "Login / Signup",
-      color: "from-sky-500 to-cyan-600",
-      icon: "🔐",
-      category: "Account"
-    },
-    {
       href: "/Prices-table",
       label: "Live Gold & Currency Prices",
       color: "from-green-500 to-emerald-600",
@@ -106,20 +92,20 @@ export default function HomePage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
+      <Header/>
       <main className="min-h-screen flex flex-col justify-center items-center px-4 pb-16 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-700 relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          className="flex items-center justify-between w-full mt-6 relative z-10 pb-20 px-4"
+          className="flex flex-row-reverse items-center justify-between w-full mb-6 relative z-10 pt-20"
         >
-          <ThemeToggle />
           <button
             onClick={() => setIsChangeLogOpen(true)}
             className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
           >
             <Sparkles size={18} />
-            Version Changes
+            تغییرات نسخه
           </button>
         </motion.div>
         <div className="absolute inset-0 overflow-hidden">
