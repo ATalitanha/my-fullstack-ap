@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Menu, Settings as SettingsIcon, User as UserIcon, LogOut as LogOutIcon } from 'lucide-react';
 
@@ -63,7 +63,7 @@ const Header = ({ backTo }: HeaderProps) => {
                 aria-label="Back"
                 className="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800 transition flex items-center"
               >
-                <ArrowLeft className="w-5 h-5 text-blue-600 dark:text-blue-300" />
+                <ArrowRight className="w-5 h-5 text-blue-600 dark:text-blue-300" />
               </button>
             )}
             

@@ -27,7 +27,7 @@ export default function Cal() {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -35,8 +35,8 @@ export default function Cal() {
   const calculatorTools = [
     {
       href: "/cal/calc",
-      title: "Simple Calculator",
-      description: "For daily calculations and basic math operations.",
+      title: "ماشین حساب ساده",
+      description: "محاسبات روزمره و عملیات پایه ریاضی",
       icon: Calculator,
       color: "from-blue-500 to-blue-600",
       iconColor: "text-blue-500",
@@ -44,8 +44,8 @@ export default function Cal() {
     },
     {
       href: "/cal/units",
-      title: "Unit Converter",
-      description: "Convert between different units of measurement.",
+      title: "تبدیل واحد",
+      description: "تبدیل بین واحدهای مختلف اندازه‌گیری",
       icon: Ruler,
       color: "from-teal-500 to-teal-600",
       iconColor: "text-teal-500",
@@ -53,8 +53,8 @@ export default function Cal() {
     },
     {
       href: "/cal/advanc-cal",
-      title: "Advanced Calculator",
-      description: "For scientific and complex calculations with professional features.",
+      title: "ماشین حساب پیشرفته",
+      description: "محاسبات علمی و پیچیده با قابلیت‌های حرفه‌ای",
       icon: Zap,
       color: "from-purple-500 to-purple-600",
       iconColor: "text-purple-500",
@@ -64,20 +64,20 @@ export default function Cal() {
 
   if (isLoading) {
     return (
-      <HybridLoading/>
+      <HybridLoading />
     );
   }
 
   return (
     <>
       <Header />
-      <div 
+      <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
-      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -93,15 +93,15 @@ export default function Cal() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>Advanced Calculation Tools</span>
+              <span>بزارهای محاسباتی پیشرفته</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                Calculator Tools
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                ابزارهای ماشین حساب
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              A complete set of calculation tools for your various needs ✨
+              مجموعه‌ای کامل از ابزارهای محاسباتی برای نیازهای مختلف شما ✨
             </p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -113,8 +113,8 @@ export default function Cal() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: tool.delay }}
-                  whileHover={{ 
-                    scale: 1.05, 
+                  whileHover={{
+                    scale: 1.05,
                     y: -5,
                     transition: { type: "spring", stiffness: 400, damping: 25 }
                   }}
@@ -126,10 +126,10 @@ export default function Cal() {
                     className="block h-full"
                   >
                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 overflow-hidden transition-all duration-300 group-hover:shadow-3xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90 h-full flex flex-col">
-                      <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700">
+                      <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className={`p-3 bg-gradient-to-br ${tool.color} rounded-xl shadow-lg`}>
+                            <div className={`p-3 bg-linear-to-br ${tool.color} rounded-xl shadow-lg`}>
                               <IconComponent className="text-white" size={24} />
                             </div>
                             <div>
@@ -137,7 +137,7 @@ export default function Cal() {
                                 {tool.title}
                               </h3>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                Calculation Tool
+                                ابزار محاسباتی
                               </p>
                             </div>
                           </div>
@@ -153,13 +153,13 @@ export default function Cal() {
                         <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 flex-1">
                           {tool.description}
                         </p>
-                        <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+                        <div className={`absolute inset-0 bg-linear-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
                         <motion.div
                           whileHover={{ scale: 1.02 }}
                           className="mt-auto"
                         >
-                          <div className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 group-hover:from-blue-500 group-hover:to-blue-600 text-gray-700 dark:text-gray-300 group-hover:text-white transition-all duration-300 text-center font-semibold text-sm">
-                            Use Tool
+                          <div className="w-full py-3 px-4 rounded-2xl bg-linear-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 group-hover:from-blue-500 group-hover:to-blue-600 text-gray-700 dark:text-gray-300 group-hover:text-white transition-all duration-300 text-center font-semibold text-sm">
+                            استفاده از ابزار
                           </div>
                         </motion.div>
                       </div>
@@ -177,26 +177,27 @@ export default function Cal() {
           >
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8 max-w-2xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                Why Use Our Calculation Tools?
+                <p>چرا از ابزارهای محاسباتی ما استفاده کنید؟</p>
+
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-400">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Sparkles className="text-blue-500" size={20} />
                   </div>
-                  <p>Modern and user-friendly design</p>
+                  <p>طراحی مدرن و کاربرپسند</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Zap className="text-green-500" size={20} />
                   </div>
-                  <p>High speed and accuracy</p>
+                  <p>سرعت و دقت بالا</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Calculator className="text-purple-500" size={20} />
                   </div>
-                  <p>Diverse capabilities</p>
+                  <p>قابلیت‌های متنوع</p>
                 </div>
               </div>
             </div>

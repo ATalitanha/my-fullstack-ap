@@ -27,40 +27,40 @@ export default function HomePage() {
   const links = [
     {
       href: "/cal",
-      label: "Calculator",
+      label: "ماشین حساب",
       color: "from-blue-500 to-blue-700",
       icon: "🧮",
-      category: "Tools",
+      category: "ابزار",
       popular: true
     },
     {
       href: "/messenger",
-      label: "Text Transfer",
+      label: "انتقال متن",
       color: "from-teal-500 to-teal-700",
       icon: "💬",
-      category: "Communication"
+      category: "ارتباطات"
     },
     {
       href: "/todo",
-      label: "To-Do List",
+      label: "لیست کارها",
       color: "from-amber-500 to-orange-600",
       icon: "✅",
-      category: "Productivity",
+      category: "ارتباطات",
       popular: true
     },
     {
       href: "/notes",
-      label: "Notes",
+      label: "یادداشت‌ها",
       color: "from-purple-500 to-indigo-600",
       icon: "📝",
-      category: "Productivity"
+      category: "ارتباطات"
     },
     {
       href: "/Prices-table",
-      label: "Live Gold & Currency Prices",
+      label: "قیمت لحظه‌ای طلا و ارز",
       color: "from-green-500 to-emerald-600",
       icon: "📊",
-      category: "Finance",
+      category: "مالی",
       new: true
     },
   ];
@@ -74,7 +74,7 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -93,7 +93,7 @@ export default function HomePage() {
         }}
       />
       <Header/>
-      <main className="min-h-screen flex flex-col justify-center items-center px-4 pb-16 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-700 relative overflow-hidden">
+      <main className="min-h-screen flex flex-col justify-center items-center px-4 pb-16 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-700 relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export default function HomePage() {
         >
           <button
             onClick={() => setIsChangeLogOpen(true)}
-            className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl font-semibold bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
           >
             <Sparkles size={18} />
             تغییرات نسخه
@@ -126,10 +126,10 @@ export default function HomePage() {
             <span>A Collection of the Best Tools</span>
           </motion.div>
           <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span>
+            به <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span> خوش آمدید
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-            A complete set of practical and smart tools to improve your daily productivity ✨
+            مجموعه‌ای کامل از ابزارهای کاربردی و هوشمند برای بهبود productivity روزانه شما ✨
           </p>
         </motion.div>
         <motion.div
@@ -141,10 +141,10 @@ export default function HomePage() {
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="Search tools..."
+            placeholder="جستجو بین ابزارها..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
           />
         </motion.div>
         <motion.div
@@ -160,7 +160,7 @@ export default function HomePage() {
                 : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"
               }`}
           >
-            All
+            همه
           </button>
           {categories.map(category => (
             <button
@@ -202,7 +202,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
                       <TrendingUp size={12} />
-                      <span>Popular</span>
+                      <span>پربازدید</span>
                     </div>
                   </div>
                 )}
@@ -210,7 +210,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
                       <Zap size={12} />
-                      <span>New</span>
+                      <span>جدید</span>
                     </div>
                   </div>
                 )}
@@ -220,9 +220,9 @@ export default function HomePage() {
                     className="flex flex-col items-center justify-center h-44 text-center font-semibold text-lg relative overflow-hidden"
                   >
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${link.color} opacity-0 group-hover:opacity-10 transition-all duration-500`}
+                      className={`absolute inset-0 bg-linear-to-br ${link.color} opacity-0 group-hover:opacity-10 transition-all duration-500`}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="relative z-10 space-y-3">
                       <div className="text-3xl">{link.icon}</div>
                       <span className="text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors block">

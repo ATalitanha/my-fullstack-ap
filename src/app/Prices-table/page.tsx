@@ -27,10 +27,10 @@ type MarketData = {
 type Category = "all" | "gold" | "currency" | "cryptocurrency";
 
 const categories: { value: Category; label: string }[] = [
-  { value: "all", label: "All Categories" },
-  { value: "gold", label: "Gold & Coins" },
-  { value: "currency", label: "Currencies" },
-  { value: "cryptocurrency", label: "Cryptocurrencies" },
+  { value: "all", label: "همه دسته‌بندی‌ها" },
+  { value: "gold", label: "طلا و سکه" },
+  { value: "currency", label: "ارزها" },
+  { value: "cryptocurrency", label: "رمزارزها" },
 ];
 
 export default function PricesTableCards() {
@@ -74,7 +74,7 @@ export default function PricesTableCards() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="text-center">
           <DollarSign className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-300 text-lg">
@@ -119,7 +119,7 @@ export default function PricesTableCards() {
         }}
       />
       <div
-        className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
+        className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
       >
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
@@ -132,15 +132,15 @@ export default function PricesTableCards() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>Real-time Market Data</span>
+              <span>اطلاعات لحظه‌ای بازار</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                Live Prices
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                قیمت‌های لحظه‌ای
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              Track live prices for Gold, Currencies, and Crypto ✨
+              پیگیری آنی قیمت طلا، ارز و رمزارزها  ✨
             </p>
           </motion.div>
           <motion.div
@@ -155,7 +155,7 @@ export default function PricesTableCards() {
                   <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by name or symbol..."
+                    placeholder="جستجو بر اساس نام یا نماد..."
                     className="w-full px-4 py-3 pl-10 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40
                     text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
                     focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
@@ -193,7 +193,7 @@ export default function PricesTableCards() {
                         bg-white dark:bg-gray-800
                         rounded-2xl shadow-lg z-50
                         w-full sm:w-[200px] max-h-60
-                        min-w-[var(--radix-select-trigger-width)]
+                        min-w-(--radix-select-trigger-width)
                       "
                     >
                       <Select.Viewport
@@ -228,21 +228,21 @@ export default function PricesTableCards() {
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <div className="text-center p-3 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
+              <div className="text-center p-3 rounded-2xl bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{data.gold?.length || 0}</div>
-                <div className="text-sm text-blue-600 dark:text-blue-400">Gold & Coins</div>
+                <div className="text-sm text-blue-600 dark:text-blue-400">طلا و سکه</div>
               </div>
-              <div className="text-center p-3 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
+              <div className="text-center p-3 rounded-2xl bg-linear-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">{data.currency?.length || 0}</div>
-                <div className="text-sm text-green-600 dark:text-green-400">Currency</div>
+                <div className="text-sm text-green-600 dark:text-green-400">ارز</div>
               </div>
-              <div className="text-center p-3 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+              <div className="text-center p-3 rounded-2xl bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
                 <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{data.cryptocurrency?.length || 0}</div>
-                <div className="text-sm text-purple-600 dark:text-purple-400">Crypto</div>
+                <div className="text-sm text-purple-600 dark:text-purple-400">رمزارز</div>
               </div>
-              <div className="text-center p-3 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700/20 dark:to-gray-800/20">
+              <div className="text-center p-3 rounded-2xl bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-700/20 dark:to-gray-800/20">
                 <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">{items.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Showing</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">نمایش داده شده</div>
               </div>
             </div>
           </motion.div>
@@ -282,15 +282,15 @@ export default function PricesTableCards() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 dark:text-gray-400 text-sm">Price:</span>
+                        <span className="text-gray-600 dark:text-gray-400 text-sm">قیمت:</span>
                         <span className="font-bold text-gray-800 dark:text-white text-lg">{item.price.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 dark:text-gray-400 text-sm">Unit:</span>
+                        <span className="text-gray-600 dark:text-gray-400 text-sm">واحد:</span>
                         <span className="font-semibold text-gray-700 dark:text-gray-300">{item.unit}</span>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                        <span className="text-gray-600 dark:text-gray-400 text-sm">Change:</span>
+                        <span className="text-gray-600 dark:text-gray-400 text-sm">تغییرات:</span>
                         <span
                           className={`font-bold ${
                             item.change_percent >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
@@ -320,9 +320,9 @@ export default function PricesTableCards() {
           )}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="text-center mt-12">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 max-w-2xl mx-auto">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">📊 Market Information</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">📊 اطلاعات بازار</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                The data displayed is sourced in real-time from reliable providers and may experience slight delays.
+                اطلاعات نمایش داده شده به صورت لحظه‌ای از منابع معتبر دریافت می‌شود و ممکن است با تاخیر همراه باشد.
               </p>
             </div>
           </motion.div>

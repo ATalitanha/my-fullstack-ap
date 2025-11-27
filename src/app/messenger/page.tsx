@@ -171,7 +171,7 @@ export default function MessageForm() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
-      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -187,15 +187,15 @@ export default function MessageForm() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>Messaging and Management System</span>
+              <span>سیستم ارسال و مدیریت پیام‌ها</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                Send Message
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                ارسال پیام
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              Send and manage your messages in a beautiful and user-friendly environment ✨
+              ارسال و مدیریت پیام‌های خود در یک محیط زیبا و کاربرپسند  ✨
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -210,18 +210,18 @@ export default function MessageForm() {
                     <Send className="text-blue-600 dark:text-blue-400" size={24} />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-                    Send New Message
+                    ارسال پیام جدید
                   </h2>
                 </div>
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Message Title
+                      عنوان پیام
                     </label>
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="Enter your message title..."
+                        placeholder="عنوان پیام خود را وارد کنید..."
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         onBlur={() => setTouchedTitle(true)}
@@ -241,18 +241,18 @@ export default function MessageForm() {
                           role="alert"
                         >
                           <AlertCircle size={16} />
-                          Please enter a title.
+                          لطفا عنوان را وارد کنید
                         </motion.p>
                       )}
                     </AnimatePresence>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Message Body
+                      متن پیام
                     </label>
                     <div className="relative">
                       <textarea
-                        placeholder="Enter your message body..."
+                        placeholder="متن پیام خود را وارد کنید..."
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
                         onBlur={() => setTouchedBody(true)}
@@ -279,7 +279,7 @@ export default function MessageForm() {
                           role="alert"
                         >
                           <AlertCircle size={16} />
-                          Please enter a message body.
+                          لطفا متن پیام را وارد کنید.
                         </motion.p>
                       )}
                     </AnimatePresence>
@@ -289,7 +289,7 @@ export default function MessageForm() {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-4 rounded-2xl font-bold text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <>
@@ -299,7 +299,7 @@ export default function MessageForm() {
                     ) : (
                       <>
                         <Send size={20} />
-                        Send Message
+                        ارسال پیام
                       </>
                     )}
                   </motion.button>
@@ -312,16 +312,16 @@ export default function MessageForm() {
               className="lg:col-span-1"
             >
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
-                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg">
                         <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Stored Messages</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">پیام‌های ثبت‌شده</h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {messages.length} messages
+                          {messages.length} پیام
                         </p>
                       </div>
                     </div>
@@ -330,14 +330,14 @@ export default function MessageForm() {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => { setToDeleteId("all"); setDeleteModalOpen(true); }}
                       disabled={messages.length === 0 || deletingId === "all"}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-4 py-2 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {deletingId === "all" ? (
                         <LoadingDots />
                       ) : (
                         <Trash2 size={16} />
                       )}
-                      Delete All
+                      حذف همه
                     </motion.button>
                   </div>
                 </div>
@@ -354,8 +354,8 @@ export default function MessageForm() {
                       className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
                     >
                       <MessageCircle size={48} className="mb-3 opacity-50" />
-                      <p>No messages yet</p>
-                      <p className="text-sm mt-1">Send the first message!</p>
+                      <p>هیچ پیامی وجود ندارد</p>
+                      <p className="text-sm mt-1">اولین پیام را ارسال کنید!</p>
                     </motion.div>
                   ) : (
                     <div className="space-y-4">
@@ -367,7 +367,7 @@ export default function MessageForm() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ delay: index * 0.1 }}
-                            className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
+                            className="p-4 rounded-2xl bg-linear-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
                           >
                             <div className="flex justify-between items-start gap-4">
                               <div className="flex-1">
@@ -383,7 +383,7 @@ export default function MessageForm() {
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => onDeleteClick(msg.id)}
                                 disabled={deletingId === msg.id}
-                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
+                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors shrink-0 disabled:opacity-50"
                                 title="Delete message"
                               >
                                 {deletingId === msg.id ? (

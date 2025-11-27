@@ -140,10 +140,7 @@ export default function AdvancedCalculatorPage() {
 
   const handleClear = () => { setExpr(""); setResult(""); setError(null); };
 
-  const handleAllClear = useCallback(() => {
-    handleClear();
-    setHistory([]);
-  }, []);
+
 
   const handleBackspace = useCallback(() => {
     if (result) setResult("");
@@ -169,21 +166,18 @@ export default function AdvancedCalculatorPage() {
         e.preventDefault();
         handleBackspace();
       } else if (key.toLowerCase() === "c") {
-        if (e.shiftKey) handleAllClear();
-        else handleClear();
-      } else if (key === "q") {
-        handleAllClear();
+        handleClear();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [handleAllClear, handleBackspace, handleEvaluate]);
+  }, [handleBackspace, handleEvaluate]);
 
   const lastHistory = useMemo(() => history.slice(0, 20), [history]);
 
   if (isLoading) {
     return (
-      <HybridLoading/>
+      <HybridLoading />
     );
   }
 
@@ -196,7 +190,7 @@ export default function AdvancedCalculatorPage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
-      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -212,15 +206,15 @@ export default function AdvancedCalculatorPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>Advanced Calculator with Scientific Features</span>
+              <span>ماشین حساب پیشرفته با قابلیت‌های علمی</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                Professional Calculator
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                ماشین حساب حرفه‌ای
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              Complex mathematical calculations with advanced scientific features ✨
+              محاسبات پیچیده ریاضی با قابلیت‌های علمی پیشرفته ✨
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -229,7 +223,7 @@ export default function AdvancedCalculatorPage() {
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-2"
             >
-              <div className="text-center mb-6 min-h-[2rem]">
+              <div className="text-center mb-6 min-h-8">
                 <AnimatePresence>
                   {error && (
                     <motion.div
@@ -246,17 +240,17 @@ export default function AdvancedCalculatorPage() {
                 </AnimatePresence>
               </div>
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 overflow-hidden">
-                <div className="p-6 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700 text-white relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-purple-500/10" />
+                <div className="p-6 bg-linear-to-br from-gray-800 via-gray-900 to-gray-800 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700 text-white relative overflow-hidden">
+                  <div className="absolute inset-0 bg-linear-to-r from-blue-500/10 via-transparent to-purple-500/10" />
                   <div className="relative z-10 space-y-4">
-                    <div className="text-right font-mono text-lg break-words min-h-[2rem]">
+                    <div className="text-right font-mono text-lg wrap-break-word min-h-8">
                       {expr || " "}
                     </div>
                     <motion.div
                       key={result}
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-right font-bold text-3xl md:text-4xl min-h-[3rem]"
+                      className="text-right font-bold text-3xl md:text-4xl min-h-12"
                     >
                       {result || "—"}
                     </motion.div>
@@ -270,19 +264,19 @@ export default function AdvancedCalculatorPage() {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setScientific(s => !s)}
                         className={`px-4 py-2 rounded-xl font-semibold transition-all ${scientific
-                            ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25"
-                            : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                          ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25"
+                          : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                           }`}
                       >
-                        {scientific ? "Scientific 🔬" : "Scientific"}
+                        {scientific ? "Scientific 🔬" : "حالت علمی"}
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleEvaluate}
-                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold shadow-lg shadow-green-500/25"
+                        className="px-4 py-2 rounded-xl bg-linear-to-r from-green-500 to-green-600 text-white font-bold shadow-lg shadow-green-500/25"
                       >
-                        Calculate
+                        محاسبه
                       </motion.button>
                     </div>
                     <div className="flex gap-2">
@@ -302,14 +296,7 @@ export default function AdvancedCalculatorPage() {
                       >
                         C
                       </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleAllClear}
-                        className="px-3 py-2 rounded-xl bg-gray-500 text-white shadow-lg shadow-gray-500/25"
-                      >
-                        AC
-                      </motion.button>
+
                     </div>
                   </div>
                 </div>
@@ -328,7 +315,7 @@ export default function AdvancedCalculatorPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleButton(s === "√(" ? "sqrt(" : s)}
-                            className="py-3 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25 font-semibold"
+                            className="py-3 rounded-2xl bg-linear-to-br from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25 font-semibold"
                           >
                             {s}
                           </motion.button>
@@ -344,8 +331,8 @@ export default function AdvancedCalculatorPage() {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleButton(b)}
                         className={`py-4 rounded-2xl font-bold text-lg transition-all ${["/", "*", "-", "+"].includes(b)
-                            ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25"
-                            : "bg-gradient-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-600 text-gray-800 dark:text-white shadow-lg hover:shadow-xl"
+                          ? "bg-linear-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25"
+                          : "bg-linear-to-br from-white to-gray-100 dark:from-gray-700 dark:to-gray-600 text-gray-800 dark:text-white shadow-lg hover:shadow-xl"
                           }`}
                       >
                         {b}
@@ -361,15 +348,15 @@ export default function AdvancedCalculatorPage() {
               className="lg:col-span-1"
             >
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
-                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg">
                         <History className="text-blue-600 dark:text-blue-400" size={20} />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">History</h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Recent calculations</p>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">تاریخچه</h2>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">محاسبات اخیر</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -414,21 +401,26 @@ export default function AdvancedCalculatorPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all cursor-pointer group"
+                            className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all cursor-pointer group"
                             onClick={() => handleUseHistory(h)}
                           >
-                            <div className="text-right mb-2">
-                              <div className="font-mono text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors">
-                                {h.expr}
+                            <div className="">
+                              <div className="text-right mb-2">
+                                <div className="font-mono text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors">
+                                  {h.expr}
+                                </div>
+                                <div className="font-bold text-lg text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                  = {h.result}
+                                </div>
                               </div>
-                              <div className="font-bold text-lg text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                = {h.result}
+                              <div className="flex justify-between items-center">
+                                <small className="text-xs text-gray-400">
+                                  {new Date(h.createdAt).toLocaleString('en-US')}
+                                </small>
+
                               </div>
                             </div>
-                            <div className="flex justify-between items-center">
-                              <small className="text-xs text-gray-400">
-                                {new Date(h.createdAt).toLocaleString('en-US')}
-                              </small>
+                            <div className="">
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
@@ -438,9 +430,10 @@ export default function AdvancedCalculatorPage() {
                                 }}
                                 className="px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                               >
-                                Delete
+                                حذف
                               </motion.button>
                             </div>
+
                           </motion.div>
                         ))}
                       </div>
