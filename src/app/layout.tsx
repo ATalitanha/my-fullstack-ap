@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import theme from "@/lib/theme";
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react";
 import HybridLoading from "./loading";
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
-
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,19 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa"
-      dir="rtl"
-      className="scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
-        scrollbar-thumb-rounded scrollbar-track-gray-100 dark:scrollbar-track-transparent 
-        hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
-      "
-    >
-      <body
-        className={`antialiased 
-          ${theme}`
-        }
-      >
-        <Suspense fallback={<HybridLoading />}>{children}</Suspense>
+    <html lang="fa" dir="rtl" className="">
+      <body className="antialiased font-sans bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 scrollbar-custom">
+        <div className="relative flex flex-col min-h-screen">
+          <main className="flex-1">
+            <Suspense fallback={<HybridLoading />}>{children}</Suspense>
+          </main>
+        </div>
         <Analytics />
         <SpeedInsights />
       </body>
