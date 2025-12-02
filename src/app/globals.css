@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-@plugin "tailwind-scrollbar";
 
 @layer base {
   :root {
@@ -29,10 +28,6 @@
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-cyan-500 to-violet-500 bg-clip-text text-transparent;
-  }
-
-  .soft-shadow {
-    @apply shadow-soft dark:shadow-soft-dark;
   }
 
   .glass-effect {

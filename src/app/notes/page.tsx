@@ -2,10 +2,11 @@
 
 import ConfirmModal from "@/components/DeleteConfirmModal";
 import Header from "@/components/ui/header";
+import theme from "@/lib/theme";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Plus, Edit3, Trash2, FileText, AlertCircle, CheckCircle, X, Loader2 } from "lucide-react";
+import { Sparkles, Plus, Edit3, Trash2, FileText, AlertCircle, CheckCircle, X } from "lucide-react";
 import HybridLoading from "../loading";
 
 type Note = { id: string; title: string; content: string; createdAt: string };
@@ -27,14 +28,25 @@ export default function NotesPage() {
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [response, setResponse] = useState<ResponseMessage | null>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
     const [deletingId, setDeletingId] = useState<string | number | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
-    const [touchedFields, setTouchedFields] = useState<{ [key: string]: boolean }>({});
+    const [touchedTitle, setTouchedTitle] = useState(false);
+    const [touchedContent, setTouchedContent] = useState(false);
+    const [formTouched, setFormTouched] = useState(false);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const router = useRouter();
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, []);
 
     const showResponse = (resp: ResponseMessage) => {
         setResponse(resp);
@@ -65,7 +77,7 @@ export default function NotesPage() {
             const data = await fetcher("/api/notes", token);
             setNotes(data.notes || []);
         } catch {
-            showResponse({ text: "Error fetching notes.", type: "error" });
+            showResponse({ text: "❌ Error fetching notes", type: "error" });
         } finally {
             setLoading(false);
         }
@@ -74,16 +86,14 @@ export default function NotesPage() {
     useEffect(() => { fetchAccessToken(); }, [fetchAccessToken]);
     useEffect(() => { if (token) fetchNotes(); }, [token, fetchNotes]);
 
-    const handleBlur = (field: string) => {
-        setTouchedFields(prev => ({ ...prev, [field]: true }));
-    };
-
     const saveNote = async (e: React.FormEvent) => {
         e.preventDefault();
-        setTouchedFields({ title: true, content: true });
+        setFormTouched(true);
+        setTouchedTitle(true);
+        setTouchedContent(true);
 
         if (!title.trim() || !content.trim() || !token) {
-            showResponse({ text: "Please fill out all fields.", type: "error" });
+            showResponse({ text: "❌ Please fill out all fields.", type: "error" });
             return;
         }
 
@@ -98,15 +108,15 @@ export default function NotesPage() {
             });
             const data = await res.json();
             if (res.ok) {
-                showResponse({ text: editingNote ? "Note updated successfully." : "Note added successfully.", type: "success" });
+                showResponse({ text: editingNote ? "✅ Note updated" : "✅ Note added", type: "success" });
                 setTitle(""); setContent(""); setEditingNote(null);
-                setTouchedFields({});
+                setFormTouched(false); setTouchedTitle(false); setTouchedContent(false);
                 fetchNotes();
             } else {
-                showResponse({ text: data.message || "An error occurred.", type: "error" });
+                showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
             }
         } catch {
-            showResponse({ text: "Server connection error.", type: "error" });
+            showResponse({ text: "❌ Server connection error", type: "error" });
         } finally {
             setSubmitting(false);
         }
@@ -124,11 +134,11 @@ export default function NotesPage() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
-            if (res.ok) showResponse({ text: "Note deleted successfully.", type: "success" });
-            else showResponse({ text: data.message || "Failed to delete note.", type: "error" });
+            if (res.ok) showResponse({ text: "✅ Note deleted", type: "success" });
+            else showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
             fetchNotes();
         } catch {
-            showResponse({ text: "Server connection error.", type: "error" });
+            showResponse({ text: "❌ Server connection error", type: "error" });
         } finally {
             setDeletingId(null);
             setToDeleteId(null);
@@ -146,208 +156,292 @@ export default function NotesPage() {
     };
     const cancelEdit = () => { setEditModalOpen(false); setNoteToEdit(null); };
 
-    if (!user) return <HybridLoading />;
-
-    const cardVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    };
+    if (!user)
+        return (
+            <HybridLoading/>
+        );
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <>
             <Header />
-            <main className="container mx-auto px-4 py-8 pt-24">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-12"
-                >
-                    <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
-                        <span className="text-gradient">Notes</span>
-                    </h1>
-                    <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl mx-auto">
-                        Manage and organize your notes ✨
-                    </p>
-                </motion.div>
-
-                <div className="grid lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
-                    {/* Form Section */}
+            <div
+                className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
+                style={{
+                    background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
+                }}
+            />
+            <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+                </div>
+                <div className="container mx-auto px-4 py-12 relative z-10">
                     <motion.div
-                        variants={cardVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="lg:col-span-2"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center mb-12"
                     >
-                        <div className="glass-effect rounded-2xl soft-shadow p-8 sticky top-24">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="p-2 bg-cyan-500/10 rounded-lg">
-                                    <FileText className="text-cyan-600 dark:text-cyan-400" size={24} />
-                                </div>
-                                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
-                                    {editingNote ? "Edit Note" : "Add New Note"}
-                                </h2>
-                            </div>
-                            <form onSubmit={saveNote} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                                        Note Title
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter note title..."
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        onBlur={() => handleBlur('title')}
-                                        className="w-full px-4 py-2 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/80 dark:border-zinc-800/80 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-colors"
-                                    />
-                                    {touchedFields.title && !title.trim() && (
-                                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                                            <AlertCircle size={16} /> Please enter a title.
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                                        Note Content
-                                    </label>
-                                    <textarea
-                                        placeholder="Write your note content..."
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        onBlur={() => handleBlur('content')}
-                                        rows={8}
-                                        className="w-full px-4 py-2 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/80 dark:border-zinc-800/80 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-colors resize-none scrollbar-custom"
-                                    />
-                                    {touchedFields.content && !content.trim() && (
-                                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                                            <AlertCircle size={16} /> Please enter note content.
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-3 pt-2">
-                                    <motion.button
-                                        whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={submitting}
-                                        className="flex-1 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-600 hover:to-violet-600 text-white shadow-lg shadow-cyan-500/20 dark:shadow-cyan-500/10 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                                    >
-                                        {submitting ? <Loader2 className="animate-spin" size={20} /> : editingNote ? <Edit3 size={20} /> : <Plus size={20} />}
-                                        {editingNote ? "Update" : "Add Note"}
-                                    </motion.button>
-                                    {editingNote && (
-                                        <motion.button
-                                            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button"
-                                            onClick={() => {
-                                                setEditingNote(null); setTitle(""); setContent(""); setTouchedFields({});
-                                            }}
-                                            className="px-4 py-2.5 rounded-lg bg-zinc-200/50 dark:bg-zinc-800/50 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300/50 dark:hover:bg-zinc-700/50 transition-colors font-semibold"
-                                        >
-                                            Cancel
-                                        </motion.button>
-                                    )}
-                                </div>
-                            </form>
-                        </div>
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+                        >
+                            <Sparkles size={16} />
+                            <span>Personal Note Management</span>
+                        </motion.div>
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                                Notes
+                            </span>
+                        </h1>
+                        <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+                            Manage and organize your notes ✨
+                        </p>
                     </motion.div>
-
-                    {/* Notes List Section */}
-                    <motion.div
-                        variants={cardVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="lg:col-span-3"
-                    >
-                        <div className="glass-effect rounded-2xl soft-shadow min-h-[600px]">
-                            <div className="p-6 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">My Notes</h2>
+                    <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="lg:col-span-1"
+                        >
+                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                                        <FileText className="text-blue-600 dark:text-blue-400" size={24} />
                                     </div>
-                                    <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-200/50 dark:bg-zinc-800/50 px-2 py-1 rounded-md">
-                                        {notes.length} notes
-                                    </div>
+                                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                                        {editingNote ? "Edit Note" : "Add New Note"}
+                                    </h2>
                                 </div>
-                            </div>
-                            <div className="p-4">
-                                {loading ? (
-                                    <div className="flex flex-col items-center justify-center h-64">
-                                        <Loader2 className="animate-spin text-cyan-500" size={32} />
-                                        <p className="text-zinc-500 dark:text-zinc-400 mt-3">Loading notes...</p>
-                                    </div>
-                                ) : notes.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center h-64 text-zinc-500 dark:text-zinc-400">
-                                        <FileText size={48} className="mb-3 opacity-50" />
-                                        <p className="font-semibold">No notes yet</p>
-                                        <p className="text-sm mt-1">Create your first note to get started!</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4">
+                                <form onSubmit={saveNote} className="space-y-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Note Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter note title..."
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            onBlur={() => setTouchedTitle(true)}
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40
+                                            text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400
+                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            transition-all duration-200"
+                                        />
                                         <AnimatePresence>
-                                            {notes.map((note, index) => (
-                                                <motion.div
-                                                    key={note.id}
-                                                    layout
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95 }}
-                                                    transition={{ delay: index * 0.05 }}
-                                                    className="p-4 rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 group"
+                                            {(touchedTitle || formTouched) && !title.trim() && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="text-red-600 text-sm mt-2 flex items-center gap-1"
                                                 >
-                                                    <div className="flex justify-between items-start gap-4">
-                                                        <div className="flex-1">
-                                                            <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-2">
-                                                                {note.title}
-                                                            </h3>
-                                                            <p className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap mb-3">
-                                                                {note.content}
-                                                            </p>
-                                                            <small className="text-zinc-500 dark:text-zinc-400 text-xs">
-                                                                {new Date(note.createdAt).toLocaleString('en-US')}
-                                                            </small>
-                                                        </div>
-                                                        <div className="flex flex-col gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => startEdit(note)}
-                                                                className="p-2 text-zinc-500 hover:text-cyan-500 hover:bg-cyan-500/10 rounded-lg transition-colors" title="Edit note"
-                                                            >
-                                                                <Edit3 size={16} />
-                                                            </motion.button>
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => onDeleteClick(note.id)} disabled={deletingId === note.id}
-                                                                className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50" title="Delete note"
-                                                            >
-                                                                {deletingId === note.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={16} />}
-                                                            </motion.button>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
+                                                    <AlertCircle size={16} />
+                                                    Please enter a title.
+                                                </motion.p>
+                                            )}
                                         </AnimatePresence>
                                     </div>
-                                )}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Note Content
+                                        </label>
+                                        <textarea
+                                            placeholder="Write your note content..."
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            onBlur={() => setTouchedContent(true)}
+                                            rows={6}
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40
+                                            text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400
+                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            transition-all duration-200 resize-none"
+                                        />
+                                        <AnimatePresence>
+                                            {(touchedContent || formTouched) && !content.trim() && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="text-red-600 text-sm mt-2 flex items-center gap-1"
+                                                >
+                                                    <AlertCircle size={16} />
+                                                    Please enter note content.
+                                                </motion.p>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="submit"
+                                            disabled={submitting}
+                                            className="flex-1 py-3 rounded-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
+                                            text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40
+                                            transition-all duration-200 flex items-center justify-center gap-2
+                                            disabled:opacity-60 disabled:cursor-not-allowed"
+                                        >
+                                            {submitting ? (
+                                                <>
+                                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                    Submitting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {editingNote ? <Edit3 size={20} /> : <Plus size={20} />}
+                                                    {editingNote ? "Update" : "Add Note"}
+                                                </>
+                                            )}
+                                        </motion.button>
+                                        {editingNote && (
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                type="button"
+                                                onClick={() => {
+                                                    setEditingNote(null);
+                                                    setTitle("");
+                                                    setContent("");
+                                                    setFormTouched(false);
+                                                    setTouchedTitle(false);
+                                                    setTouchedContent(false);
+                                                }}
+                                                className="px-6 py-3 rounded-2xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600
+                                                text-gray-700 dark:text-gray-300 transition-all duration-200 font-semibold"
+                                            >
+                                                Cancel
+                                            </motion.button>
+                                        )}
+                                    </div>
+                                </form>
                             </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="lg:col-span-1"
+                        >
+                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
+                                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-blue-500/10 rounded-lg">
+                                                <FileText className="text-blue-600 dark:text-blue-400" size={20} />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-xl font-bold text-gray-800 dark:text-white">My Notes</h2>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {notes.length} notes
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-4 h-[600px] overflow-y-auto">
+                                    {loading ? (
+                                        <div className="flex flex-col items-center justify-center h-32">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                                            <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+                                        </div>
+                                    ) : notes.length === 0 ? (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
+                                        >
+                                            <FileText size={48} className="mb-3 opacity-50" />
+                                            <p>No notes yet</p>
+                                            <p className="text-sm mt-1">Create your first note!</p>
+                                        </motion.div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            <AnimatePresence>
+                                                {notes.map((note, index) => (
+                                                    <motion.div
+                                                        key={note.id}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        transition={{ delay: index * 0.1 }}
+                                                        className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
+                                                    >
+                                                        <div className="flex justify-between items-start gap-4">
+                                                            <div className="flex-1">
+                                                                <h3 className="font-bold text-gray-800 dark:text-white text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                                    {note.title}
+                                                                </h3>
+                                                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                                                                    {note.content}
+                                                                </p>
+                                                                <small className="text-gray-400 text-xs">
+                                                                    {new Date(note.createdAt).toLocaleString('en-US')}
+                                                                </small>
+                                                            </div>
+                                                            <div className="flex flex-col gap-2 flex-shrink-0">
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    whileTap={{ scale: 0.9 }}
+                                                                    onClick={() => startEdit(note)}
+                                                                    className="p-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
+                                                                    title="Edit note"
+                                                                >
+                                                                    <Edit3 size={16} />
+                                                                </motion.button>
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    whileTap={{ scale: 0.9 }}
+                                                                    onClick={() => onDeleteClick(note.id)}
+                                                                    disabled={deletingId === note.id}
+                                                                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                                    title="Delete note"
+                                                                >
+                                                                    {deletingId === note.id ? (
+                                                                        <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                                                                    ) : (
+                                                                        <Trash2 size={16} />
+                                                                    )}
+                                                                </motion.button>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
-            </main>
-
+            </div>
             <AnimatePresence>
                 {response && (
                     <motion.div
-                        initial={{ opacity: 0, y: 50, x: '-50%' }}
-                        animate={{ opacity: 1, y: 0, x: '-50%' }}
-                        exit={{ opacity: 0, y: 50, x: '-50%' }}
-                        className={`fixed bottom-6 left-1/2 rounded-2xl p-4 shadow-2xl z-50 glass-effect soft-shadow w-full max-w-md`}
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg border z-50 ${response.type === "success"
+                                ? "bg-green-50/90 dark:bg-green-900/90 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200"
+                                : response.type === "error"
+                                ? "bg-red-50/90 dark:bg-red-900/90 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
+                                : "bg-blue-50/90 dark:bg-blue-900/90 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
+                            }`}
                     >
                         <div className="flex items-center gap-3">
-                            {response.type === "success" && <CheckCircle className="text-green-500" size={20} />}
-                            {response.type === "error" && <AlertCircle className="text-red-500" size={20} />}
-                            {response.type === "info" && <FileText className="text-cyan-500" size={20} />}
-                            <span className={`flex-1 font-semibold ${response.type === 'success' ? 'text-green-700 dark:text-green-300' : response.type === 'error' ? 'text-red-700 dark:text-red-300' : 'text-cyan-700 dark:text-cyan-300'}`}>
-                                {response.text}
-                            </span>
+                            {response.type === "success" ? (
+                                <CheckCircle className="text-green-600 dark:text-green-400" size={20} />
+                            ) : response.type === "error" ? (
+                                <AlertCircle className="text-red-600 dark:text-red-400" size={20} />
+                            ) : (
+                                <FileText className="text-blue-600 dark:text-blue-400" size={20} />
+                            )}
+                            <span className="flex-1 font-semibold">{response.text}</span>
                             <motion.button
-                                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}
-                                className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100 p-1 rounded-full"
+                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
                             >
                                 <X size={18} />
                             </motion.button>
@@ -355,7 +449,6 @@ export default function NotesPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
-
             <ConfirmModal
                 isOpen={deleteModalOpen}
                 onCancel={cancelDelete}
@@ -372,6 +465,6 @@ export default function NotesPage() {
                 confirmText="Edit"
                 confirmColor="bg-yellow-500 hover:bg-yellow-600"
             />
-        </div>
+        </>
     );
 }
