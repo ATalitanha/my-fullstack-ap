@@ -13,6 +13,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  
   useEffect(() => {
     setIsLoading(false);
 
