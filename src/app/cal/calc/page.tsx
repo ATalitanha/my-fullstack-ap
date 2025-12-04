@@ -296,7 +296,7 @@ export default function Calculator() {
       />
 
       {/* بخش اصلی ماشین‌حساب */}
-      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950`}>
         
         {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
@@ -304,7 +304,7 @@ export default function Calculator() {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="flex flex-col gap-8 container mx-auto px-4 py-12 max-w-2xl relative z-10">
+        <div className="flex flex-col gap-8 container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 max-w-2xl relative z-10">
           
           {/* هدر صفحه */}
           <motion.div
@@ -314,14 +314,14 @@ export default function Calculator() {
           >
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/30 dark:bg-white/10 border border-white/40 dark:border-white/20 text-blue-600 dark:text-blue-300 backdrop-blur-sm text-sm mb-4"
             >
               <Sparkles size={16} />
               <span>ابزار محاسباتی پیشرفته</span>
             </motion.div>
             
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-4 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-4 leading-tight">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                 ماشین حساب
               </span>
             </h1>
@@ -384,11 +384,11 @@ export default function Calculator() {
                   p-4 rounded-2xl font-bold text-lg transition-all duration-200
                   relative overflow-hidden group
                   ${text === "="
-                    ? "bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/25 hover:shadow-green-500/40"
+                    ? "bg-linear-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/25 hover:shadow-green-500/40"
                     : OPERATIONS.includes(text as Operation)
-                      ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+                      ? "bg-linear-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
                       : ["CA", "C", "DEL"].includes(text)
-                        ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40"
+                        ? "bg-linear-to-br from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40"
                         : "bg-white/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-100 shadow-lg hover:shadow-xl border border-white/40 dark:border-gray-600/40"
                   }
                   hover:scale-105 active:scale-95
@@ -460,7 +460,7 @@ export default function Calculator() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={confirmClear}
-                  className="px-6 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-500/25 font-semibold flex-1"
+                  className="px-6 py-2 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-500/25 font-semibold flex-1"
                 >
                   پاک کردن
                 </motion.button>
@@ -472,3 +472,5 @@ export default function Calculator() {
     </>
   );
 }
+
+
