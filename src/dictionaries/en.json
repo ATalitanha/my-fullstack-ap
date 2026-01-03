@@ -1,0 +1,71 @@
+{
+  "app": {
+    "main": {
+      "links": {
+        "cal": "ماشین حساب",
+        "messenger": "انتقال متن",
+        "todo": "لیست کارها",
+        "notes": "یادداشت‌ها",
+        "Prices-table": "ماشین حساب",
+        "category": {
+          "tools":"ابزار",
+          "communication":"ارتباطات",
+          "finance":"مالی"
+        }
+
+      },
+      "change":"تغییرات نسخه",
+      "BestTools":"مجموعه‌ای از بهترین ابزارها",
+      "be":"به ",
+      "welcome":"خوش آمدید",
+      "productivity":"مجموعه‌ای کامل از ابزارهای کاربردی و هوشمند برای بهبود productivity روزانه شما ✨",
+      "serchPlaceholder":"جستجو بین ابزارها...",
+      "visited":"پربازدید",
+      "new":"جدید"
+    },
+    "cal": {},
+    "advanc-cal": {},
+    "calc": {},
+    "units": {},
+    "dashboard": {},
+    "loading": {},
+    "login": {},
+    "messenger": {},
+    "notes": {},
+    "Prices-table": {},
+    "signup": {},
+    "todo": {}
+  },
+  "components": {
+    "backMenu": {},
+    "CalculatorDisplay": {},
+    "CategorySelect": {},
+    "CategoryTabs": {},
+    "change-log": {},
+    "DeleteConfirmModal": {},
+    "HistoryList": {},
+    "LanguageSwitcher": {},
+    "loading": {},
+    "ThemeToggle": {},
+    "Trans": {},
+    "UnitSelect": {},
+    "layout": {
+      "Footer": {},
+      "Header": {}
+    },
+    "providers": {
+      "A11yAnnouncer": {},
+      "PageTransition": {},
+      "ThemeProvider": {}
+    },
+    "ui": {
+      "Button": {},
+      "dialog": {},
+      "dropdown-menu": {},
+      "header": {},
+      "switch": {},
+      "tabs": {},
+      "toast": {}
+    }
+  }
+}

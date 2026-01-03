@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBitcoin, FaDollarSign, FaCoins, FaSearch } from "react-icons/fa";
@@ -34,6 +34,9 @@ const categories: { value: Category; label: string }[] = [
 ];
 
 export default function PricesTableCards() {
+  /**
+   * وضعیت داده‌های بازار و ردیابی ماوس برای افکت پس‌زمینه
+   */
   const [data, setData] = useState<MarketData | null>(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<Category>("all");
@@ -48,6 +51,9 @@ export default function PricesTableCards() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  /**
+   * دریافت داده‌های لحظه‌ای بازار از API خارجی
+   */
   useEffect(() => {
     async function fetchData() {
       try {
@@ -111,7 +117,6 @@ export default function PricesTableCards() {
 
   return (
     <>
-      <Header />
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{

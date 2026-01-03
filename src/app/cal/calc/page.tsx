@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { evaluate } from "mathjs";
 
 // کامپوننت‌ها
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import CalculatorDisplay from "@/components/CalculatorDisplay";
 import HistoryList from "@/components/HistoryList";
 import theme from "@/lib/theme";
@@ -284,8 +284,6 @@ export default function Calculator() {
 
   return (
     <>
-      {/* هدر */}
-      <Header />
 
       {/* افکت دنبال کننده ماوس */}
       <div 

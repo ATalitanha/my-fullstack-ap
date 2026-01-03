@@ -4,7 +4,7 @@ import LoadingDots from "@/components/loading";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import { Sparkles, Send, MessageCircle, Trash2, AlertCircle, CheckCircle } from "lucide-react";
 
 type Message = {
@@ -19,6 +19,9 @@ type ResponseMessage = {
 };
 
 export default function MessageForm() {
+  /**
+   * عنوان و متن پیام جدید
+   */
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,12 +45,18 @@ export default function MessageForm() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  /**
+   * نمایش پیام وضعیت با ناپدید شدن خودکار
+   */
   const showResponse = useCallback((resp: ResponseMessage) => {
     setResponse(resp);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => setResponse(null), 4000);
   }, []);
 
+  /**
+   * دریافت فهرست پیام‌ها از API
+   */
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch("/api/massage");
@@ -65,6 +74,9 @@ export default function MessageForm() {
     };
   }, [fetchMessages]);
 
+  /**
+   * ارسال پیام جدید
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormTouched(true);
@@ -109,16 +121,25 @@ export default function MessageForm() {
     }
   };
 
+  /**
+   * باز کردن مودال حذف برای یک پیام یا همه
+   */
   const onDeleteClick = (id: string | number) => {
     setToDeleteId(id);
     setDeleteModalOpen(true);
   };
 
+  /**
+   * بستن مودال حذف بدون اقدام
+   */
   const cancelDelete = () => {
     setDeleteModalOpen(false);
     setToDeleteId(null);
   };
 
+  /**
+   * تایید حذف (تکی یا همه) و بروزرسانی لیست
+   */
   const confirmDelete = async () => {
     if (toDeleteId === null) return;
 
@@ -164,7 +185,6 @@ export default function MessageForm() {
 
   return (
     <>
-      <Header />
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{
@@ -204,7 +224,7 @@ export default function MessageForm() {
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-1"
             >
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+              <Card className="p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
                     <Send className="text-blue-600 dark:text-blue-400" size={24} />
@@ -304,14 +324,14 @@ export default function MessageForm() {
                     )}
                   </motion.button>
                 </form>
-              </div>
+              </Card>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-1"
             >
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
+              <Card className="h-full">
                 <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -399,7 +419,7 @@ export default function MessageForm() {
                     </div>
                   )}
                 </div>
-              </div>
+              </Card>
             </motion.div>
           </div>
         </div>

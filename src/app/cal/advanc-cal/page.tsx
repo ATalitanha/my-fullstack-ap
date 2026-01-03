@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/ui/header";
 import { evaluate } from "mathjs";
 import { Sparkles, History, Trash2, RotateCcw } from "lucide-react";
 import HybridLoading from "@/app/loading";
@@ -49,18 +48,11 @@ export default function AdvancedCalculatorPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
+   */
   useEffect(() => {
     setIsLoading(false);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -183,7 +175,6 @@ export default function AdvancedCalculatorPage() {
 
   return (
     <>
-      <Header />
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{

@@ -1,7 +1,7 @@
 "use client";
 
 import ConfirmModal from "@/components/DeleteConfirmModal";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -48,12 +48,18 @@ export default function TodosPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  /**
+   * نمایش پیام وضعیت با ناپدید شدن خودکار
+   */
   const showResponse = (resp: ResponseMessage) => {
     setResponse(resp);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => setResponse(null), 4000);
   };
 
+  /**
+   * دریافت توکن دسترسی و تنظیم کاربر از توکن
+   */
   const fetchAccessToken = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/refresh");
@@ -70,6 +76,9 @@ export default function TodosPage() {
     }
   }, [router]);
 
+  /**
+   * دریافت فهرست کارها از API
+   */
   const fetchTodos = useCallback(async () => {
     if (!token) return;
     try {
@@ -86,6 +95,9 @@ export default function TodosPage() {
   useEffect(() => { fetchAccessToken(); }, [fetchAccessToken]);
   useEffect(() => { if (token) fetchTodos(); }, [token, fetchTodos]);
 
+  /**
+   * افزودن یا بروزرسانی یک کار
+   */
   const saveTodo = async () => {
     if (!title.trim() || !token) {
       showResponse({ text: "❌ Please enter a title.", type: "error" });
@@ -122,16 +134,25 @@ export default function TodosPage() {
     }
   };
 
+  /**
+   * باز کردن مودال حذف برای یک کار
+   */
   const onDeleteClick = (id: string | number) => {
     setToDeleteId(id);
     setDeleteModalOpen(true);
   };
 
+  /**
+   * بستن مودال حذف
+   */
   const cancelDelete = () => {
     setDeleteModalOpen(false);
     setToDeleteId(null);
   };
 
+  /**
+   * تایید حذف و بروزرسانی فهرست
+   */
   const confirmDelete = async () => {
     if (!toDeleteId || !token) return;
     setDeletingId(toDeleteId);
@@ -153,11 +174,17 @@ export default function TodosPage() {
     }
   };
 
+  /**
+   * باز کردن مودال تکمیل کار
+   */
   const onCompleteClick = (todo: Todo) => {
     setTargetTodo(todo);
     setCompleteModalOpen(true);
   };
 
+  /**
+   * تایید تکمیل کار
+   */
   const confirmComplete = async () => {
     if (!targetTodo || !token) return;
     try {
@@ -179,11 +206,17 @@ export default function TodosPage() {
     }
   };
 
+  /**
+   * باز کردن مودال لغو تکمیل کار
+   */
   const onUncompleteClick = (todo: Todo) => {
     setTargetTodo(todo);
     setUncompleteModalOpen(true);
   };
 
+  /**
+   * تایید لغو تکمیل کار
+   */
   const confirmUncomplete = async () => {
     if (!targetTodo || !token) return;
     try {
@@ -205,11 +238,17 @@ export default function TodosPage() {
     }
   };
 
+  /**
+   * شروع ویرایش یک کار
+   */
   const startEdit = (todo: Todo) => {
     setTargetEditTodo(todo);
     setEditModalOpen(true);
   };
 
+  /**
+   * تایید انتخاب کار برای ویرایش
+   */
   const confirmEdit = () => {
     if (!targetEditTodo) return;
     setEditingTodo(targetEditTodo);
@@ -218,6 +257,9 @@ export default function TodosPage() {
     setTargetEditTodo(null);
   };
 
+  /**
+   * لغو ویرایش کار
+   */
   const cancelEdit = () => {
     setEditModalOpen(false);
     setTargetEditTodo(null);
@@ -231,7 +273,6 @@ export default function TodosPage() {
 
   return (
     <>
-      <Header />
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{

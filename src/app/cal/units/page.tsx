@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import { UNITS } from "@/lib/db";
 import { convertValue } from "@/lib/converter";
 import UnitSelect from "@/components/UnitSelect";
@@ -20,23 +20,14 @@ export default function UnitConverterPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
+   */
   useEffect(() => {
     setIsLoading(false);
-
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // ردیابی موقعیت ماوس
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -67,8 +58,7 @@ export default function UnitConverterPage() {
 
   return (
     <>
-      {/* هدر صفحه */}
-      <Header />
+      {/* هدر صفحه در روت‌ لایوت وجود دارد */}
 
       {/* افکت دنبال کننده ماوس */}
       <div 
@@ -79,7 +69,7 @@ export default function UnitConverterPage() {
       />
 
       {/* بخش اصلی تبدیل واحد */}
-      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         
         {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
@@ -104,7 +94,7 @@ export default function UnitConverterPage() {
             </motion.div>
             
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                 تبدیل واحد
               </span>
             </h1>
@@ -119,27 +109,28 @@ export default function UnitConverterPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="w-full max-w-2xl p-8 rounded-3xl text-gray-700 dark:text-white backdrop-blur-lg bg-white/70 dark:bg-gray-800/70 shadow-2xl border border-white/40 dark:border-gray-700/40"
+            className="w-full max-w-2xl"
           >
-            {/* نمایش نتیجه */}
-            <motion.div
-              key={result}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="p-6 text-center text-2xl font-bold rounded-2xl min-h-[100px] bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 shadow-lg border border-white/40 dark:border-gray-600/40 flex items-center justify-center mb-8"
-            >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={result}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-gray-800 dark:text-gray-100"
-                >
-                  {result || "نتیجه تبدیل اینجا نمایش داده می‌شود"}
-                </motion.span>
-              </AnimatePresence>
-            </motion.div>
+            <Card className="p-8 text-gray-700 dark:text-white">
+              {/* نمایش نتیجه */}
+              <motion.div
+                key={result}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="p-6 text-center text-2xl font-bold rounded-2xl min-h-[100px] bg-linear-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 shadow-lg border border-white/40 dark:border-gray-600/40 flex items-center justify-center mb-8"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={result}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-gray-800 dark:text-gray-100"
+                  >
+                    {result || "نتیجه تبدیل اینجا نمایش داده می‌شود"}
+                  </motion.span>
+                </AnimatePresence>
+              </motion.div>
 
             {/* سلکت دسته‌بندی */}
             <div className="mb-6">
@@ -170,7 +161,7 @@ export default function UnitConverterPage() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={increment}
-                  className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg flex items-center justify-center text-sm shadow-lg shadow-blue-500/25"
+                  className="w-8 h-8 bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-lg flex items-center justify-center text-sm shadow-lg shadow-blue-500/25"
                 >
                   +
                 </motion.button>
@@ -178,7 +169,7 @@ export default function UnitConverterPage() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={decrement}
-                  className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg flex items-center justify-center text-sm shadow-lg shadow-blue-500/25"
+                  className="w-8 h-8 bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-lg flex items-center justify-center text-sm shadow-lg shadow-blue-500/25"
                 >
                   −
                 </motion.button>
@@ -193,7 +184,7 @@ export default function UnitConverterPage() {
               
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 180 }}
-                className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                className="p-3 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
               >
                 <ArrowRightLeft className="text-white" size={20} />
               </motion.div>
@@ -211,11 +202,12 @@ export default function UnitConverterPage() {
               }}
               whileTap={{ scale: 0.98 }}
               onClick={handleConvert}
-              className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl font-bold text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2"
             >
               <Calculator size={20} />
               تبدیل کن
             </motion.button>
+            </Card>
           </motion.div>
 
           {/* اطلاعات اضافی */}

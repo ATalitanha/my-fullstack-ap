@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Header from "@/components/ui/header";
 import theme from "@/lib/theme";
 import Link from "next/link";
 import { Calculator, ArrowRight, Sparkles, Ruler, Zap } from "lucide-react";
@@ -12,22 +11,14 @@ export default function Cal() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
+   */
   useEffect(() => {
     setIsLoading(false);
-
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -70,7 +61,6 @@ export default function Cal() {
 
   return (
     <>
-      <Header />
       <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
         style={{

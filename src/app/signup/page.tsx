@@ -3,12 +3,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
+import Input from "@/shared/ui/Input";
 import theme from "@/lib/theme";
 import { Sparkles, UserPlus, Mail, Lock, User, AlertCircle } from "lucide-react";
 import { useAuth } from "@/shared/hooks/useAuth";
 
 export default function SignupPage() {
+  /**
+   * وضعیت احراز هویت و فرم ثبت‌نام
+   */
 
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -40,6 +44,9 @@ export default function SignupPage() {
   }, []);
 
   // تابع ارسال فرم
+  /**
+   * ارسال فرم ثبت‌نام و هدایت به ورود
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -66,7 +73,6 @@ export default function SignupPage() {
 
   return (
     <>
-      <Header />
 
       {/* افکت دنبال کننده ماوس */}
       <div 
@@ -119,7 +125,7 @@ export default function SignupPage() {
             </motion.div>
 
             {/* کارت فرم */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+            <Card className="p-8">
               
               {/* نمایش پیام خطا */}
               <AnimatePresence>
@@ -145,69 +151,56 @@ export default function SignupPage() {
                 
                 {/* فیلد نام کاربری */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    نام کاربری
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">نام کاربری</label>
                   <div className="relative">
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <User size={20} />
                     </div>
-                    <input
+                    <Input
                       placeholder="نام کاربری خود را وارد کنید"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       required
-                      className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
-                      text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                      transition-all duration-200 text-right"
+                      uiSize="lg"
+                      className="pr-12 text-right"
                     />
                   </div>
                 </div>
 
                 {/* فیلد ایمیل */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    آدرس ایمیل
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">آدرس ایمیل</label>
                   <div className="relative">
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <Mail size={20} />
                     </div>
-                    <input
+                    <Input
                       placeholder="example@email.com"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
-                      text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                      transition-all duration-200 text-right"
+                      uiSize="lg"
+                      className="pr-12 text-right"
                     />
                   </div>
                 </div>
 
                 {/* فیلد رمز عبور */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    رمز عبور
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">رمز عبور</label>
                   <div className="relative">
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <Lock size={20} />
                     </div>
-                    <input
+                    <Input
                       placeholder="رمز عبور قوی انتخاب کنید"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
-                      className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
-                      text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                      transition-all duration-200 text-right"
+                      uiSize="lg"
+                      className="pr-12 text-right"
                     />
                   </div>
                 </div>
@@ -255,7 +248,7 @@ export default function SignupPage() {
                   </motion.a>
                 </p>
               </motion.div>
-            </div>
+            </Card>
 
             {/* اطلاعات امنیتی */}
             <motion.div

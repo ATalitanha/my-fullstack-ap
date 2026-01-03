@@ -2,9 +2,9 @@ import { ButtonProps } from '@/lib/type';
 import clsx from 'clsx';
 
 const variants = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-  secondary: 'bg-gray-600 hover:bg-gray-700 text-white',
-  danger: 'bg-red-600 hover:bg-red-700 text-white',
+  primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+  danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
 };
 
 const sizes = {

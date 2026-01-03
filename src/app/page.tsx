@@ -5,13 +5,23 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChangeLog } from "@/components/change-log";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
-import Header from "@/components/ui/header";
+import { useRef } from "react";
+import { useLanguage } from "@/constants/LanguageContext";
+import {useTranslation} from "@/hooks/useLanguage"
+import Trans from '@/components/Trans';
 
 export default function HomePage() {
+  /**
+   * وضعیت عمومی صفحه اصلی و ردیابی موقعیت ماوس برای افکت‌ها
+   */
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const { t, language } = useTranslation();
+  const { formatNumber, formatDate } = useLanguage();
 
   
   useEffect(() => {
@@ -25,43 +35,73 @@ export default function HomePage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  /**
+   * انیمیشن اولیه بخش قهرمان با بارگذاری تنبل GSAP
+   */
+  useEffect(() => {
+    let ctx: any;
+    const run = async () => {
+      const { gsap } = await import("gsap");
+      if (!heroRef.current) return;
+      ctx = gsap.context(() => {
+        gsap.from(heroRef.current!, {
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+        if (titleRef.current) {
+          gsap.from(titleRef.current!, {
+            opacity: 0,
+            y: 10,
+            duration: 0.8,
+            delay: 0.2,
+            ease: "power2.out",
+          });
+        }
+      });
+    };
+    run();
+    return () => ctx?.revert?.();
+  }, []);
+
   const links = [
     {
       href: "/cal",
-      label: "ماشین حساب",
+      label: t("app.main.links.cal"),
       color: "from-blue-500 to-blue-700",
       icon: "🧮",
-      category: "ابزار",
+      category: t("app.main.links.category.tools"),
       popular: true
     },
     {
       href: "/messenger",
-      label: "انتقال متن",
+      label: t("app.main.links.messenger"),
       color: "from-teal-500 to-teal-700",
       icon: "💬",
-      category: "ارتباطات"
+      category: t("app.main.links.category.communication")
     },
     {
       href: "/todo",
-      label: "لیست کارها",
+      label: t("app.main.links.todo"),
       color: "from-amber-500 to-orange-600",
       icon: "✅",
-      category: "ارتباطات",
+      category: t("app.main.links.category.communication"),
       popular: true
     },
     {
       href: "/notes",
-      label: "یادداشت‌ها",
+      label: t("app.main.links.notes"),
       color: "from-purple-500 to-indigo-600",
       icon: "📝",
-      category: "ارتباطات"
+      category: t("app.main.links.category.communication")
     },
     {
       href: "/Prices-table",
-      label: "قیمت لحظه‌ای طلا و ارز",
+      label: t("app.main.links.Prices-table"),
       color: "from-green-500 to-emerald-600",
       icon: "📊",
-      category: "مالی",
+      category: t("app.main.links.category.finance"),
       new: true
     },
   ];
@@ -93,20 +133,19 @@ export default function HomePage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
-      <Header/>
       <main className="min-h-screen flex flex-col justify-center items-center px-4 pb-16 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-700 relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          className="flex flex-row-reverse items-center justify-between w-full mb-6 relative z-10 pt-20"
+          className="flex flex-row items-center justify-between w-full mb-6 relative z-10 pt-20"
         >
           <button
             onClick={() => setIsChangeLogOpen(true)}
             className="px-6 py-3 rounded-xl font-semibold bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:scale-95 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center gap-2"
           >
             <Sparkles size={18} />
-            تغییرات نسخه
+            {t("app.main.change")}
           </button>
         </motion.div>
         <div className="absolute inset-0 overflow-hidden">
@@ -118,19 +157,20 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-12 relative z-10"
+          ref={heroRef}
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
           >
             <Sparkles size={16} />
-            <span>A Collection of the Best Tools</span>
+            <span>{t("app.main.BestTools")}</span>
           </motion.div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-            به <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span> خوش آمدید
+          <h1 ref={titleRef} className="font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight text-[clamp(2rem,4vw,3.5rem)]">
+            {t("app.main.be")}<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span> {t("app.main.welcome")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-            مجموعه‌ای کامل از ابزارهای کاربردی و هوشمند برای بهبود productivity روزانه شما ✨
+            {t("app.main.productivity")}
           </p>
         </motion.div>
         <motion.div
@@ -142,7 +182,7 @@ export default function HomePage() {
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="جستجو بین ابزارها..."
+            placeholder={t("app.main.serchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-4 rounded-2xl text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
@@ -177,6 +217,7 @@ export default function HomePage() {
           ))}
         </motion.div>
         <motion.div
+          dir="rtl"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -203,7 +244,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
                       <TrendingUp size={12} />
-                      <span>پربازدید</span>
+                      <span>{t("app.main.visited")}</span>
                     </div>
                   </div>
                 )}
@@ -211,7 +252,7 @@ export default function HomePage() {
                   <div className="absolute -top-2 -right-2 z-20">
                     <div className="flex items-center gap-1 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
                       <Zap size={12} />
-                      <span>جدید</span>
+                      <span>{t("app.main.new")}</span>
                     </div>
                   </div>
                 )}

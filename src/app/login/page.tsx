@@ -2,12 +2,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
+import Input from "@/shared/ui/Input";
 import theme from "@/lib/theme";
 import { Sparkles, LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useAuth } from '@/shared/hooks/useAuth';
 
 export default function LoginPage() {
+  /**
+   * وضعیت احراز هویت و فرم ورود
+   */
 
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -39,6 +43,9 @@ export default function LoginPage() {
   /**
    * ارسال فرم ورود
    */
+  /**
+   * ارسال فرم ورود و مسیریابی به داشبورد
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -67,7 +74,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header />
 
       {/* افکت دنبال کننده ماوس */}
       <div 
@@ -78,7 +84,7 @@ export default function LoginPage() {
       />
 
       {/* بخش اصلی */}
-      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         
         {/* افکت‌های پس‌زمینه */}
         <div className="absolute inset-0 overflow-hidden">
@@ -109,7 +115,7 @@ export default function LoginPage() {
               </motion.div>
               
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-4">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                   ورود به سیستم
                 </span>
               </h1>
@@ -120,7 +126,7 @@ export default function LoginPage() {
             </motion.div>
 
             {/* کارت فرم */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+            <Card className="p-8">
               
               {/* نمایش پیام خطا */}
               <AnimatePresence>
@@ -132,7 +138,7 @@ export default function LoginPage() {
                     className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
                   >
                     <div className="flex items-center gap-3">
-                      <AlertCircle className="text-red-500 flex-shrink-0" size={20} />
+                      <AlertCircle className="text-red-500 shrink-0" size={20} />
                       <p className="text-red-700 dark:text-red-300 text-sm font-medium">
                         {error}
                       </p>
@@ -146,51 +152,43 @@ export default function LoginPage() {
                 
                 {/* فیلد ایمیل */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    آدرس ایمیل
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">آدرس ایمیل</label>
                   <div className="relative">
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <Mail size={20} />
                     </div>
-                    <input
+                    <Input
                       placeholder="example@email.com"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
-                      text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                      transition-all duration-200 text-right"
+                      uiSize="lg"
+                      className="pr-12 text-right"
                     />
                   </div>
                 </div>
 
                 {/* فیلد رمز عبور */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">
-                    رمز عبور
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">رمز عبور</label>
                   <div className="relative">
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <Lock size={20} />
                     </div>
-                    <input
+                    <Input
                       placeholder="رمز عبور خود را وارد کنید"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="w-full px-4 py-3 pr-12 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
-                      text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                      transition-all duration-200 text-right"
+                      uiSize="lg"
+                      className="pr-12 text-right"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -203,7 +201,7 @@ export default function LoginPage() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+                  className="w-full py-4 rounded-2xl font-bold text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
                   text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 
                   transition-all duration-200 flex items-center justify-center gap-2 
                   disabled:opacity-60 disabled:cursor-not-allowed"
@@ -255,7 +253,7 @@ export default function LoginPage() {
                   رمز عبور خود را فراموش کرده‌اید؟
                 </a>
               </motion.div> */}
-            </div>
+            </Card>
 
             {/* اطلاعات امنیتی */}
             <motion.div

@@ -1,7 +1,7 @@
 "use client";
 
 import ConfirmModal from "@/components/DeleteConfirmModal";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import theme from "@/lib/theme";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,6 +19,9 @@ const fetcher = async (url: string, token: string) => {
 };
 
 export default function NotesPage() {
+    /**
+     * وضعیت احراز هویت و داده‌های صفحه یادداشت‌ها
+     */
     const [token, setToken] = useState<string | null>(null);
     const [user, setUser] = useState<{ id: string; username: string } | null>(null);
     const [notes, setNotes] = useState<Note[]>([]);
@@ -48,12 +51,18 @@ export default function NotesPage() {
         return () => window.removeEventListener("mousemove", handleMouseMove);
     }, []);
 
+    /**
+     * نمایش پیام وضعیت با ناپدید شدن خودکار
+     */
     const showResponse = (resp: ResponseMessage) => {
         setResponse(resp);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => setResponse(null), 4000);
     };
 
+    /**
+     * دریافت توکن دسترسی و تنظیم کاربر از توکن
+     */
     const fetchAccessToken = useCallback(async () => {
         try {
             const res = await fetch("/api/auth/refresh");
@@ -70,6 +79,9 @@ export default function NotesPage() {
         }
     }, [router]);
 
+    /**
+     * دریافت فهرست یادداشت‌ها از API
+     */
     const fetchNotes = useCallback(async () => {
         if (!token) return;
         try {
@@ -86,6 +98,9 @@ export default function NotesPage() {
     useEffect(() => { fetchAccessToken(); }, [fetchAccessToken]);
     useEffect(() => { if (token) fetchNotes(); }, [token, fetchNotes]);
 
+    /**
+     * افزودن یا بروزرسانی یک یادداشت
+     */
     const saveNote = async (e: React.FormEvent) => {
         e.preventDefault();
         setFormTouched(true);
@@ -122,8 +137,11 @@ export default function NotesPage() {
         }
     };
 
+    /** باز کردن مودال حذف برای یک یادداشت */
     const onDeleteClick = (id: string | number) => { setToDeleteId(id); setDeleteModalOpen(true); };
+    /** بستن مودال حذف */
     const cancelDelete = () => { setDeleteModalOpen(false); setToDeleteId(null); };
+    /** تایید حذف و بروزرسانی فهرست */
     const confirmDelete = async () => {
         if (!toDeleteId || !token) return;
         setDeletingId(toDeleteId);
@@ -145,7 +163,9 @@ export default function NotesPage() {
         }
     };
 
+    /** شروع ویرایش یک یادداشت */
     const startEdit = (note: Note) => { setNoteToEdit(note); setEditModalOpen(true); };
+    /** تایید انتخاب یادداشت برای ویرایش */
     const confirmEdit = () => {
         if (!noteToEdit) return;
         setEditingNote(noteToEdit);
@@ -154,6 +174,7 @@ export default function NotesPage() {
         setEditModalOpen(false);
         setNoteToEdit(null);
     };
+    /** لغو ویرایش یادداشت */
     const cancelEdit = () => { setEditModalOpen(false); setNoteToEdit(null); };
 
     if (!user)
@@ -163,7 +184,7 @@ export default function NotesPage() {
 
     return (
         <>
-            <Header />
+            
             <div
                 className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
                 style={{
@@ -203,7 +224,7 @@ export default function NotesPage() {
                             animate={{ opacity: 1, x: 0 }}
                             className="lg:col-span-1"
                         >
-                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+                            <Card className="p-8">
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="p-2 bg-blue-500/10 rounded-lg">
                                         <FileText className="text-blue-600 dark:text-blue-400" size={24} />
@@ -315,14 +336,14 @@ export default function NotesPage() {
                                         )}
                                     </div>
                                 </form>
-                            </div>
+                            </Card>
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             className="lg:col-span-1"
                         >
-                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
+                            <Card className="h-full">
                                 <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
@@ -410,7 +431,7 @@ export default function NotesPage() {
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </Card>
                         </motion.div>
                     </div>
                 </div>

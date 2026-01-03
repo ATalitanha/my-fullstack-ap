@@ -7,7 +7,7 @@ import theme from "@/lib/theme";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ArrowLeft, User, LogOut, Sparkles, Settings, Activity } from "lucide-react";
 import Link from "next/link";
-import Header from "@/components/ui/header";
+import Card from "@/shared/ui/Card";
 import HybridLoading from "../loading";
 
 type User = { id: string; username: string; email?: string };
@@ -71,8 +71,7 @@ export default function DashboardPage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
         }}
       />
-      <Header/>
-      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -91,7 +90,7 @@ export default function DashboardPage() {
               <span>Your Account</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                 Dashboard
               </span>
             </h1>
@@ -105,7 +104,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-2"
             >
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8">
+              <Card className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg">
                     <User className="text-white" size={28} />
@@ -136,14 +135,14 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-1 space-y-6"
             >
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
+              <Card className="p-6">
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                   <Settings size={20} />
                   Quick Actions
@@ -164,8 +163,8 @@ export default function DashboardPage() {
                     Change Password
                   </motion.button>
                 </div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6">
+              </Card>
+              <Card className="p-6">
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Account Management</h3>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -176,7 +175,7 @@ export default function DashboardPage() {
                   <LogOut size={18} />
                   Logout
                 </motion.button>
-              </div>
+              </Card>
             </motion.div>
           </div>
           <motion.div
@@ -185,7 +184,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.3 }}
             className="mt-12 text-center"
           >
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8 max-w-4xl mx-auto">
+            <Card className="p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Recent Activities</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-400">
                 <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
@@ -201,7 +200,7 @@ export default function DashboardPage() {
                   <p>Unit conversions</p>
                 </div>
               </div>
-            </div>
+            </Card>
           </motion.div>
         </div>
       </div>
