@@ -39,7 +39,7 @@
     "mathjs": "^14.6.0",
     "mathsteps": "^0.2.0",
     "nerdamer": "^1.1.13",
-    "next": "15.3.2",
+    "next": "15.3.8",
     "next-auth": "^4.24.11",
     "postgres": "^3.4.7",
     "postprocessing": "^6.37.6",
