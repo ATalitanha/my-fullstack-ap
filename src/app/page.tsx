@@ -7,8 +7,7 @@ import { ChangeLog } from "@/components/change-log";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { useRef } from "react";
 import { useLanguage } from "@/constants/LanguageContext";
-import {useTranslation} from "@/hooks/useLanguage"
-import Trans from '@/components/Trans';
+import {useTranslation} from "@/hooks/useLanguage";
 
 export default function HomePage() {
   /**
@@ -201,7 +200,7 @@ export default function HomePage() {
                 : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"
               }`}
           >
-            همه
+            {t("app.main.All")}
           </button>
           {categories.map(category => (
             <button
@@ -288,10 +287,10 @@ export default function HomePage() {
           >
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
-              No results found
+              {t("app.main.NoResults")}
             </h3>
             <p className="text-gray-500 dark:text-gray-500">
-              No tools match &quot;{searchTerm}&quot;
+              {t('app.main.NoTools')} &quot;{searchTerm}&quot;
             </p>
           </motion.div>
         )}

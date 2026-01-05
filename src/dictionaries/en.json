@@ -2,26 +2,28 @@
   "app": {
     "main": {
       "links": {
-        "cal": "ماشین حساب",
-        "messenger": "انتقال متن",
-        "todo": "لیست کارها",
-        "notes": "یادداشت‌ها",
-        "Prices-table": "ماشین حساب",
+        "cal": "Calculator",
+        "messenger": "Text Messenger",
+        "todo": "To-Do List",
+        "notes": "Notes",
+        "Prices-table": "Gold & Currency Prices",
         "category": {
-          "tools":"ابزار",
-          "communication":"ارتباطات",
-          "finance":"مالی"
+          "tools": "Tools",
+          "communication": "Communication",
+          "finance": "Finance"
         }
-
       },
-      "change":"تغییرات نسخه",
-      "BestTools":"مجموعه‌ای از بهترین ابزارها",
-      "be":"به ",
-      "welcome":"خوش آمدید",
-      "productivity":"مجموعه‌ای کامل از ابزارهای کاربردی و هوشمند برای بهبود productivity روزانه شما ✨",
-      "serchPlaceholder":"جستجو بین ابزارها...",
-      "visited":"پربازدید",
-      "new":"جدید"
+      "change": "Changelog",
+      "BestTools": "Collection of the Best Tools",
+      "be": "to ",
+      "welcome": "Welcome",
+      "productivity": "A complete set of useful and smart tools to improve your daily productivity ✨",
+      "serchPlaceholder": "Search among tools...",
+      "visited": "Most Visited",
+      "new": "New",
+      "NoResults": "No results found",
+      "NoTools": "No tools found",
+      "All":"All"
     },
     "cal": {},
     "advanc-cal": {},
@@ -41,7 +43,10 @@
     "CalculatorDisplay": {},
     "CategorySelect": {},
     "CategoryTabs": {},
-    "change-log": {},
+    "changeLog": {
+      "changes": "Changes",
+      "version": "Version"
+    },
     "DeleteConfirmModal": {},
     "HistoryList": {},
     "LanguageSwitcher": {},
@@ -67,5 +72,26 @@
       "tabs": {},
       "toast": {}
     }
+  },
+  "changeLogs": {
+    "v0-1-0": ["Created calculator user interface", "Built history section"],
+    "v0-5-0": ["Built and configured website", "Using API for history"],
+    "v0-9-0": ["Launched for testing", "Changed color scheme"],
+    "v1-0-0": ["Improved user interface", "Fixed reported issues", "Public launch"],
+    "v1-1-5": ["Changed user interface", "Fixed minor issues"],
+    "v1-6-0": ["Added changelog section", "Fixed minor issues"],
+    "v1-7-0": ["Changed user interface", "Fixed general issues"],
+    "v1-8-0": ["Added parentheses", "Changed error display", "Improved user interface"],
+    "v2-0-0": ["Added messenger section", "Fixed minor issues", "Improved user interface", "Optimized for mobile", "Increased speed"],
+    "v2-1-0": ["Added keyboard button functionality in calculator"],
+    "v3-0-0": ["Added user account", "Added notes section", "Improved user interface", "Fixed minor issues"],
+    "v3-1-0": ["Optimized for Persian language", "Improved user interface", "Fixed minor issues"],
+    "v3-2-0": ["Enhanced security", "Improved user interface", "Fixed minor issues"],
+    "v3-3-0": ["Added to-do list", "Improved user interface", "Fixed minor issues"],
+    "v3-4-0": ["Added unit conversion", "Improved user interface", "Fixed minor issues"],
+    "v3-9-0": ["Added advanced calculator (beta)", "Improved user interface", "Fixed minor issues"],
+    "v4-0-0": ["Added gold and currency prices display", "Improved user interface", "Fixed minor issues"],
+    "v4-2-0": ["Changed homepage", "Improved user interface", "Fixed minor issues"],
+    "v5-0-0": ["Modern and new design", "Redesigned user interface", "Optimized for mobile", "Improved user interface", "Fixed minor issues", "Initial launch of new features"]
   }
 }

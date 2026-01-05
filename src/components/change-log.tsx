@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
-import { getChangeLogs } from "@/lib/db";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLanguage, useTranslation } from "@/hooks/useLanguage";
+
 
 /**
  * Props for the ChangeLog component.
@@ -21,15 +22,60 @@ type ChangeLogProps = {
  * @returns {JSX.Element} The changelog modal.
  */
 export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
+  const { t, language } = useTranslation();
+  const { formatNumber, formatDate } = useLanguage();
+
   // داده‌های تغییرات
-  const [changeLogs, setChangeLogs] = useState<{ version: string; changes: string[] }[]>([]);
+  const changeLogs = useMemo(() => {
+    const getChanges = (key: string) => {
+      const result = t(key, { returnObjects: true });
+      // اگر نتیجه آرایه نبود، به آرایه تبدیلش کن
+      if (Array.isArray(result)) {
+        return result;
+      }
+      // اگر نتیجه رشته بود، آن را به آرایه تبدیل کن
+      if (typeof result === 'string') {
+        try {
+          // اگر رشته JSON است
+          return JSON.parse(result);
+        } catch {
+          // اگر JSON معتبر نیست، به آرایه تک عنصری تبدیل کن
+          return [result];
+        }
+      }
+      // حالت پیش‌فرض
+      return [];
+    };
+
+    return [
+      { version: "0.1.0", changes: getChanges("changeLogs.v0-1-0") },
+      { version: "0.5.0", changes: getChanges("changeLogs.v0-5-0") },
+      { version: "0.9.0", changes: getChanges("changeLogs.v0-9-0") },
+      { version: "1.0.0", changes: getChanges("changeLogs.v0-9-0") },
+      { version: "1.1.5", changes: getChanges("changeLogs.v1-1-5") },
+      { version: "1.6.0", changes: getChanges("changeLogs.v1-6-0") },
+      { version: "1.7.0", changes: getChanges("changeLogs.v1-7-0") },
+      { version: "1.8.0", changes: getChanges("changeLogs.v1-8-0") },
+      { version: "2.0.0", changes: getChanges("changeLogs.v2-0-0") },
+      { version: "2.1.0", changes: getChanges("changeLogs.v2-1-0") },
+      { version: "3.0.0", changes: getChanges("changeLogs.v3-0-0") },
+      { version: "3.1.0", changes: getChanges("changeLogs.v3-1-0") },
+      { version: "3.2.0", changes: getChanges("changeLogs.v3-2-0") },
+      { version: "3.3.0", changes: getChanges("changeLogs.v3-3-0") },
+      { version: "3.4.0", changes: getChanges("changeLogs.v3-4-0") },
+      { version: "3.9.0", changes: getChanges("changeLogs.v3-9-0") },
+      { version: "4.0.0", changes: getChanges("changeLogs.v4-0-0") },
+      { version: "4.2.0", changes: getChanges("changeLogs.v4-2-0") },
+      { version: "5.0.0", changes: getChanges("changeLogs.v5-0-0") },
+    ];
+  }, [t]);
+  
   // نگهداری نسخه‌ای که باز شده (اکاردئون)
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
-  // دریافت تغییرات هنگام mount
-  useEffect(() => {
-    setChangeLogs(getChangeLogs);
-  }, []);
+
+
+
 
   // باز/بسته کردن آیتم اکاردئون
   const handleAccordionChange = (value: string) => {
@@ -76,7 +122,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                تغییرات
+                {t("components.changeLog.changes")}
               </motion.h2>
               <motion.button
                 onClick={onClose}
@@ -108,7 +154,7 @@ export function ChangeLog({ isOpen, onClose }: ChangeLogProps) {
                     onClick={() => handleAccordionChange(`item-${index}`)}
                   >
                     <span className="font-medium text-black dark:text-gray-100">
-                      نسخه {log.version}
+                      {t("components.changeLog.version")} {log.version}
                     </span>
                     <motion.div
                       animate={{ rotate: expandedItem === `item-${index}` ? 180 : 0 }}

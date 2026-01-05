@@ -186,12 +186,6 @@ export function LanguageProvider({ children, initialLanguage = null }) {
             if (savedDir) {
               setDir(savedDir);
             }
-          } else if (!initialLanguage) {
-            // شناسایی خودکار زبان مرورگر
-            const browserLang = navigator.language.split('-')[0];
-            if (SUPPORTED_LANGUAGES.some(lang => lang.code === browserLang)) {
-              preferredLang = browserLang;
-            }
           }
         }
         
