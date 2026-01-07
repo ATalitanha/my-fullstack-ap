@@ -25,10 +25,20 @@
       "NoTools": "No tools found",
       "All":"All"
     },
-    "cal": {},
-    "advanc-cal": {},
-    "calc": {},
-    "units": {},
+    "cal": {
+      "cal": {
+      "normalCal": "ماشین حساب ساده",
+      "normalCaldis": "محاسبات روزمره و عملیات پایه ریاضی",
+      "unitCal": "تبدیل واحد",
+      "unitCaldis": "تبدیل بین واحدهای مختلف اندازه‌گیری",
+      "adCal":"ماشین حساب پیشرفته",
+      "adCaldis":"محاسبات علمی و پیچیده با قابلیت‌های حرفه‌ای",
+      "AdvComputTool":"ابزارهای محاسباتی پیشرفته",
+      "advancCal": {},
+      "calc": {},
+      "units": {}
+    }
+    },
     "dashboard": {},
     "loading": {},
     "login": {},

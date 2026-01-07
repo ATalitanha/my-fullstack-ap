@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChangeLog } from "@/components/change-log";
 import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { useRef } from "react";
-import { useLanguage } from "@/constants/LanguageContext";
 import {useTranslation} from "@/hooks/useLanguage";
 
 export default function HomePage() {
@@ -20,7 +19,6 @@ export default function HomePage() {
   const heroRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const { t, language } = useTranslation();
-  const { formatNumber, formatDate } = useLanguage();
 
   
   useEffect(() => {
@@ -56,9 +54,9 @@ export default function HomePage() {
             duration: 0.8,
             delay: 0.2,
             ease: "power2.out",
-          });
+          },);
         }
-      });
+      },);
     };
     run();
     return () => ctx?.revert?.();
@@ -71,14 +69,14 @@ export default function HomePage() {
       color: "from-blue-500 to-blue-700",
       icon: "🧮",
       category: t("app.main.links.category.tools"),
-      popular: true
+      popular: true,
     },
     {
       href: "/messenger",
       label: t("app.main.links.messenger"),
       color: "from-teal-500 to-teal-700",
       icon: "💬",
-      category: t("app.main.links.category.communication")
+      category: t("app.main.links.category.communication"),
     },
     {
       href: "/todo",
@@ -86,14 +84,14 @@ export default function HomePage() {
       color: "from-amber-500 to-orange-600",
       icon: "✅",
       category: t("app.main.links.category.communication"),
-      popular: true
+      popular: true,
     },
     {
       href: "/notes",
       label: t("app.main.links.notes"),
       color: "from-purple-500 to-indigo-600",
       icon: "📝",
-      category: t("app.main.links.category.communication")
+      category: t("app.main.links.category.communication"),
     },
     {
       href: "/Prices-table",
@@ -101,7 +99,7 @@ export default function HomePage() {
       color: "from-green-500 to-emerald-600",
       icon: "📊",
       category: t("app.main.links.category.finance"),
-      new: true
+      new: true,
     },
   ];
 
@@ -122,7 +120,7 @@ export default function HomePage() {
         />
       </div>
     );
-  }
+  };
 
   return (
     <>
@@ -301,4 +299,4 @@ export default function HomePage() {
       />
     </>
   );
-}
+};

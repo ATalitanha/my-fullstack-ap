@@ -35,8 +35,8 @@ function formatResult(res: unknown): string {
     return String(res);
   } catch {
     return String(res);
-  }
-}
+  };
+};
 
 export default function AdvancedCalculatorPage() {
   const [expr, setExpr] = useState<string>("");
@@ -60,7 +60,7 @@ export default function AdvancedCalculatorPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useEffect(() => { exprRef.current = expr; }, [expr]);
+  useEffect(() => { exprRef.current = expr; }, [expr],);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -68,7 +68,7 @@ export default function AdvancedCalculatorPage() {
         const res = await fetch("/api/adhistory");
         const data = await res.json();
         setHistory(data);
-      } catch { }
+      } catch { };
     };
     fetchHistory();
   }, []);
@@ -79,10 +79,10 @@ export default function AdvancedCalculatorPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ expr, result }),
-      });
+      },);
       const data = await res.json();
       setHistory(prev => [data, ...prev.slice(0, 99)]);
-    } catch { }
+    } catch { };
   };
 
   const handleDeleteHistory = async (id: string) => {
@@ -93,7 +93,7 @@ export default function AdvancedCalculatorPage() {
         body: JSON.stringify({ id }),
       });
       setHistory(prev => prev.filter(h => h.id !== id));
-    } catch { }
+    } catch { };
   };
 
   const compute = useCallback(async (expression: string) => {
@@ -115,9 +115,9 @@ export default function AdvancedCalculatorPage() {
       return formatted;
     } catch {
       setResult("");
-      setError("Calculation error — check the expression.");
+      setError("Calculation error.");
       return null;
-    }
+    };
   }, []);
 
   const handleButton = (val: string) => {
@@ -171,7 +171,7 @@ export default function AdvancedCalculatorPage() {
     return (
       <HybridLoading />
     );
-  }
+  };
 
   return (
     <>
@@ -438,4 +438,4 @@ export default function AdvancedCalculatorPage() {
       </div>
     </>
   );
-}
+};

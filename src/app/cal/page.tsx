@@ -6,10 +6,12 @@ import theme from "@/lib/theme";
 import Link from "next/link";
 import { Calculator, ArrowRight, Sparkles, Ruler, Zap } from "lucide-react";
 import HybridLoading from "../loading";
+import {useTranslation} from "@/hooks/useLanguage";
 
 export default function Cal() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const { t, language } = useTranslation();
 
   /**
    * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
@@ -26,8 +28,8 @@ export default function Cal() {
   const calculatorTools = [
     {
       href: "/cal/calc",
-      title: "ماشین حساب ساده",
-      description: "محاسبات روزمره و عملیات پایه ریاضی",
+      title: t("app.cal.normalCal"),
+      description: t("app.cal.normalCaldis"),
       icon: Calculator,
       color: "from-blue-500 to-blue-600",
       iconColor: "text-blue-500",
@@ -35,8 +37,8 @@ export default function Cal() {
     },
     {
       href: "/cal/units",
-      title: "تبدیل واحد",
-      description: "تبدیل بین واحدهای مختلف اندازه‌گیری",
+      title: t("app.cal.unitCal"),
+      description: t("app.cal.unitCaldis"),
       icon: Ruler,
       color: "from-teal-500 to-teal-600",
       iconColor: "text-teal-500",
@@ -44,20 +46,20 @@ export default function Cal() {
     },
     {
       href: "/cal/advanc-cal",
-      title: "ماشین حساب پیشرفته",
-      description: "محاسبات علمی و پیچیده با قابلیت‌های حرفه‌ای",
+      title: t("app.cal.adCal"),
+      description: t("app.cal.adCaldis"),
       icon: Zap,
       color: "from-purple-500 to-purple-600",
       iconColor: "text-purple-500",
       delay: 0.3
-    }
+    },
   ];
 
   if (isLoading) {
     return (
       <HybridLoading />
     );
-  }
+  };
 
   return (
     <>
@@ -83,15 +85,15 @@ export default function Cal() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
-              <span>بزارهای محاسباتی پیشرفته</span>
+              <span>{t("app.cal.AdvComputTool")}</span>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
               <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                ابزارهای ماشین حساب
+                {t("app.cal.calTool")}
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              مجموعه‌ای کامل از ابزارهای محاسباتی برای نیازهای مختلف شما ✨
+              {t("app.cal.productivity")}
             </p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -127,7 +129,7 @@ export default function Cal() {
                                 {tool.title}
                               </h3>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                ابزار محاسباتی
+                                {t("app.cal.ComputTool")}
                               </p>
                             </div>
                           </div>
@@ -149,7 +151,7 @@ export default function Cal() {
                           className="mt-auto"
                         >
                           <div className="w-full py-3 px-4 rounded-2xl bg-linear-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 group-hover:from-blue-500 group-hover:to-blue-600 text-gray-700 dark:text-gray-300 group-hover:text-white transition-all duration-300 text-center font-semibold text-sm">
-                            استفاده از ابزار
+                            {t("app.cal.useTool")}
                           </div>
                         </motion.div>
                       </div>
@@ -167,7 +169,7 @@ export default function Cal() {
           >
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8 max-w-2xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                <p>چرا از ابزارهای محاسباتی ما استفاده کنید؟</p>
+                <p>{t("app.cal.whyUse")}</p>
 
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-400">
@@ -175,19 +177,19 @@ export default function Cal() {
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Sparkles className="text-blue-500" size={20} />
                   </div>
-                  <p>طراحی مدرن و کاربرپسند</p>
+                  <p>{t("app.cal.ModernDis")}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Zap className="text-green-500" size={20} />
                   </div>
-                  <p>سرعت و دقت بالا</p>
+                  <p>{t("app.cal.fastSpeed")}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Calculator className="text-purple-500" size={20} />
                   </div>
-                  <p>قابلیت‌های متنوع</p>
+                  <p>{t("app.cal.VariousCap")}</p>
                 </div>
               </div>
             </div>
@@ -196,4 +198,4 @@ export default function Cal() {
       </div>
     </>
   );
-}
+};
