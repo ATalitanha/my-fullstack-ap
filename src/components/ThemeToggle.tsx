@@ -53,9 +53,10 @@ const ThemeSwitcher = () => {
     >
       {/* نمایش آیکون بسته به حالت تم */}
       {isDark ? (
-        <Moon className="w-5 h-5 text-gray-200" />
-      ) : (
         <Sun className="w-5 h-5 text-yellow-400" />
+        
+      ) : (
+        <Moon className="w-5 h-5 text-gray-700" />
       )}
     </button>
   );

@@ -7,7 +7,7 @@ import { UNITS } from "@/lib/db";
 import { convertValue } from "@/lib/converter";
 import UnitSelect from "@/components/UnitSelect";
 import CategorySelect from "@/components/CategorySelect";
-import { Sparkles, ArrowRightLeft, Calculator } from "lucide-react";
+import { Sparkles, ArrowRightLeft, Calculator, ArrowRight, ArrowDown } from "lucide-react";
 import HybridLoading from "@/app/loading";
 
 export default function UnitConverterPage() {
@@ -79,30 +79,7 @@ export default function UnitConverterPage() {
 
         <div className="flex flex-col items-center justify-center px-4 py-12 relative z-10">
           
-          {/* هدر صفحه */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
-            >
-              <Sparkles size={16} />
-              <span>ابزار تبدیل واحد پیشرفته</span>
-            </motion.div>
-            
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                تبدیل واحد
-              </span>
-            </h1>
-            
-            <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              تبدیل سریع و دقیق بین واحدهای مختلف اندازه‌گیری ✨
-            </p>
-          </motion.div>
+          
 
           {/* کارت اصلی تبدیل واحد */}
           <motion.div
@@ -177,16 +154,17 @@ export default function UnitConverterPage() {
             </div>
 
             {/* سلکت‌های واحد مبدأ و مقصد */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 w-full">
+            <div dir="ltr" className="flex flex-row items-center gap-4 mb-8 w-full">
               <div className="flex-1">
                 <UnitSelect value={from} setValue={setFrom} units={filteredUnits} />
               </div>
               
               <motion.div
+                onClick={()=>{setTo(from);setFrom(to)}}
                 whileHover={{ scale: 1.1, rotate: 180 }}
-                className="p-3 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                className="w-[70px] bg-linear-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg flex items-center justify-center h-[70px]"
               >
-                <ArrowRightLeft className="text-white" size={20} />
+                <ArrowRight  className="text-white" size={30} />
               </motion.div>
               
               <div className="flex-1">

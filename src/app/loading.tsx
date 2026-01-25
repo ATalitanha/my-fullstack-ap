@@ -1,11 +1,40 @@
 'use client';
 
+import { useEffect, useRef } from "react";
+
 
 
 export default function HybridLoading() {
+    const heroRef = useRef<HTMLDivElement | null>(null);
+    const titleRef = useRef<HTMLHeadingElement | null>(null)
 
 
-
+    useEffect(() => {
+        let ctx: any;
+        const run = async () => {
+          const { gsap } = await import("gsap");
+          if (!heroRef.current) return;
+          ctx = gsap.context(() => {
+            gsap.from(heroRef.current!, {
+              opacity: 0,
+              y: 20,
+              duration: 0.8,
+              ease: "power2.out",
+            });
+            if (titleRef.current) {
+              gsap.from(titleRef.current!, {
+                opacity: 0,
+                y: 10,
+                duration: 0.8,
+                delay: 0.2,
+                ease: "power2.out",
+              },);
+            }
+          },);
+        };
+        run();
+        return () => ctx?.revert?.();
+      }, []);
     
 
     return (

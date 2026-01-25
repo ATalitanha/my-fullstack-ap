@@ -32,35 +32,7 @@ export default function HomePage() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  /**
-   * انیمیشن اولیه بخش قهرمان با بارگذاری تنبل GSAP
-   */
-  useEffect(() => {
-    let ctx: any;
-    const run = async () => {
-      const { gsap } = await import("gsap");
-      if (!heroRef.current) return;
-      ctx = gsap.context(() => {
-        gsap.from(heroRef.current!, {
-          opacity: 0,
-          y: 20,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-        if (titleRef.current) {
-          gsap.from(titleRef.current!, {
-            opacity: 0,
-            y: 10,
-            duration: 0.8,
-            delay: 0.2,
-            ease: "power2.out",
-          },);
-        }
-      },);
-    };
-    run();
-    return () => ctx?.revert?.();
-  }, []);
+  
 
   const links = [
     {
@@ -116,7 +88,7 @@ export default function HomePage() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"
+          className="w-12 h-12 rounded-full"
         />
       </div>
     );
@@ -158,7 +130,7 @@ export default function HomePage() {
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
           >
             <Sparkles size={16} />
             <span>{t("app.main.BestTools")}</span>
@@ -182,7 +154,7 @@ export default function HomePage() {
             placeholder={t("app.main.serchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg  focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-lg shadow-lg"
           />
         </motion.div>
         <motion.div
@@ -253,7 +225,7 @@ export default function HomePage() {
                     </div>
                   </div>
                 )}
-                <div className="rounded-2xl shadow-xl backdrop-blur-lg bg-white/70 dark:bg-gray-800/70 border border-white/40 dark:border-gray-700/40 overflow-hidden transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90">
+                <div className="rounded-2xl shadow-xl backdrop-blur-lg bg-white/70 dark:bg-gray-800/70  overflow-hidden transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90">
                   <Link
                     href={link.href}
                     className="flex flex-col items-center justify-center h-44 text-center font-semibold text-lg relative overflow-hidden"

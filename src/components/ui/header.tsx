@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import LanguageSwitcher, { HeaderLanguageSwitcher } from '../LanguageSwitcher';
+import { useTranslation } from '@/hooks/useLanguage';
 
 // آیکون‌ها را با dynamic import بارگیری کن
 const ArrowRight = dynamic(() => import('lucide-react').then(mod => mod.ArrowRight), {
@@ -38,45 +39,46 @@ const Header = ({ backTo }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const { t, language } = useTranslation();
 
   const links = [
     {
       href: "/cal",
-      label: "ماشین حساب",
+      label: t("app.main.links.cal"),
       color: "from-blue-500 to-blue-700",
       icon: "🧮",
-      category: "ابزار",
-      popular: true
+      category: t("app.main.links.category.tools"),
+      popular: true,
     },
     {
       href: "/messenger",
-      label: "انتقال متن",
+      label: t("app.main.links.messenger"),
       color: "from-teal-500 to-teal-700",
       icon: "💬",
-      category: "ارتباطات"
+      category: t("app.main.links.category.communication"),
     },
     {
       href: "/todo",
-      label: "لیست کارها",
+      label: t("app.main.links.todo"),
       color: "from-amber-500 to-orange-600",
       icon: "✅",
-      category: "ارتباطات",
-      popular: true
+      category: t("app.main.links.category.communication"),
+      popular: true,
     },
     {
       href: "/notes",
-      label: "یادداشت‌ها",
+      label: t("app.main.links.notes"),
       color: "from-purple-500 to-indigo-600",
       icon: "📝",
-      category: "ارتباطات"
+      category: t("app.main.links.category.communication"),
     },
     {
       href: "/Prices-table",
-      label: "قیمت لحظه‌ای طلا و ارز",
+      label: t("app.main.links.Prices-table"),
       color: "from-green-500 to-emerald-600",
       icon: "📊",
-      category: "مالی",
-      new: true
+      category: t("app.main.links.category.finance"),
+      new: true,
     },
   ];
 
@@ -93,7 +95,7 @@ const Header = ({ backTo }: HeaderProps) => {
     const hasHistory = window.history.length > 1;
 
     // لیست صفحاتی که دکمه back نباید نشان داده شود
-    const noBackPages = ['/', '/login', '/register'];
+    const noBackPages = ['/', '/login', '/signup'];
     const isNoBackPage = noBackPages.includes(pathname);
 
     // اگر backTo داریم یا می‌توانیم back کنیم و صفحه‌ای نیستیم که نباید back داشته باشد
@@ -247,6 +249,7 @@ const Header = ({ backTo }: HeaderProps) => {
                 {
                   links.map(l => (
                     <Link
+                      key={l.label}
                       href={l.href}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-800 transition"
                       onClick={() => setMobileMenuOpen(false)}
@@ -254,7 +257,7 @@ const Header = ({ backTo }: HeaderProps) => {
                       <div className="h-8 w-8 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                         <span className="text-blue-600 dark:text-blue-400">{l.icon}</span>
                       </div>
-                      <span className="font-medium">{l.label}</span>
+                      <span className="font-medium text-gray-700 dark:text-white">{l.label}</span>
                     </Link>
                   ))
                 }
@@ -282,10 +285,7 @@ const Header = ({ backTo }: HeaderProps) => {
 
           {/* Footer */}
           <div className="border-t border-gray-200 dark:border-gray-800 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-gray-600 dark:text-gray-400">تم</span>
-              <ThemeSwitcher />
-            </div>
+            
             <div className="">
               <HeaderLanguageSwitcher />
             </div>
@@ -320,7 +320,7 @@ const Header = ({ backTo }: HeaderProps) => {
     <>
       <header
         dir='rtl'
-        className="fixed conta top-0 left-0 w-full z-40 backdrop-blur from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 "
+        className="fixed conta top-0 left-0 w-full z-40 backdrop-blur-sm "
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -390,7 +390,7 @@ const Header = ({ backTo }: HeaderProps) => {
                         onClick={() => setMenuOpen((s) => !s)}
                         aria-haspopup
                         aria-expanded={menuOpen}
-                        className="flex items-center gap-2 py-1.5 px-3 rounded-full transition hover:bg-blue-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="flex items-center gap-2 py-1.5 px-3 rounded-full transition hover:bg-blue-50 dark:hover:bg-gray-800 focus:outline-none focus:bg-blue-50 dark:focus:bg-gray-800"
                       >
                         <div className="h-8 w-8 rounded-full bg-linear-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center font-semibold shadow">
                           {(() => {
@@ -409,7 +409,7 @@ const Header = ({ backTo }: HeaderProps) => {
                       </button>
 
                       {menuOpen && (
-                        <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-2xl z-50 border border-gray-200 dark:border-gray-800 py-2">
+                        <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-2xl z-50  py-2">
                           <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-800">
                             <p className="font-medium text-gray-900 dark:text-white">{(user as any)?.username}</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{(user as any)?.email || 'کاربر'}</p>
@@ -418,7 +418,7 @@ const Header = ({ backTo }: HeaderProps) => {
                             <li>
                               <Link
                                 href="/dashboard"
-                                className="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-800 transition rounded-lg mx-2"
+                                className="flex items-center gap-2 px-4 py-2.5 text-gray-500 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 transition rounded-lg mx-2"
                                 onClick={() => setMenuOpen(false)}
                               >
                                 <User size={18} />
@@ -428,7 +428,7 @@ const Header = ({ backTo }: HeaderProps) => {
                             <li>
                               <Link
                                 href="/settings"
-                                className="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-800 transition rounded-lg mx-2"
+                                className="flex items-center gap-2 px-4 py-2.5 text-gray-500 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 transition rounded-lg mx-2"
                                 onClick={() => setMenuOpen(false)}
                               >
                                 <Settings size={18} />
@@ -436,13 +436,17 @@ const Header = ({ backTo }: HeaderProps) => {
                               </Link>
                             </li>
                             <li className="border-t border-gray-200 dark:border-gray-800 pt-2 mt-2">
-                              <button
+                              
+                            </li>
+                            <li>
+                              <Link
+                              href='./login'
                                 onClick={handleLogout}
-                                className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition rounded-lg mx-2"
+                                className=" text-left flex items-center gap-2 px-4 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition rounded-lg mx-2"
                               >
                                 <LogOut size={18} />
                                 <span>خروج</span>
-                              </button>
+                              </Link>
                             </li>
                           </ul>
                         </div>
@@ -469,7 +473,7 @@ const Header = ({ backTo }: HeaderProps) => {
                     <div className="hidden lg:flex items-center gap-2">
                       <Button
                         variant="secondary"
-                        onClick={() => router.push('/register')}
+                        onClick={() => router.push('/signup')}
                         size="sm"
                         className="px-3 py-1.5 text-sm"
                       >

@@ -61,7 +61,7 @@ export default function ConfirmModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-50"
             onClick={onCancel} // کلیک روی بک‌دراپ لغو می‌کند
           />
 
@@ -70,7 +70,7 @@ export default function ConfirmModal({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="fixed top-1/2 left-1/2 z-50 w-80 max-w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl text-gray-100 select-none"
+            className="fixed top-1/2 left-1/2 z-50 w-80 max-w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl  p-6  shadow  text-gray-100 select-none"
           >
             {/* پیام مودال */}
             <p className="mb-5 text-center text-lg font-bold">{message}</p>

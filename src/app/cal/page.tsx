@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import theme from "@/lib/theme";
 import Link from "next/link";
-import { Calculator, ArrowRight, Sparkles, Ruler, Zap } from "lucide-react";
+import { Calculator, ArrowRight, Sparkles, Ruler, Zap, ArrowLeft } from "lucide-react";
 import HybridLoading from "../loading";
 import {useTranslation} from "@/hooks/useLanguage";
 
@@ -32,6 +32,7 @@ export default function Cal() {
       description: t("app.cal.normalCaldis"),
       icon: Calculator,
       color: "from-blue-500 to-blue-600",
+      cardColor:"from-gray-300/50 to-blue-300/50 dark:from-gray-500/50 dark:to-blue-500/50",
       iconColor: "text-blue-500",
       delay: 0.1
     },
@@ -41,6 +42,7 @@ export default function Cal() {
       description: t("app.cal.unitCaldis"),
       icon: Ruler,
       color: "from-teal-500 to-teal-600",
+      cardColor:"from-gray-300/50 to-teal-300/50 dark:from-gray-500/50 dark:to-teal-500/50",
       iconColor: "text-teal-500",
       delay: 0.2
     },
@@ -50,6 +52,7 @@ export default function Cal() {
       description: t("app.cal.adCaldis"),
       icon: Zap,
       color: "from-purple-500 to-purple-600",
+      cardColor:"from-gray-300/50 to-purple-300/50 dark:from-gray-500/50 dark:to-purple-500/50",
       iconColor: "text-purple-500",
       delay: 0.3
     },
@@ -82,7 +85,7 @@ export default function Cal() {
           >
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
               <span>{t("app.cal.AdvComputTool")}</span>
@@ -117,8 +120,8 @@ export default function Cal() {
                     href={tool.href}
                     className="block h-full"
                   >
-                    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 overflow-hidden transition-all duration-300 group-hover:shadow-3xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90 h-full flex flex-col">
-                      <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700">
+                    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 group-hover:shadow-3xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90 h-full flex flex-col">
+                      <div className={`p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r ${tool.cardColor} `}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className={`p-3 bg-linear-to-br ${tool.color} rounded-xl shadow-lg`}>
@@ -135,9 +138,9 @@ export default function Cal() {
                           </div>
                           <motion.div
                             whileHover={{ scale: 1.2, x: 3 }}
-                            className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors"
+                            className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-700 dark:text-white group-hover:bg-blue-500 group-hover:text-white transition-colors"
                           >
-                            <ArrowRight size={16} />
+                            {language === 'fa' ? <ArrowLeft size={16}/> : <ArrowRight size={16}/>}
                           </motion.div>
                         </div>
                       </div>
@@ -167,7 +170,7 @@ export default function Cal() {
             transition={{ delay: 0.5 }}
             className="text-center mt-12"
           >
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-8 max-w-2xl mx-auto">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl  p-8 max-w-2xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 <p>{t("app.cal.whyUse")}</p>
 

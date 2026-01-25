@@ -3,8 +3,10 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { evaluate } from "mathjs";
-import { Sparkles, History, Trash2, RotateCcw } from "lucide-react";
+import { History, Trash2, RotateCcw } from "lucide-react";
 import HybridLoading from "@/app/loading";
+import { useTranslation } from "@/hooks/useLanguage";
+
 
 type HistoryItem = {
   id: string;
@@ -47,6 +49,7 @@ export default function AdvancedCalculatorPage() {
   const [scientific, setScientific] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const { t, language } = useTranslation()
 
   /**
    * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
@@ -181,40 +184,20 @@ export default function AdvancedCalculatorPage() {
           background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
         }}
       />
-      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div dir='rtl' className=" min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto px-4 py-12 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
-            >
-              <Sparkles size={16} />
-              <span>ماشین حساب پیشرفته با قابلیت‌های علمی</span>
-            </motion.div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                ماشین حساب حرفه‌ای
-              </span>
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              محاسبات پیچیده ریاضی با قابلیت‌های علمی پیشرفته ✨
-            </p>
-          </motion.div>
+          
           <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="lg:col-span-2"
+              className="lg:col-span-2 relative"
             >
-              <div className="text-center mb-6 min-h-8">
+              <div className="text-center mb-6 min-h-8 absolute left-[50px] top-[34px]  z-50">
                 <AnimatePresence>
                   {error && (
                     <motion.div
@@ -230,11 +213,11 @@ export default function AdvancedCalculatorPage() {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 overflow-hidden">
-                <div className="p-6 bg-linear-to-br from-gray-800 via-gray-900 to-gray-800 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700 text-white relative overflow-hidden">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
+                <div dir='ltr' className="p-6 bg-linear-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-600 dark:via-gray-800 dark:to-gray-700 text-gray-700 dark:text-white relative overflow-hidden">
                   <div className="absolute inset-0 bg-linear-to-r from-blue-500/10 via-transparent to-purple-500/10" />
                   <div className="relative z-10 space-y-4">
-                    <div className="text-right font-mono text-lg wrap-break-word min-h-8">
+                    <div className="text-right font-mono text-2xl wrap-break-word min-h-8">
                       {expr || " "}
                     </div>
                     <motion.div
@@ -294,11 +277,11 @@ export default function AdvancedCalculatorPage() {
                 <div className="p-6">
                   <AnimatePresence>
                     {scientific && (
-                      <motion.div
+                      <motion.div dir='ltr'
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="grid grid-cols-4 gap-3 mb-4"
+                        className="grid grid-cols-3 gap-3 mb-4"
                       >
                         {SCI_BUTTONS.map(s => (
                           <motion.button
@@ -339,7 +322,7 @@ export default function AdvancedCalculatorPage() {
               className="lg:col-span-1"
             >
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 h-full">
-                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-br from-red-100/50 via-gray-100/50 to-blue-300/50 dark:from-red-600/9 dark:via-gray-800 dark:to-blue-600/9 rounded-t-3xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -392,7 +375,7 @@ export default function AdvancedCalculatorPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all cursor-pointer group"
+                            className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-br from-red-100/50 via-gray-100/50 to-blue-300/50 dark:from-red-600/9 dark:via-gray-800 dark:to-blue-600/9 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all cursor-pointer group"
                             onClick={() => handleUseHistory(h)}
                           >
                             <div className="">

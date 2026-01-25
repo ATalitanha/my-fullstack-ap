@@ -1,6 +1,5 @@
 "use client";
 
-import Card from "@/shared/ui/Card";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBitcoin, FaDollarSign, FaCoins, FaSearch } from "react-icons/fa";
@@ -8,7 +7,6 @@ import { Sparkles, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import theme from "@/lib/theme";
-import HybridLoading from "../loading";
 
 type Item = {
   name: string;
@@ -72,12 +70,6 @@ export default function PricesTableCards() {
     fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <HybridLoading/>
-    );
-  }
-
   if (!data) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -134,7 +126,7 @@ export default function PricesTableCards() {
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
               <span>اطلاعات لحظه‌ای بازار</span>
@@ -152,7 +144,7 @@ export default function PricesTableCards() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 mb-8"
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl  p-6 mb-8"
           >
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex-1 w-full">
@@ -161,9 +153,9 @@ export default function PricesTableCards() {
                   <input
                     type="text"
                     placeholder="جستجو بر اساس نام یا نماد..."
-                    className="w-full px-4 py-3 pl-10 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40
+                    className="w-full px-4 py-3 pl-10 rounded-2xl bg-white/60 dark:bg-gray-700/60 
                     text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                    focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                    focus:outline-none
                     transition-all duration-200"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -174,12 +166,12 @@ export default function PricesTableCards() {
                 <Select.Root value={category} onValueChange={(value) => setCategory(value as Category)}>
                   <Select.Trigger
                     className="
-                      w-full px-4 py-3 pr-10 rounded-2xl
+                      w-full px-4 py-3  rounded-2xl
                       bg-white/60 dark:bg-gray-700/60
-                      border border-white/40 dark:border-gray-600/40
+                      
                       flex justify-between items-center
                       text-gray-800 dark:text-gray-100
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/50
+                      focus:outline-none
                       shadow-md transition-all duration-200
                     "
                   >
@@ -204,14 +196,8 @@ export default function PricesTableCards() {
                       <Select.Viewport
                         className="
                           p-2 h-full overflow-y-auto
-                          scrollbar-thin
-                          scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70
-                          scrollbar-thumb-rounded
-                          scrollbar-track-transparent
-                          hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80
                           transition-all
                         "
-                        style={{ scrollbarGutter: "stable" }}
                       >
                         {categories.map((cat) => (
                           <Select.Item
@@ -219,8 +205,8 @@ export default function PricesTableCards() {
                             value={cat.value}
                             className="
                               p-3 rounded-lg cursor-pointer
-                              hover:bg-blue-500 text-gray-500 dark:text-white
-                              hover:text-white dark:hover:text-gray-700
+                              hover:bg-blue-500/50 text-gray-500 dark:text-white
+                              hover:text-white 
                             "
                           >
                             <Select.ItemText>{cat.label}</Select.ItemText>
@@ -263,7 +249,7 @@ export default function PricesTableCards() {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ delay: index * 0.05 }}
                     whileHover={{ scale: 1.05, y: -5, transition: { type: "spring", stiffness: 400, damping: 25 } }}
-                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 hover:shadow-3xl transition-all duration-300 group relative"
+                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-6 hover:shadow-3xl transition-all duration-300 group relative"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
@@ -324,7 +310,7 @@ export default function PricesTableCards() {
             </motion.div>
           )}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="text-center mt-12">
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 dark:border-gray-700/40 p-6 max-w-2xl mx-auto">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-6 max-w-2xl mx-auto">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">📊 اطلاعات بازار</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
                 اطلاعات نمایش داده شده به صورت لحظه‌ای از منابع معتبر دریافت می‌شود و ممکن است با تاخیر همراه باشد.

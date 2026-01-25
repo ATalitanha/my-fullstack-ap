@@ -129,7 +129,7 @@ export default function LanguageSwitcher({
               transition-all duration-200
               hover:bg-gray-50 dark:hover:bg-gray-700
               hover:border-gray-400 dark:hover:border-gray-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+              focus:outline-none
               ${language === lang.code 
                 ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-700 dark:border-blue-700 hover:bg-blue-700 hover:border-blue-700' 
                 : 'text-gray-700 dark:text-gray-300'
@@ -191,13 +191,12 @@ export default function LanguageSwitcher({
           flex items-center justify-between gap-2
           ${sizeClasses.button}
           bg-white dark:bg-gray-800
-          border border-gray-300 dark:border-gray-700
           rounded-lg
           text-gray-700 dark:text-gray-300
           transition-all duration-200
           hover:bg-gray-50 dark:hover:bg-gray-700
           hover:border-gray-400 dark:hover:border-gray-600
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+          focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700
           ${getResponsiveClasses()}
         `}
       >
@@ -223,7 +222,6 @@ export default function LanguageSwitcher({
             right-0 z-50
             ${sizeClasses.dropdown}
             bg-white dark:bg-gray-800
-            border border-gray-300 dark:border-gray-700
             rounded-sm shadow-lg
             overflow-hidden
             animate-in fade-in-0 zoom-in-95
@@ -281,18 +279,21 @@ export function SimpleLanguageSwitcher({ className = '' }) {
   const { language, changeLanguage, supportedLanguages } = useLanguage();
 
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <div className={`flex items-center  mb-3 ${className}`}>
       {supportedLanguages.map((lang) => (
         <button
           key={lang.code}
           onClick={() => changeLanguage(lang.code)}
           className={`
-            px-2 py-1 text-sm rounded-md transition-colors
+            px-2 py-1 text-sm  transition-all
             ${language === lang.code 
               ? 'bg-blue-600 text-white' 
               : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }
-            max-sm:px-1.5 max-sm:py-0.5 max-sm:text-xs
+              ${
+              lang.code === 'fa' ? 'rounded-r-md text-sm' : 'rounded-l-md max-sm:text-xs '
+            }
+            max-sm:px-1.5 max-sm:py-0.5  w-7 max-h-5  flex items-center justify-center
           `}
           aria-label={lang.name}
           title={lang.name}

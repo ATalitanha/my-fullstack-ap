@@ -32,7 +32,7 @@ const CalculatorDisplay = ({ first, op, second, result }: Props) => {
         border border-white/20 dark:border-gray-700
         rounded-2xl
         p-4
-        min-h-[70px]
+        min-h-20
         select-text
         overflow-hidden
         whitespace-nowrap

@@ -84,7 +84,7 @@ export default function DashboardPage() {
           >
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
             >
               <Sparkles size={16} />
               <span>Your Account</span>
@@ -116,16 +116,16 @@ export default function DashboardPage() {
                 </div>
                 <div className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 border border-white/40 dark:border-gray-600/40">
+                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 ">
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Username</p>
                       <p className="text-lg font-semibold text-gray-800 dark:text-white">{user.username}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 border border-white/40 dark:border-gray-600/40">
+                    <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 rounded-2xl p-4 ">
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Email Address</p>
                       <p className="text-lg font-semibold text-gray-800 dark:text-white">{user.email || "Not provided"}</p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-4 border border-blue-200 dark:border-blue-700/40">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-4 ">
                     <div className="flex items-center gap-3">
                       <Activity className="text-blue-500" size={20} />
                       <div>

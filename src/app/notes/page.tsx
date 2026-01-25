@@ -191,7 +191,7 @@ export default function NotesPage() {
                     background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
                 }}
             />
-            <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+            <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
                     <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -204,13 +204,13 @@ export default function NotesPage() {
                     >
                         <motion.div
                             whileHover={{ scale: 1.02 }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm mb-6"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm mb-6"
                         >
                             <Sparkles size={16} />
                             <span>Personal Note Management</span>
                         </motion.div>
                         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                                 Notes
                             </span>
                         </h1>
@@ -244,9 +244,9 @@ export default function NotesPage() {
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                             onBlur={() => setTouchedTitle(true)}
-                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60  
                                             text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            focus:outline-none 
                                             transition-all duration-200"
                                         />
                                         <AnimatePresence>
@@ -273,9 +273,9 @@ export default function NotesPage() {
                                             onChange={(e) => setContent(e.target.value)}
                                             onBlur={() => setTouchedContent(true)}
                                             rows={6}
-                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60 border border-white/40 dark:border-gray-600/40 
+                                            className="w-full px-4 py-3 rounded-2xl bg-white/60 dark:bg-gray-700/60  
                                             text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 
-                                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
+                                            focus:outline-none  
                                             transition-all duration-200 resize-none"
                                         />
                                         <AnimatePresence>
@@ -298,14 +298,14 @@ export default function NotesPage() {
                                             whileTap={{ scale: 0.98 }}
                                             type="submit"
                                             disabled={submitting}
-                                            className="flex-1 py-3 rounded-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+                                            className="flex-1 py-3 rounded-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
                                             text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 
                                             transition-all duration-200 flex items-center justify-center gap-2 
                                             disabled:opacity-60 disabled:cursor-not-allowed"
                                         >
                                             {submitting ? (
                                                 <>
-                                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                    <div className="w-5 h-5  rounded-full animate-spin" />
                                                     Submitting...
                                                 </>
                                             ) : (
@@ -344,7 +344,7 @@ export default function NotesPage() {
                             className="lg:col-span-1"
                         >
                             <Card className="h-full">
-                                <div className="p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-t-3xl">
+                                <div className="p-6  bg-linear-to-r from-red-500/10 via-gray-50 to-blue-500/10 dark:from-red-500/40 dark:via-gray-700/40 dark:to-blue-500/40 rounded-t-2xl">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -362,7 +362,7 @@ export default function NotesPage() {
                                 <div className="p-4 h-[600px] overflow-y-auto">
                                     {loading ? (
                                         <div className="flex flex-col items-center justify-center h-32">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                                            <div className="animate-spin rounded-full h-8 w-8  mb-3"></div>
                                             <p className="text-gray-500 dark:text-gray-400">Loading...</p>
                                         </div>
                                     ) : notes.length === 0 ? (
@@ -385,7 +385,7 @@ export default function NotesPage() {
                                                         animate={{ opacity: 1, y: 0 }}
                                                         exit={{ opacity: 0, y: -10 }}
                                                         transition={{ delay: index * 0.1 }}
-                                                        className="p-4 rounded-2xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-700/50 dark:to-gray-800/50 border border-white/40 dark:border-gray-600/40 hover:shadow-lg transition-all group"
+                                                        className="p-4 rounded-2xl bg-linear-to-r from-red-100/10 to-blue-100/15 dark:from-red-500/10 dark:via-gray-500/10 dark:to-blue-500/15 hover:shadow-lg transition-all group"
                                                     >
                                                         <div className="flex justify-between items-start gap-4">
                                                             <div className="flex-1">
@@ -399,7 +399,7 @@ export default function NotesPage() {
                                                                     {new Date(note.createdAt).toLocaleString('en-US')}
                                                                 </small>
                                                             </div>
-                                                            <div className="flex flex-col gap-2 flex-shrink-0">
+                                                            <div className="flex flex-col gap-2 shrink-0">
                                                                 <motion.button
                                                                     whileHover={{ scale: 1.1 }}
                                                                     whileTap={{ scale: 0.9 }}
@@ -418,7 +418,7 @@ export default function NotesPage() {
                                                                     title="Delete note"
                                                                 >
                                                                     {deletingId === note.id ? (
-                                                                        <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                                                                        <div className="w-4 h-4  rounded-full animate-spin" />
                                                                     ) : (
                                                                         <Trash2 size={16} />
                                                                     )}
@@ -442,11 +442,11 @@ export default function NotesPage() {
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 50 }}
-                        className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg border z-50 ${response.type === "success"
-                                ? "bg-green-50/90 dark:bg-green-900/90 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200"
+                        className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg  z-50 ${response.type === "success"
+                                ? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
                                 : response.type === "error"
-                                ? "bg-red-50/90 dark:bg-red-900/90 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
-                                : "bg-blue-50/90 dark:bg-blue-900/90 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
+                                ? "bg-red-50/90 dark:bg-red-900/90  text-red-800 dark:text-red-200"
+                                : "bg-blue-50/90 dark:bg-blue-900/90  text-blue-800 dark:text-blue-200"
                             }`}
                     >
                         <div className="flex items-center gap-3">

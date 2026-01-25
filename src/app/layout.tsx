@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import HybridLoading from "./loading";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/ui/header";
-import Footer from "@/components/layout/Footer";
 import PageTransition from "@/components/providers/PageTransition";
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import A11yAnnouncer from "@/components/providers/A11yAnnouncer";
