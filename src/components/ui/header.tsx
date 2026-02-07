@@ -234,7 +234,7 @@ const Header = ({ backTo }: HeaderProps) => {
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="p-2 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               aria-label="Close menu"
             >
               <X className="w-6 h-6" />
@@ -286,8 +286,9 @@ const Header = ({ backTo }: HeaderProps) => {
           {/* Footer */}
           <div className="border-t border-gray-200 dark:border-gray-800 p-4">
             
-            <div className="">
+            <div className="flex items-center justify-between mb-5">
               <HeaderLanguageSwitcher />
+              <ThemeSwitcher/>
             </div>
 
             {user ? (
@@ -470,7 +471,7 @@ const Header = ({ backTo }: HeaderProps) => {
                 ) : (
                   <>
                     {/* دسکتاپ */}
-                    <div className="hidden lg:flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="secondary"
                         onClick={() => router.push('/signup')}
@@ -493,11 +494,6 @@ const Header = ({ backTo }: HeaderProps) => {
 
                   </>
                 )}
-
-                {/* Mobile theme switcher */}
-                <div className="sm:hidden">
-                  <ThemeSwitcher />
-                </div>
               </div>
             </div>
           </div>

@@ -279,7 +279,7 @@ export function SimpleLanguageSwitcher({ className = '' }) {
   const { language, changeLanguage, supportedLanguages } = useLanguage();
 
   return (
-    <div className={`flex items-center  mb-3 ${className}`}>
+    <div className={`flex items-center  ${className}`}>
       {supportedLanguages.map((lang) => (
         <button
           key={lang.code}
@@ -293,7 +293,7 @@ export function SimpleLanguageSwitcher({ className = '' }) {
               ${
               lang.code === 'fa' ? 'rounded-r-md text-sm' : 'rounded-l-md max-sm:text-xs '
             }
-            max-sm:px-1.5 max-sm:py-0.5  w-7 max-h-5  flex items-center justify-center
+            max-sm:px-1.5 max-sm:py-0.5  w-7 h-7  flex items-center justify-center
           `}
           aria-label={lang.name}
           title={lang.name}
