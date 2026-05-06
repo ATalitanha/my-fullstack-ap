@@ -23,7 +23,7 @@ To get started with TanhaApp, you'll need to have Node.js and pnpm installed.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/tanha-app.git
+   git clone https://github.com/ATalitanha/my-fullstack-ap.git
    ```
 2. Navigate to the project directory:
    ```bash
