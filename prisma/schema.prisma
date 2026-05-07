@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  notes     Note[]
+  todo      Todo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Todo {
+  id        String   @id @default(cuid())
+  title     String
+  completed Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        Int   @id @default(autoincrement())
+  title     String
+  body      String
+}
+
+model Calculation {
+  id        String   @id @default(uuid())
+  expression String
+  result     String
+  createdAt  DateTime @default(now())
+}
+
+model HistoryItem {
+  id        String   @id @default(cuid())
+  expr      String
+  result    String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  entries     DailyEntry[]
+  subCategories SubCategory[]
+  @@map("categories")
+}
+
+model SubCategory {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String?
+  icon        String?
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  entries     DailyEntry[]
+
+  @@unique([categoryId, name])
+  @@map("sub_categories")
+}
+
+model DailyEntry {
+  id            String    @id @default(cuid())
+  title         String
+  content       String
+  description   String?
+  latexContent  String?
+  
+  type          EntryType @default(TEXT)
+  tags          String[]
+  
+  isFavorite    Boolean   @default(false)
+  viewCount     Int       @default(0)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  categoryId    String
+  subCategoryId String?
+
+  category      Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull)
+
+  @@index([categoryId])
+  @@index([subCategoryId])
+  @@index([createdAt])
+  @@map("daily_entries")
+}
+
+enum EntryType {
+  TEXT
+  MATH
+  FORMULA
+  EQUATION
+  DEFINITION
+  CODE
+  QUOTE
+  OTHER
+}
