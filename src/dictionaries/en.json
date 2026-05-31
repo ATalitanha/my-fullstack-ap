@@ -7,6 +7,7 @@
         "todo": "To-Do List",
         "notes": "Notes",
         "Prices-table": "Gold & Currency Prices",
+        "dataRepo": "Data Repository",
         "category": {
           "tools": "Tools",
           "communication": "Communication",
@@ -26,21 +27,21 @@
       "All": "All"
     },
     "cal": {
-      "normalCal": "ماشین حساب ساده",
-      "normalCaldis": "محاسبات روزمره و عملیات پایه ریاضی",
-      "unitCal": "تبدیل واحد",
-      "unitCaldis": "تبدیل بین واحدهای مختلف اندازه‌گیری",
-      "adCal":"ماشین حساب پیشرفته",
-      "adCaldis":"محاسبات علمی و پیچیده با قابلیت‌های حرفه‌ای",
-      "AdvComputTool":"ابزارهای محاسباتی پیشرفته",
-      "calTool":"ابزارهای ماشین حساب",
-      "productivity":"مجموعه‌ای کامل از ابزارهای محاسباتی برای نیازهای مختلف شما ✨",
-      "ComputTool":"ابزار محاسباتی",
-      "useTool":"استفاده از ابزار",
-      "whyUse":"چرا از ابزارهای محاسباتی ما استفاده کنید؟",
-      "ModernDis":"طراحی مدرن و کاربرپسند",
-      "fastSpeed":"سرعت و دقت بالا",
-      "VariousCap":"قابلیت‌های متنوع",
+      "normalCal": "simple calculator",
+      "normalCaldis": "daily arithmetic and arithmetic operations",
+      "unitCal": "unit conversion",
+      "unitCaldis": "conversion between different measurement units",
+      "adCal": "advanced calculator",
+      "adCaldis": "scientific and complex calculations with professional qualifications",
+      "AdvComputTool": "advanced computational tools",
+      "calTool": "calculator tools",
+      "productivity": "a complete set of computational tools for your different needs ✨",
+      "ComputTool": "computational tools",
+      "useTool": "use tools",
+      "whyUse": "why use our computational tools ?",
+      "ModernDis": "modern and user friendly design",
+      "fastSpeed": "high speed and accuracy",
+      "VariousCap": "diverse capabilities",
       "advancCal": {},
       "calc": {},
       "units": {}
@@ -90,35 +91,17 @@
     }
   },
   "changeLogs": {
-    "v0-1-0": [
-      "Created calculator user interface",
-      "Built history section"
-    ],
-    "v0-5-0": [
-      "Built and configured website",
-      "Using API for history"
-    ],
-    "v0-9-0": [
-      "Launched for testing",
-      "Changed color scheme"
-    ],
+    "v0-1-0": ["Created calculator user interface", "Built history section"],
+    "v0-5-0": ["Built and configured website", "Using API for history"],
+    "v0-9-0": ["Launched for testing", "Changed color scheme"],
     "v1-0-0": [
       "Improved user interface",
       "Fixed reported issues",
       "Public launch"
     ],
-    "v1-1-5": [
-      "Changed user interface",
-      "Fixed minor issues"
-    ],
-    "v1-6-0": [
-      "Added changelog section",
-      "Fixed minor issues"
-    ],
-    "v1-7-0": [
-      "Changed user interface",
-      "Fixed general issues"
-    ],
+    "v1-1-5": ["Changed user interface", "Fixed minor issues"],
+    "v1-6-0": ["Added changelog section", "Fixed minor issues"],
+    "v1-7-0": ["Changed user interface", "Fixed general issues"],
     "v1-8-0": [
       "Added parentheses",
       "Changed error display",
@@ -131,9 +114,7 @@
       "Optimized for mobile",
       "Increased speed"
     ],
-    "v2-1-0": [
-      "Added keyboard button functionality in calculator"
-    ],
+    "v2-1-0": ["Added keyboard button functionality in calculator"],
     "v3-0-0": [
       "Added user account",
       "Added notes section",
