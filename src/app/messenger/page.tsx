@@ -1,11 +1,21 @@
+/** biome-ignore-all lint/a11y/noLabelWithoutControl: <> */
+/** biome-ignore-all lint/suspicious/noImplicitAnyLet: <> */
 "use client";
 
-import LoadingDots from "@/components/loading";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  CheckCircle,
+  MessageCircle,
+  Send,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import { useEffect, useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import LoadingDots from "@/components/loading";
 import Card from "@/shared/ui/Card";
-import { Sparkles, Send, MessageCircle, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import MouseHover from "@/shared/ui/mouseHover";
 
 type Message = {
   id: string | number;
@@ -35,15 +45,6 @@ export default function MessageForm() {
   const [touchedBody, setTouchedBody] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   /**
    * نمایش پیام وضعیت با ناپدید شدن خودکار
@@ -165,7 +166,10 @@ export default function MessageForm() {
       const data = await res.json();
       if (res.ok) {
         showResponse({
-          text: toDeleteId === "all" ? "✅ All messages deleted" : "✅ Message deleted",
+          text:
+            toDeleteId === "all"
+              ? "✅ All messages deleted"
+              : "✅ Message deleted",
           type: "success",
         });
         fetchMessages();
@@ -185,12 +189,7 @@ export default function MessageForm() {
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
-        }}
-      />
+      <MouseHover />
       <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-300 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
@@ -215,7 +214,7 @@ export default function MessageForm() {
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              ارسال و مدیریت پیام‌های خود در یک محیط زیبا و کاربرپسند  ✨
+              ارسال و مدیریت پیام‌های خود در یک محیط زیبا و کاربرپسند ✨
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -227,7 +226,10 @@ export default function MessageForm() {
               <Card className="p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Send className="text-blue-600 dark:text-blue-400" size={24} />
+                    <Send
+                      className="text-blue-600 dark:text-blue-400"
+                      size={24}
+                    />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                     ارسال پیام جدید
@@ -246,7 +248,9 @@ export default function MessageForm() {
                         onChange={(e) => setTitle(e.target.value)}
                         onBlur={() => setTouchedTitle(true)}
                         className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                        aria-invalid={(touchedTitle || formTouched) && !title.trim()}
+                        aria-invalid={
+                          (touchedTitle || formTouched) && !title.trim()
+                        }
                         aria-describedby="title-error"
                       />
                     </div>
@@ -284,7 +288,9 @@ export default function MessageForm() {
                         }}
                         rows={4}
                         className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none transition-all duration-200"
-                        aria-invalid={(touchedBody || formTouched) && !body.trim()}
+                        aria-invalid={
+                          (touchedBody || formTouched) && !body.trim()
+                        }
                         aria-describedby="body-error"
                       />
                     </div>
@@ -336,10 +342,15 @@ export default function MessageForm() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg ront">
-                        <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
+                        <MessageCircle
+                          className="text-blue-600 dark:text-blue-400"
+                          size={20}
+                        />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">پیام‌های ثبت‌شده</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                          پیام‌های ثبت‌شده
+                        </h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           {messages.length} پیام
                         </p>
@@ -348,7 +359,10 @@ export default function MessageForm() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => { setToDeleteId("all"); setDeleteModalOpen(true); }}
+                      onClick={() => {
+                        setToDeleteId("all");
+                        setDeleteModalOpen(true);
+                      }}
                       disabled={messages.length === 0 || deletingId === "all"}
                       className="px-4 py-2 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
@@ -361,7 +375,8 @@ export default function MessageForm() {
                     </motion.button>
                   </div>
                 </div>
-                <div ref={listRef}
+                <div
+                  ref={listRef}
                   className="p-4 h-[500px] overflow-y-auto 
                   scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
                   scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 
@@ -370,7 +385,9 @@ export default function MessageForm() {
                   {loading && messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-32">
                       <div className="animate-spin rounded-full h-8 w-8 mb-3"></div>
-                      <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Loading...
+                      </p>
                     </div>
                   ) : messages.length === 0 ? (
                     <motion.div
@@ -435,26 +452,39 @@ export default function MessageForm() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg  z-50 ${response.type === "success"
-              ? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
-              : response.type === "error"
-                ? "bg-red-50/90 dark:bg-red-900/90 text-red-800 dark:text-red-200"
-                : "bg-blue-50/90 dark:bg-blue-900/90 text-blue-800 dark:text-blue-200"
-              }`}
+            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg  z-50 ${
+              response.type === "success"
+                ? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
+                : response.type === "error"
+                  ? "bg-red-50/90 dark:bg-red-900/90 text-red-800 dark:text-red-200"
+                  : "bg-blue-50/90 dark:bg-blue-900/90 text-blue-800 dark:text-blue-200"
+            }`}
           >
             <div className="flex items-center gap-3">
               {response.type === "success" ? (
-                <CheckCircle className="text-green-600 dark:text-green-400" size={20} />
+                <CheckCircle
+                  className="text-green-600 dark:text-green-400"
+                  size={20}
+                />
               ) : response.type === "error" ? (
-                <AlertCircle className="text-red-600 dark:text-red-400" size={20} />
+                <AlertCircle
+                  className="text-red-600 dark:text-red-400"
+                  size={20}
+                />
               ) : (
-                <MessageCircle className="text-blue-600 dark:text-blue-400" size={20} />
+                <MessageCircle
+                  className="text-blue-600 dark:text-blue-400"
+                  size={20}
+                />
               )}
               <span className="flex-1 font-semibold">{response.text}</span>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}
+                onClick={() => {
+                  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                  setResponse(null);
+                }}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
               >
                 &times;

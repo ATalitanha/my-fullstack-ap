@@ -1,12 +1,13 @@
+/** biome-ignore-all lint/a11y/useButtonType: <> */
 "use client";
 
-import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Search, Sparkles, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { ChangeLog } from "@/components/change-log";
-import { Search, Sparkles, Zap, TrendingUp } from "lucide-react";
-import { useRef } from "react";
-import {useTranslation} from "@/hooks/useLanguage";
+import { useTranslation } from "@/hooks/useLanguage";
+import MouseHover from "@/shared/ui/mouseHover";
 
 export default function HomePage() {
   /**
@@ -15,24 +16,13 @@ export default function HomePage() {
   const [isChangeLogOpen, setIsChangeLogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
 
-  
   useEffect(() => {
     setIsLoading(false);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
-  
 
   const links = [
     {
@@ -73,14 +63,23 @@ export default function HomePage() {
       category: t("app.main.links.category.finance"),
       new: true,
     },
+    {
+      href: "/data-repository",
+      label: t("app.main.links.dataRepo") || "Data Repository",
+      color: "from-cyan-500 to-blue-600",
+      icon: "📊",
+      category: t("app.main.links.category.tools"),
+      new: true,
+    },
   ];
 
-  const filteredLinks = links.filter(link =>
-    link.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    link.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredLinks = links.filter(
+    (link) =>
+      link.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      link.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const categories = [...new Set(links.map(link => link.category))];
+  const categories = [...new Set(links.map((link) => link.category))];
 
   if (isLoading) {
     return (
@@ -92,16 +91,11 @@ export default function HomePage() {
         />
       </div>
     );
-  };
+  }
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
-        }}
-      />
+      <MouseHover />
       <main className="min-h-screen flex flex-col justify-center items-center px-4 pb-16 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-700 relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -135,8 +129,15 @@ export default function HomePage() {
             <Sparkles size={16} />
             <span>{t("app.main.BestTools")}</span>
           </motion.div>
-          <h1 ref={titleRef} className="font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight text-[clamp(2rem,4vw,3.5rem)]">
-            {t("app.main.be")}<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">TanhaApp</span> {t("app.main.welcome")}
+          <h1
+            ref={titleRef}
+            className="font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight text-[clamp(2rem,4vw,3.5rem)]"
+          >
+            {t("app.main.be")}
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+              TanhaApp
+            </span>{" "}
+            {t("app.main.welcome")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
             {t("app.main.productivity")}
@@ -148,7 +149,10 @@ export default function HomePage() {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="relative w-full max-w-2xl mb-8 z-10"
         >
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Search
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
           <input
             type="text"
             placeholder={t("app.main.serchPlaceholder")}
@@ -165,21 +169,23 @@ export default function HomePage() {
         >
           <button
             onClick={() => setSearchTerm("")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${searchTerm === ""
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              searchTerm === ""
                 ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
                 : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"
-              }`}
+            }`}
           >
             {t("app.main.All")}
           </button>
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSearchTerm(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${searchTerm === category
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                searchTerm === category
                   ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
                   : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400 hover:bg-white/80 dark:hover:bg-gray-700/60"
-                }`}
+              }`}
             >
               {category}
             </button>
@@ -204,7 +210,7 @@ export default function HomePage() {
                 whileHover={{
                   scale: 1.03,
                   y: -5,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                  transition: { type: "spring", stiffness: 400, damping: 25 },
                 }}
                 whileTap={{ scale: 0.98 }}
                 className="relative group"
@@ -260,7 +266,7 @@ export default function HomePage() {
               {t("app.main.NoResults")}
             </h3>
             <p className="text-gray-500 dark:text-gray-500">
-              {t('app.main.NoTools')} &quot;{searchTerm}&quot;
+              {t("app.main.NoTools")} &quot;{searchTerm}&quot;
             </p>
           </motion.div>
         )}
@@ -271,4 +277,4 @@ export default function HomePage() {
       />
     </>
   );
-};
+}

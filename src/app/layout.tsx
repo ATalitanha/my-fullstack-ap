@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import theme from "@/lib/theme";
+import "katex/dist/katex.min.css";
 import { Analytics } from "@vercel/analytics/next";
-import { Suspense } from "react";
-import HybridLoading from "./loading";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Header from "@/components/ui/header";
+import { Suspense } from "react";
+import A11yAnnouncer from "@/components/providers/A11yAnnouncer";
 import PageTransition from "@/components/providers/PageTransition";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import A11yAnnouncer from "@/components/providers/A11yAnnouncer";
+import Header from "@/components/ui/header";
 import { LanguageProvider } from "@/constants/LanguageContext";
-
-
-
+import theme from "@/lib/theme";
+import HybridLoading from "./loading";
 
 export const metadata: Metadata = {
   title: "tanha app",
@@ -45,7 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa"
+    <html
+      lang="fa"
       dir="rtl"
       className="scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
         scrollbar-thumb-rounded scrollbar-track-gray-100 dark:scrollbar-track-transparent 
@@ -54,23 +53,20 @@ export default function RootLayout({
     >
       <body
         className={`antialiased 
-          ${theme}`
-        }
+          ${theme}`}
       >
         <LanguageProvider>
-        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 z-50 bg-black text-white px-3 py-2 rounded">پرش به محتوا</a>
-        <Header/>
-        <PageTransition />
-        <ThemeProvider />
-        <A11yAnnouncer />
-        <main id="main">
-          <Suspense fallback={<HybridLoading />}>{children}</Suspense>
-        </main>
-        
-        <Analytics />
-        <SpeedInsights />
+          <Header />
+          <PageTransition />
+          <ThemeProvider />
+          <A11yAnnouncer />
+          <main id="main">
+            <Suspense fallback={<HybridLoading />}>{children}</Suspense>
+          </main>
+
+          <Analytics />
+          <SpeedInsights />
         </LanguageProvider>
-        
       </body>
     </html>
   );

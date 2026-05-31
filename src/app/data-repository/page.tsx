@@ -2,23 +2,21 @@
 
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import HybridLoading from "@/app/loading";
-
-// اسکلتون لودینگ
+import HybridLoading from "../loading";
 
 // داینامیک ایمپورت محتوای اصلی
-const UnitConverterContent = dynamic(
-  () => import("@/components/UnitsConverterContent"),
+const DataRepositoryContent = dynamic(
+  () => import("@/components/DataRepositoryContent"),
   {
     loading: () => <HybridLoading />,
     ssr: false,
   },
 );
 
-export default function UnitConverterPage() {
+export default function DataRepositoryPage() {
   return (
     <Suspense fallback={<HybridLoading />}>
-      <UnitConverterContent />
+      <DataRepositoryContent />
     </Suspense>
   );
 }

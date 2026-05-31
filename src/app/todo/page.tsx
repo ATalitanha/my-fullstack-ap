@@ -1,32 +1,53 @@
+/** biome-ignore-all lint/a11y/useButtonType: <> */
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <> */
+/** biome-ignore-all lint/a11y/noLabelWithoutControl: <> */
 "use client";
 
-import ConfirmModal from "@/components/DeleteConfirmModal";
-import Card from "@/shared/ui/Card";
-import { useEffect, useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  CheckCircle,
+  Circle,
+  Edit3,
+  ListTodo,
+  Plus,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Plus, CheckCircle, Circle, Edit3, Trash2, ListTodo, AlertCircle, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ConfirmModal from "@/components/DeleteConfirmModal";
+import MouseHover from "@/shared/ui/mouseHover";
 import HybridLoading from "../loading";
 
-type Todo = { id: string; title: string; completed: boolean; createdAt: string };
+type Todo = {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: string;
+};
 type ResponseMessage = { text: string; type: "success" | "error" | "info" };
 
 const fetcher = async (url: string, token: string) => {
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) throw new Error("Unauthorized");
   return res.json();
 };
 
 export default function TodosPage() {
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{ id: string; username: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; username: string } | null>(
+    null,
+  );
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState("");
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [response, setResponse] = useState<ResponseMessage | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
@@ -39,14 +60,6 @@ export default function TodosPage() {
   const [formTouched, setFormTouched] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   /**
    * نمایش پیام وضعیت با ناپدید شدن خودکار
@@ -92,8 +105,12 @@ export default function TodosPage() {
     }
   }, [token]);
 
-  useEffect(() => { fetchAccessToken(); }, [fetchAccessToken]);
-  useEffect(() => { if (token) fetchTodos(); }, [token, fetchTodos]);
+  useEffect(() => {
+    fetchAccessToken();
+  }, [fetchAccessToken]);
+  useEffect(() => {
+    if (token) fetchTodos();
+  }, [token, fetchTodos]);
 
   /**
    * افزودن یا بروزرسانی یک کار
@@ -110,14 +127,20 @@ export default function TodosPage() {
       const method = editingTodo ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ title, completed: editingTodo?.completed || false }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title,
+          completed: editingTodo?.completed || false,
+        }),
       });
       const data = await res.json();
       if (res.ok) {
         showResponse({
           text: editingTodo ? "✅ Todo updated" : "✅ Todo added",
-          type: "success"
+          type: "success",
         });
         setTitle("");
         setEditingTodo(null);
@@ -125,7 +148,10 @@ export default function TodosPage() {
         setTouchedTitle(false);
         fetchTodos();
       } else {
-        showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
+        showResponse({
+          text: `❌ Error: ${data.message || "Failed"}`,
+          type: "error",
+        });
       }
     } catch {
       showResponse({ text: "❌ Server connection error", type: "error" });
@@ -160,11 +186,15 @@ export default function TodosPage() {
     try {
       const res = await fetch(`/api/todo/${toDeleteId}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
       if (res.ok) showResponse({ text: "✅ Todo deleted", type: "success" });
-      else showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
+      else
+        showResponse({
+          text: `❌ Error: ${data.message || "Failed"}`,
+          type: "error",
+        });
       fetchTodos();
     } catch {
       showResponse({ text: "❌ Server connection error", type: "error" });
@@ -190,17 +220,23 @@ export default function TodosPage() {
     try {
       const res = await fetch(`/api/todo/${targetTodo.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ completed: true })
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ completed: true }),
       });
       const data = await res.json();
       if (res.ok) showResponse({ text: "✅ Todo completed", type: "success" });
-      else showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
+      else
+        showResponse({
+          text: `❌ Error: ${data.message || "Failed"}`,
+          type: "error",
+        });
       fetchTodos();
     } catch {
       showResponse({ text: "❌ Server connection error", type: "error" });
-    }
-    finally {
+    } finally {
       setCompleteModalOpen(false);
       setTargetTodo(null);
     }
@@ -222,17 +258,24 @@ export default function TodosPage() {
     try {
       const res = await fetch(`/api/todo/${targetTodo.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ completed: false })
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ completed: false }),
       });
       const data = await res.json();
-      if (res.ok) showResponse({ text: "✅ Todo uncompleted", type: "success" });
-      else showResponse({ text: `❌ Error: ${data.message || "Failed"}`, type: "error" });
+      if (res.ok)
+        showResponse({ text: "✅ Todo uncompleted", type: "success" });
+      else
+        showResponse({
+          text: `❌ Error: ${data.message || "Failed"}`,
+          type: "error",
+        });
       fetchTodos();
     } catch {
       showResponse({ text: "❌ Server connection error", type: "error" });
-    }
-    finally {
+    } finally {
       setUncompleteModalOpen(false);
       setTargetTodo(null);
     }
@@ -266,19 +309,13 @@ export default function TodosPage() {
   };
 
   if (!user || loading) {
-    return (
-      <HybridLoading/>
-    );
+    return <HybridLoading />;
   }
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.1) 0%, transparent 80%)`
-        }}
-      />
+      <MouseHover />
+
       <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
@@ -315,7 +352,10 @@ export default function TodosPage() {
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <ListTodo className="text-blue-600 dark:text-blue-400" size={24} />
+                    <ListTodo
+                      className="text-blue-600 dark:text-blue-400"
+                      size={24}
+                    />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                     {editingTodo ? "Edit Todo" : "Add New Todo"}
@@ -369,7 +409,11 @@ export default function TodosPage() {
                         </>
                       ) : (
                         <>
-                          {editingTodo ? <Edit3 size={20} /> : <Plus size={20} />}
+                          {editingTodo ? (
+                            <Edit3 size={20} />
+                          ) : (
+                            <Plus size={20} />
+                          )}
                           {editingTodo ? "Update" : "Add"}
                         </>
                       )}
@@ -404,22 +448,33 @@ export default function TodosPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500/10 rounded-lg">
-                        <ListTodo className="text-blue-600 dark:text-blue-400" size={20} />
+                        <ListTodo
+                          className="text-blue-600 dark:text-blue-400"
+                          size={20}
+                        />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">My Tasks</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                          My Tasks
+                        </h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {todos.filter(t => !t.completed).length} tasks left
+                          {todos.filter((t) => !t.completed).length} tasks left
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="p-4 h-[600px] overflow-y-auto">
+                <div
+                  className="p-4 h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
+        scrollbar-thumb-rounded scrollbar-track-gray-100 dark:scrollbar-track-transparent 
+        hover:scrollbar-thumb-blue-500/90 dark:hover:scrollbar-thumb-blue-500/80"
+                >
                   {loading ? (
                     <div className="flex flex-col items-center justify-center h-32">
                       <div className="animate-spin rounded-full h-8 w-8 mb-3"></div>
-                      <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Loading...
+                      </p>
                     </div>
                   ) : todos.length === 0 ? (
                     <motion.div
@@ -447,23 +502,37 @@ export default function TodosPage() {
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">
                                   <button
-                                    onClick={() => todo.completed ? onUncompleteClick(todo) : onCompleteClick(todo)}
-                                    className={`p-1 rounded-full transition-colors ${todo.completed
-                                        ? 'text-green-500 hover:text-green-600'
-                                        : 'text-gray-400 hover:text-blue-500'
-                                      }`}
+                                    onClick={() =>
+                                      todo.completed
+                                        ? onUncompleteClick(todo)
+                                        : onCompleteClick(todo)
+                                    }
+                                    className={`p-1 rounded-full transition-colors ${
+                                      todo.completed
+                                        ? "text-green-500 hover:text-green-600"
+                                        : "text-gray-400 hover:text-blue-500"
+                                    }`}
                                   >
-                                    {todo.completed ? <CheckCircle size={20} /> : <Circle size={20} />}
+                                    {todo.completed ? (
+                                      <CheckCircle size={20} />
+                                    ) : (
+                                      <Circle size={20} />
+                                    )}
                                   </button>
-                                  <h3 className={`font-bold text-lg flex-1 ${todo.completed
-                                      ? "line-through text-gray-400 dark:text-gray-500"
-                                      : "text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400"
-                                    } transition-colors`}>
+                                  <h3
+                                    className={`font-bold text-lg flex-1 ${
+                                      todo.completed
+                                        ? "line-through text-gray-400 dark:text-gray-500"
+                                        : "text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                                    } transition-colors`}
+                                  >
                                     {todo.title}
                                   </h3>
                                 </div>
                                 <small className="text-gray-400 text-xs ml-9">
-                                  {new Date(todo.createdAt).toLocaleString('en-US')}
+                                  {new Date(todo.createdAt).toLocaleString(
+                                    "en-US",
+                                  )}
                                 </small>
                               </div>
                               <div className="flex flex-col gap-2 shrink-0">
@@ -509,26 +578,39 @@ export default function TodosPage() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg z-50 ${response.type === "success"
+            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg z-50 ${
+              response.type === "success"
                 ? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
                 : response.type === "error"
                   ? "bg-red-50/90 dark:bg-red-900/90 text-red-800 dark:text-red-200"
                   : "bg-blue-50/90 dark:bg-blue-900/90 text-blue-800 dark:text-blue-200"
-              }`}
+            }`}
           >
             <div className="flex items-center gap-3">
               {response.type === "success" ? (
-                <CheckCircle className="text-green-600 dark:text-green-400" size={20} />
+                <CheckCircle
+                  className="text-green-600 dark:text-green-400"
+                  size={20}
+                />
               ) : response.type === "error" ? (
-                <AlertCircle className="text-red-600 dark:text-red-400" size={20} />
+                <AlertCircle
+                  className="text-red-600 dark:text-red-400"
+                  size={20}
+                />
               ) : (
-                <ListTodo className="text-blue-600 dark:text-blue-400" size={20} />
+                <ListTodo
+                  className="text-blue-600 dark:text-blue-400"
+                  size={20}
+                />
               )}
               <span className="flex-1 font-semibold">{response.text}</span>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); setResponse(null); }}
+                onClick={() => {
+                  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                  setResponse(null);
+                }}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
               >
                 <X size={18} />

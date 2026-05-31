@@ -1,28 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import theme from "@/lib/theme";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Calculator,
+  Ruler,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
-import { Calculator, ArrowRight, Sparkles, Ruler, Zap, ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "@/hooks/useLanguage";
+import theme from "@/lib/theme";
+import MouseHover from "@/shared/ui/mouseHover";
 import HybridLoading from "../loading";
-import {useTranslation} from "@/hooks/useLanguage";
 
 export default function Cal() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const { t, language } = useTranslation();
 
-  /**
-   * آماده‌سازی صفحه و ردیابی موقعیت ماوس برای افکت پس‌زمینه
-   */
   useEffect(() => {
     setIsLoading(false);
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   const calculatorTools = [
@@ -32,9 +31,10 @@ export default function Cal() {
       description: t("app.cal.normalCaldis"),
       icon: Calculator,
       color: "from-blue-500 to-blue-600",
-      cardColor:"from-gray-300/50 to-blue-300/50 dark:from-gray-500/50 dark:to-blue-500/50",
+      cardColor:
+        "from-gray-300/50 to-blue-300/50 dark:from-gray-500/50 dark:to-blue-500/50",
       iconColor: "text-blue-500",
-      delay: 0.1
+      delay: 0.1,
     },
     {
       href: "/cal/units",
@@ -42,9 +42,10 @@ export default function Cal() {
       description: t("app.cal.unitCaldis"),
       icon: Ruler,
       color: "from-teal-500 to-teal-600",
-      cardColor:"from-gray-300/50 to-teal-300/50 dark:from-gray-500/50 dark:to-teal-500/50",
+      cardColor:
+        "from-gray-300/50 to-teal-300/50 dark:from-gray-500/50 dark:to-teal-500/50",
       iconColor: "text-teal-500",
-      delay: 0.2
+      delay: 0.2,
     },
     {
       href: "/cal/advanc-cal",
@@ -52,27 +53,23 @@ export default function Cal() {
       description: t("app.cal.adCaldis"),
       icon: Zap,
       color: "from-purple-500 to-purple-600",
-      cardColor:"from-gray-300/50 to-purple-300/50 dark:from-gray-500/50 dark:to-purple-500/50",
+      cardColor:
+        "from-gray-300/50 to-purple-300/50 dark:from-gray-500/50 dark:to-purple-500/50",
       iconColor: "text-purple-500",
-      delay: 0.3
+      delay: 0.3,
     },
   ];
 
   if (isLoading) {
-    return (
-      <HybridLoading />
-    );
-  };
+    return <HybridLoading />;
+  }
 
   return (
     <>
+      <MouseHover />
       <div
-        className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(120, 119, 198, 0.15) 0%, transparent 80%)`
-        }}
-      />
-      <div className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}>
+        className={`min-h-screen pt-16 transition-colors duration-700 relative z-10 ${theme} bg-linear-to-br from-slate-100 via-slate-200 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900`}
+      >
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
@@ -111,20 +108,21 @@ export default function Cal() {
                   whileHover={{
                     scale: 1.05,
                     y: -5,
-                    transition: { type: "spring", stiffness: 400, damping: 25 }
+                    transition: { type: "spring", stiffness: 400, damping: 25 },
                   }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative"
                 >
-                  <Link
-                    href={tool.href}
-                    className="block h-full"
-                  >
+                  <Link href={tool.href} className="block h-full">
                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 group-hover:shadow-3xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90 h-full flex flex-col">
-                      <div className={`p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r ${tool.cardColor} `}>
+                      <div
+                        className={`p-6 border-b border-gray-200/60 dark:border-gray-700/60 bg-linear-to-r ${tool.cardColor} `}
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className={`p-3 bg-linear-to-br ${tool.color} rounded-xl shadow-lg`}>
+                            <div
+                              className={`p-3 bg-linear-to-br ${tool.color} rounded-xl shadow-lg`}
+                            >
                               <IconComponent className="text-white" size={24} />
                             </div>
                             <div>
@@ -140,7 +138,11 @@ export default function Cal() {
                             whileHover={{ scale: 1.2, x: 3 }}
                             className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-700 dark:text-white group-hover:bg-blue-500 group-hover:text-white transition-colors"
                           >
-                            {language === 'fa' ? <ArrowLeft size={16}/> : <ArrowRight size={16}/>}
+                            {language === "fa" ? (
+                              <ArrowLeft size={16} />
+                            ) : (
+                              <ArrowRight size={16} />
+                            )}
                           </motion.div>
                         </div>
                       </div>
@@ -148,7 +150,9 @@ export default function Cal() {
                         <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 flex-1">
                           {tool.description}
                         </p>
-                        <div className={`absolute inset-0 bg-linear-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+                        <div
+                          className={`absolute inset-0 bg-linear-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`}
+                        />
                         <motion.div
                           whileHover={{ scale: 1.02 }}
                           className="mt-auto"
@@ -173,7 +177,6 @@ export default function Cal() {
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl  p-8 max-w-2xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 <p>{t("app.cal.whyUse")}</p>
-
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-400">
                 <div className="text-center">
@@ -201,4 +204,4 @@ export default function Cal() {
       </div>
     </>
   );
-};
+}

@@ -2,8 +2,6 @@
 @plugin "tailwind-scrollbar";
 @custom-variant dark (&:where(.dark, .dark *));
 
-
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -20,9 +18,9 @@
   --radius-sm: 0.5rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
-  --ring: 0 0 0 2px rgba(59,130,246,0.5);
-  --shadow-soft: 0 8px 30px rgba(0,0,0,0.08);
-  --shadow-strong: 0 12px 40px rgba(0,0,0,0.12);
+  --ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.12);
   --text-fluid-1: clamp(0.875rem, 0.8rem + 0.4vw, 1rem);
   --text-fluid-2: clamp(1rem, 0.9rem + 0.6vw, 1.25rem);
   --text-fluid-3: clamp(1.25rem, 1.1rem + 1vw, 1.75rem);
@@ -30,16 +28,15 @@
   --container: 72rem;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
-
 
 @theme inline {
   --color-background: var(--background);
@@ -74,7 +71,11 @@ input[type=number] {
 
 /* Theme utility classes */
 .bg-app {
-  background: linear-gradient(to bottom right, hsl(var(--muted)) 0%, hsl(var(--muted)) 100%);
+  background: linear-gradient(
+    to bottom right,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted)) 100%
+  );
 }
 .card-surface {
   background-color: color-mix(in oklab, white 80%, transparent);
@@ -127,11 +128,12 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.001ms;
+    scroll-behavior: auto;
   }
 }
-
