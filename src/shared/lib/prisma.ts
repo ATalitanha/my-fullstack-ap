@@ -1,20 +1,25 @@
-import { PrismaClient } from "@prisma/client";
+import 'dotenv/config';
+import { PrismaClient } from '../../generated/client'; // مسیر جدید
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 
-/**
- * A Prisma client instance.
- *
- * In development, a global Prisma client is used to prevent hot-reloading
- * from creating too many connections.
- *
- * @type {PrismaClient}
- */
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+const connectionString = process.env.DATABASE_URL!;
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
-// biome-ignore lint/suspicious/noRedeclare: <>
-const prisma = global.prisma || new PrismaClient();
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+};
 
 export default prisma;

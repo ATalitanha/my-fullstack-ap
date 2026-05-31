@@ -3,7 +3,6 @@ import type { Configuration } from "webpack";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
-  swcMinify: true,
   webpack: (config: Configuration) => {
     // Add prisma client to externals to resolve an issue during build
     const externals = Array.isArray(config.externals)
@@ -17,6 +16,7 @@ const nextConfig = {
 
     return config;
   },
+  turbopack: {},
 };
 
 
