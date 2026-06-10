@@ -8,17 +8,17 @@ import HybridLoading from "@/app/loading";
 
 // داینامیک ایمپورت
 const AdvancedCalculatorContent = dynamic(
-  () => import("@/components/AdvancedCalculatorContent"),
-  {
-    loading: () => <HybridLoading />,
-    ssr: false,
-  },
+	() => import("@/components/AdvancedCalculatorContent"),
+	{
+		loading: () => <HybridLoading />,
+		ssr: false,
+	},
 );
 
 export default function AdvancedCalcPage() {
-  return (
-    <Suspense fallback={<HybridLoading />}>
-      <AdvancedCalculatorContent />
-    </Suspense>
-  );
+	return (
+		<Suspense fallback={<HybridLoading />}>
+			<AdvancedCalculatorContent />
+		</Suspense>
+	);
 }

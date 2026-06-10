@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * Represents a changelog entry.
@@ -6,9 +6,9 @@ import { ReactNode } from "react";
  * @property {string[]} changes - An array of changes for the version.
  */
 export interface ChangeLog {
-    version: string,
-    changes: string[],
-};
+	version: string;
+	changes: string[];
+}
 
 /**
  * Represents a unit of measurement.
@@ -18,21 +18,21 @@ export interface ChangeLog {
  * @property {number} [factor] - The conversion factor for the unit.
  */
 export type Unit = {
-  category: string;
-  label: string;
-  value: string;
-  factor?: number;
+	category: string;
+	label: string;
+	value: string;
+	factor?: number;
 };
 
 export interface BaseComponentProps {
-  className?: string;
-  children?: ReactNode;
+	className?: string;
+	children?: ReactNode;
 }
 
 export interface ButtonProps extends BaseComponentProps {
-  onClick?: () => void;
-  disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'danger';
-  type?: 'button' | 'submit' | 'reset';
-  size?: 'sm' | 'md' | 'lg';
+	onClick?: () => void;
+	disabled?: boolean;
+	variant?: "primary" | "secondary" | "danger";
+	type?: "button" | "submit" | "reset";
+	size?: "sm" | "md" | "lg";
 }

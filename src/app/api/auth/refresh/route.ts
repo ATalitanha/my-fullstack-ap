@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import prisma from "@/shared/lib/prisma";
+import { type NextRequest, NextResponse } from "next/server";
 import { decryptText } from "@/shared/lib/crypto";
+import prisma from "@/shared/lib/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
@@ -13,55 +13,54 @@ const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
  * ورودی: refreshToken از کوکی HttpOnly
  */
 export async function GET(req: NextRequest) {
-  try {
-    const refreshToken = req.cookies.get("refreshToken")?.value;
+	try {
+		const refreshToken = req.cookies.get("refreshToken")?.value;
 
-    if (!refreshToken) {
-      return NextResponse.json(
-        { error: "رفرش توکن موجود نیست" },
-        { status: 401 }
-      );
-    }
+		if (!refreshToken) {
+			return NextResponse.json(
+				{ error: "رفرش توکن موجود نیست" },
+				{ status: 401 },
+			);
+		}
 
-    // بررسی و دیکد refresh token
-    const payload: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+		// بررسی و دیکد refresh token
+		const payload: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 
-    // پیدا کردن کاربر در دیتابیس
-    const user = await prisma.user.findUnique({
-      where: { id: payload.id },
-      select: { id: true, username: true },
-    });
+		// پیدا کردن کاربر در دیتابیس
+		const user = await prisma.user.findUnique({
+			where: { id: payload.id },
+			select: { id: true, username: true },
+		});
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "کاربر یافت نشد" },
-        { status: 401 }
-      );
-    }
+		if (!user) {
+			return NextResponse.json({ error: "کاربر یافت نشد" }, { status: 401 });
+		}
 
-    // رمزگشایی نام کاربری برای توکن جدید
-    const decryptedUsername = decryptText(user.username);
+		// رمزگشایی نام کاربری برای توکن جدید
+		const decryptedUsername = decryptText(user.username);
 
-    // تولید access token جدید
-    const newAccessToken = jwt.sign(
-      { id: user.id, username: decryptedUsername },
-      JWT_SECRET,
-      { expiresIn: ACCESS_TOKEN_EXPIRY }
-    );
+		// تولید access token جدید
+		const newAccessToken = jwt.sign(
+			{ id: user.id, username: decryptedUsername },
+			JWT_SECRET,
+			{ expiresIn: ACCESS_TOKEN_EXPIRY },
+		);
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        user: { id: user.id, username: decryptedUsername }
-      },
-      accessToken: newAccessToken
-    }, { status: 200 });
-
-  } catch (error) {
-    console.error("خطا در GET /auth/refresh:", error);
-    return NextResponse.json(
-      { error: "رفرش توکن نامعتبر یا خطای سرور" },
-      { status: 401 }
-    );
-  }
+		return NextResponse.json(
+			{
+				success: true,
+				data: {
+					user: { id: user.id, username: decryptedUsername },
+				},
+				accessToken: newAccessToken,
+			},
+			{ status: 200 },
+		);
+	} catch (error) {
+		console.error("خطا در GET /auth/refresh:", error);
+		return NextResponse.json(
+			{ error: "رفرش توکن نامعتبر یا خطای سرور" },
+			{ status: 401 },
+		);
+	}
 }
