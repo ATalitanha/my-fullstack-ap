@@ -12,10 +12,36 @@ type Tile = {
 	value: number;
 	row: number;
 	col: number;
-	mergedFrom?: number[];
 };
 
+type Position = { r: number; c: number };
+
 const GRID_SIZE = 4;
+
+const getEmptyPositions = (tiles: Tile[]): Position[] => {
+	const occupied = new Set(tiles.map((t) => `${t.row}-${t.col}`));
+	const empty: Position[] = [];
+	for (let r = 0; r < GRID_SIZE; r++) {
+		for (let c = 0; c < GRID_SIZE; c++) {
+			if (!occupied.has(`${r}-${c}`)) {
+				empty.push({ r, c });
+			}
+		}
+	}
+	return empty;
+};
+
+const spawnTile = (tiles: Tile[]): Tile | null => {
+	const empty = getEmptyPositions(tiles);
+	if (empty.length === 0) return null;
+	const { r, c } = empty[Math.floor(Math.random() * empty.length)];
+	return {
+		id: Date.now() + Math.random(),
+		value: Math.random() < 0.9 ? 2 : 4,
+		row: r,
+		col: c,
+	};
+};
 
 export default function Game2048() {
 	const [grid, setGrid] = useState<Tile[]>([]);
@@ -28,9 +54,9 @@ export default function Game2048() {
 
 	const initGame = useCallback(() => {
 		const initialTiles: Tile[] = [];
-		const t1 = createTile(initialTiles);
+		const t1 = spawnTile(initialTiles);
 		if (t1) initialTiles.push(t1);
-		const t2 = createTile(initialTiles);
+		const t2 = spawnTile(initialTiles);
 		if (t2) initialTiles.push(t2);
 
 		setGrid(initialTiles);
@@ -53,153 +79,120 @@ export default function Game2048() {
 		}
 	}, [score, bestScore]);
 
-	const createTile = (currentTiles: Tile[]): Tile | null => {
-		const emptyPositions = [];
-		for (let r = 0; r < GRID_SIZE; r++) {
-			for (let c = 0; r < GRID_SIZE; r++) {
-				// Wait, there's a bug here.
-			}
-		}
-		// Fixed logic below
-		return null;
-	};
+	const move = useCallback(
+		(direction: "up" | "down" | "left" | "right") => {
+			if (gameOver || win) return;
 
-	// Redoing logic properly
-	const getEmptyPositions = (tiles: Tile[]) => {
-		const occupied = new Set(tiles.map((t) => `${t.row}-${t.col}`));
-		const empty = [];
-		for (let r = 0; r < GRID_SIZE; r++) {
-			for (let c = 0; c < GRID_SIZE; c++) {
-				if (!occupied.has(`${r}-${c}`)) {
-					empty.push({ r, c });
+			let moved = false;
+			let newScore = score;
+			const newTiles: Tile[] = JSON.parse(JSON.stringify(grid));
+
+			const sortFn = (a: Tile, b: Tile) => {
+				if (direction === "up") return a.row - b.row;
+				if (direction === "down") return b.row - a.row;
+				if (direction === "left") return a.col - b.col;
+				return b.col - a.col;
+			};
+
+			const sortedTiles = [...newTiles].sort(sortFn);
+			const mergedIds = new Set<number>();
+
+			for (const tile of sortedTiles) {
+				let currentR = tile.row;
+				let currentC = tile.col;
+
+				while (true) {
+					let nextR = currentR;
+					let nextC = currentC;
+
+					if (direction === "up") nextR--;
+					else if (direction === "down") nextR++;
+					else if (direction === "left") nextC--;
+					else nextC++;
+
+					if (
+						nextR < 0 ||
+						nextR >= GRID_SIZE ||
+						nextC < 0 ||
+						nextC >= GRID_SIZE
+					)
+						break;
+
+					const targetTile = newTiles.find(
+						(t) => t.row === nextR && t.col === nextC,
+					);
+
+					if (!targetTile) {
+						const tileInNewTiles = newTiles.find((t) => t.id === tile.id);
+						if (tileInNewTiles) {
+							tileInNewTiles.row = nextR;
+							tileInNewTiles.col = nextC;
+							currentR = nextR;
+							currentC = nextC;
+							moved = true;
+						}
+					} else if (
+						targetTile.value === tile.value &&
+						!mergedIds.has(targetTile.id) &&
+						!mergedIds.has(tile.id)
+					) {
+						const tileInNewTiles = newTiles.find((t) => t.id === tile.id);
+						const targetInNewTiles = newTiles.find(
+							(t) => t.id === targetTile.id,
+						);
+
+						if (tileInNewTiles && targetInNewTiles) {
+							targetInNewTiles.value *= 2;
+							newScore += targetInNewTiles.value;
+							if (targetInNewTiles.value === 2048) setWin(true);
+
+							const index = newTiles.findIndex((t) => t.id === tile.id);
+							newTiles.splice(index, 1);
+
+							mergedIds.add(targetInNewTiles.id);
+							moved = true;
+						}
+						break;
+					} else {
+						break;
+					}
 				}
 			}
-		}
-		return empty;
-	};
 
-	const spawnTile = (tiles: Tile[]) => {
-		const empty = getEmptyPositions(tiles);
-		if (empty.length === 0) return null;
-		const { r, c } = empty[Math.floor(Math.random() * empty.length)];
-		return {
-			id: Date.now() + Math.random(),
-			value: Math.random() < 0.9 ? 2 : 4,
-			row: r,
-			col: c,
-		};
-	};
+			if (moved) {
+				const nextTile = spawnTile(newTiles);
+				if (nextTile) newTiles.push(nextTile);
+				setGrid(newTiles);
+				setScore(newScore);
 
-	const move = (direction: "up" | "down" | "left" | "right") => {
-		if (gameOver || win) return;
-
-		let moved = false;
-		let newScore = score;
-		const newTiles: Tile[] = JSON.parse(JSON.stringify(grid));
-
-		// Sort tiles to process them in order based on direction
-		const sortFn = (a: Tile, b: Tile) => {
-			if (direction === "up") return a.row - b.row;
-			if (direction === "down") return b.row - a.row;
-			if (direction === "left") return a.col - b.col;
-			return b.col - a.col;
-		};
-
-		const sortedTiles = [...newTiles].sort(sortFn);
-		const mergedIds = new Set<number>();
-
-		sortedTiles.forEach((tile) => {
-			let currentR = tile.row;
-			let currentC = tile.col;
-
-			while (true) {
-				let nextR = currentR;
-				let nextC = currentC;
-
-				if (direction === "up") nextR--;
-				else if (direction === "down") nextR++;
-				else if (direction === "left") nextC--;
-				else nextC++;
-
-				if (nextR < 0 || nextR >= GRID_SIZE || nextC < 0 || nextC >= GRID_SIZE)
-					break;
-
-				const targetTile = newTiles.find(
-					(t) => t.row === nextR && t.col === nextC,
-				);
-
-				if (!targetTile) {
-					// Move to empty cell
-					const tileInNewTiles = newTiles.find((t) => t.id === tile.id);
-					if (tileInNewTiles) {
-						tileInNewTiles.row = nextR;
-						tileInNewTiles.col = nextC;
-						currentR = nextR;
-						currentC = nextC;
-						moved = true;
-					}
-				} else if (
-					targetTile.value === tile.value &&
-					!mergedIds.has(targetTile.id) &&
-					!mergedIds.has(tile.id)
-				) {
-					// Merge tiles
-					const tileInNewTiles = newTiles.find((t) => t.id === tile.id);
-					const targetInNewTiles = newTiles.find((t) => t.id === targetTile.id);
-
-					if (tileInNewTiles && targetInNewTiles) {
-						targetInNewTiles.value *= 2;
-						newScore += targetInNewTiles.value;
-						if (targetInNewTiles.value === 2048) setWin(true);
-
-						// Remove current tile
-						const index = newTiles.findIndex((t) => t.id === tile.id);
-						newTiles.splice(index, 1);
-
-						mergedIds.add(targetInNewTiles.id);
-						moved = true;
-					}
-					break;
-				} else {
-					break;
-				}
-			}
-		});
-
-		if (moved) {
-			const nextTile = spawnTile(newTiles);
-			if (nextTile) newTiles.push(nextTile);
-			setGrid(newTiles);
-			setScore(newScore);
-
-			// Check game over
-			if (getEmptyPositions(newTiles).length === 0) {
-				// No empty spaces, check for possible merges
-				let canMove = false;
-				for (const t of newTiles) {
-					const neighbors = [
-						{ r: t.row - 1, c: t.col },
-						{ r: t.row + 1, c: t.col },
-						{ r: t.row, c: t.col - 1 },
-						{ r: t.row, c: t.col + 1 },
-					];
-					for (const n of neighbors) {
-						if (n.r >= 0 && n.r < GRID_SIZE && n.c >= 0 && n.c < GRID_SIZE) {
-							const nt = newTiles.find(
-								(tile) => tile.row === n.r && tile.col === n.c,
-							);
-							if (nt && nt.value === t.value) {
-								canMove = true;
-								break;
+				if (getEmptyPositions(newTiles).length === 0) {
+					let canMove = false;
+					for (const t of newTiles) {
+						const neighbors = [
+							{ r: t.row - 1, c: t.col },
+							{ r: t.row + 1, c: t.col },
+							{ r: t.row, c: t.col - 1 },
+							{ r: t.row, c: t.col + 1 },
+						];
+						for (const n of neighbors) {
+							if (n.r >= 0 && n.r < GRID_SIZE && n.c >= 0 && n.c < GRID_SIZE) {
+								const nt = newTiles.find(
+									(tile) => tile.row === n.r && tile.col === n.c,
+								);
+								if (nt && nt.value === t.value) {
+									canMove = true;
+									break;
+								}
 							}
 						}
+						if (canMove) break;
 					}
-					if (canMove) break;
+					if (!canMove) setGameOver(true);
 				}
-				if (!canMove) setGameOver(true);
 			}
-		}
-	};
+		},
+		[gameOver, grid, score, win],
+	);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -210,7 +203,7 @@ export default function Game2048() {
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [grid, gameOver, win]);
+	}, [move]);
 
 	if (isLoading) return <HybridLoading />;
 
@@ -282,6 +275,7 @@ export default function Game2048() {
 						</p>
 						<button
 							onClick={initGame}
+							type="button"
 							className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-orange-500/25"
 						>
 							{t("new_game")}
@@ -289,7 +283,6 @@ export default function Game2048() {
 					</div>
 
 					<div className="relative p-2 bg-slate-300 dark:bg-gray-700 rounded-2xl w-full max-w-[400px] aspect-square shadow-2xl">
-						{/* Grid Background */}
 						<div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
 							{Array.from({ length: 16 }).map((_, i) => (
 								<div
@@ -299,7 +292,6 @@ export default function Game2048() {
 							))}
 						</div>
 
-						{/* Tiles */}
 						<div className="absolute inset-0 p-2 pointer-events-none">
 							<div className="relative w-full h-full">
 								<AnimatePresence>
@@ -311,8 +303,6 @@ export default function Game2048() {
 											animate={{
 												scale: 1,
 												opacity: 1,
-												x: (tile.col * (400 - 16 - 24)) / 4 + tile.col * 8, // Adjusted for container size and gap
-												y: (tile.row * (400 - 16 - 24)) / 4 + tile.row * 8,
 											}}
 											exit={{ scale: 0, opacity: 0 }}
 											transition={{
@@ -321,13 +311,10 @@ export default function Game2048() {
 												damping: 30,
 												mass: 1,
 											}}
-											className={`absolute w-[calc(25%-6px)] h-[calc(25%-6px)] flex items-center justify-center rounded-lg font-bold text-3xl shadow-md ${getTileColor(tile.value)}`}
+											className={`absolute w-[calc(25%-8px)] h-[calc(25%-8px)] flex items-center justify-center rounded-lg font-bold text-3xl shadow-md ${getTileColor(tile.value)}`}
 											style={{
-												// Manual positioning since absolute and flex container don't play well with simplified grid
 												left: `${tile.col * 25}%`,
 												top: `${tile.row * 25}%`,
-												width: "calc(25% - 8px)",
-												height: "calc(25% - 8px)",
 												margin: "4px",
 											}}
 										>
@@ -338,7 +325,6 @@ export default function Game2048() {
 							</div>
 						</div>
 
-						{/* Game Over Overlay */}
 						<AnimatePresence>
 							{(gameOver || win) && (
 								<motion.div
@@ -351,6 +337,7 @@ export default function Game2048() {
 									</h2>
 									<button
 										onClick={initGame}
+										type="button"
 										className="bg-slate-800 dark:bg-white text-white dark:text-slate-800 font-bold py-3 px-8 rounded-xl hover:scale-105 transition-all"
 									>
 										{t("try_again")}
