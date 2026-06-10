@@ -4,506 +4,508 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  AlertCircle,
-  CheckCircle,
-  MessageCircle,
-  Send,
-  Sparkles,
-  Trash2,
+	AlertCircle,
+	CheckCircle,
+	MessageCircle,
+	Send,
+	Sparkles,
+	Trash2,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import LoadingDots from "@/components/loading";
+import { useTranslation } from "@/hooks/useLanguage";
 import Card from "@/shared/ui/Card";
 import MouseHover from "@/shared/ui/mouseHover";
 
 type Message = {
-  id: string | number;
-  title: string;
-  body: string;
+	id: string | number;
+	title: string;
+	body: string;
 };
 
 type ResponseMessage = {
-  text: string;
-  type: "success" | "error" | "info";
+	text: string;
+	type: "success" | "error" | "info";
 };
 
 export default function MessageForm() {
-  /**
-   * عنوان و متن پیام جدید
-   */
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<ResponseMessage | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [deletingId, setDeletingId] = useState<string | number | null>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
-  const [formTouched, setFormTouched] = useState(false);
-  const [touchedTitle, setTouchedTitle] = useState(false);
-  const [touchedBody, setTouchedBody] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+	/**
+	 * عنوان و متن پیام جدید
+	 */
+	const [title, setTitle] = useState("");
+	const [body, setBody] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [response, setResponse] = useState<ResponseMessage | null>(null);
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [deletingId, setDeletingId] = useState<string | number | null>(null);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [toDeleteId, setToDeleteId] = useState<string | number | null>(null);
+	const [formTouched, setFormTouched] = useState(false);
+	const [touchedTitle, setTouchedTitle] = useState(false);
+	const [touchedBody, setTouchedBody] = useState(false);
+	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const listRef = useRef<HTMLDivElement>(null);
+	const { t } = useTranslation("app.messenger");
 
-  /**
-   * نمایش پیام وضعیت با ناپدید شدن خودکار
-   */
-  const showResponse = useCallback((resp: ResponseMessage) => {
-    setResponse(resp);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setResponse(null), 4000);
-  }, []);
+	/**
+	 * نمایش پیام وضعیت با ناپدید شدن خودکار
+	 */
+	const showResponse = useCallback((resp: ResponseMessage) => {
+		setResponse(resp);
+		if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		timeoutRef.current = setTimeout(() => setResponse(null), 4000);
+	}, []);
 
-  /**
-   * دریافت فهرست پیام‌ها از API
-   */
-  const fetchMessages = useCallback(async () => {
-    try {
-      const res = await fetch("/api/massage");
-      const data = await res.json();
-      setMessages(data || []);
-    } catch {
-      showResponse({ text: "❌ Error fetching messages", type: "error" });
-    }
-  }, [showResponse]);
+	/**
+	 * دریافت فهرست پیام‌ها از API
+	 */
+	const fetchMessages = useCallback(async () => {
+		try {
+			const res = await fetch("/api/massage");
+			const data = await res.json();
+			setMessages(data || []);
+		} catch {
+			showResponse({ text: `❌ ${t("error_fetch")}`, type: "error" });
+		}
+	}, [showResponse, t]);
 
-  useEffect(() => {
-    fetchMessages();
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [fetchMessages]);
+	useEffect(() => {
+		fetchMessages();
+		return () => {
+			if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		};
+	}, [fetchMessages]);
 
-  /**
-   * ارسال پیام جدید
-   */
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormTouched(true);
-    setTouchedTitle(true);
-    setTouchedBody(true);
-    setResponse(null);
+	/**
+	 * ارسال پیام جدید
+	 */
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setFormTouched(true);
+		setTouchedTitle(true);
+		setTouchedBody(true);
+		setResponse(null);
 
-    if (!title.trim() || !body.trim()) {
-      showResponse({ text: "❌ Please fill out all fields.", type: "error" });
-      return;
-    }
+		if (!title.trim() || !body.trim()) {
+			showResponse({ text: `❌ ${t("error_fill_fields")}`, type: "error" });
+			return;
+		}
 
-    setLoading(true);
-    try {
-      const res = await fetch("/api/massage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, body }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showResponse({ text: "✅ Message sent successfully", type: "success" });
-        setTitle("");
-        setBody("");
-        setFormTouched(false);
-        setTouchedTitle(false);
-        setTouchedBody(false);
-        fetchMessages();
-        setTimeout(() => {
-          listRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 200);
-      } else {
-        showResponse({
-          text: `❌ Error: ${data.message || "Failed to send"}`,
-          type: "error",
-        });
-      }
-    } catch {
-      showResponse({ text: "❌ Server connection error", type: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
+		setLoading(true);
+		try {
+			const res = await fetch("/api/massage", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ title, body }),
+			});
+			const data = await res.json();
+			if (res.ok) {
+				showResponse({ text: `✅ ${t("success_send")}`, type: "success" });
+				setTitle("");
+				setBody("");
+				setFormTouched(false);
+				setTouchedTitle(false);
+				setTouchedBody(false);
+				fetchMessages();
+				setTimeout(() => {
+					listRef.current?.scrollIntoView({ behavior: "smooth" });
+				}, 200);
+			} else {
+				showResponse({
+					text: `❌ Error: ${data.message || "Failed to send"}`,
+					type: "error",
+				});
+			}
+		} catch {
+			showResponse({ text: `❌ ${t("error_server")}`, type: "error" });
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  /**
-   * باز کردن مودال حذف برای یک پیام یا همه
-   */
-  const onDeleteClick = (id: string | number) => {
-    setToDeleteId(id);
-    setDeleteModalOpen(true);
-  };
+	/**
+	 * باز کردن مودال حذف برای یک پیام یا همه
+	 */
+	const onDeleteClick = (id: string | number) => {
+		setToDeleteId(id);
+		setDeleteModalOpen(true);
+	};
 
-  /**
-   * بستن مودال حذف بدون اقدام
-   */
-  const cancelDelete = () => {
-    setDeleteModalOpen(false);
-    setToDeleteId(null);
-  };
+	/**
+	 * بستن مودال حذف بدون اقدام
+	 */
+	const cancelDelete = () => {
+		setDeleteModalOpen(false);
+		setToDeleteId(null);
+	};
 
-  /**
-   * تایید حذف (تکی یا همه) و بروزرسانی لیست
-   */
-  const confirmDelete = async () => {
-    if (toDeleteId === null) return;
+	/**
+	 * تایید حذف (تکی یا همه) و بروزرسانی لیست
+	 */
+	const confirmDelete = async () => {
+		if (toDeleteId === null) return;
 
-    setDeletingId(toDeleteId);
-    setDeleteModalOpen(false);
+		setDeletingId(toDeleteId);
+		setDeleteModalOpen(false);
 
-    try {
-      let res;
-      if (toDeleteId === "all") {
-        res = await fetch("/api/massage", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ deleteAll: true }),
-        });
-      } else {
-        res = await fetch("/api/massage", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: toDeleteId }),
-        });
-      }
+		try {
+			let res;
+			if (toDeleteId === "all") {
+				res = await fetch("/api/massage", {
+					method: "DELETE",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ deleteAll: true }),
+				});
+			} else {
+				res = await fetch("/api/massage", {
+					method: "DELETE",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ id: toDeleteId }),
+				});
+			}
 
-      const data = await res.json();
-      if (res.ok) {
-        showResponse({
-          text:
-            toDeleteId === "all"
-              ? "✅ All messages deleted"
-              : "✅ Message deleted",
-          type: "success",
-        });
-        fetchMessages();
-      } else {
-        showResponse({
-          text: `❌ Error deleting: ${data.message || "Failed"}`,
-          type: "error",
-        });
-      }
-    } catch {
-      showResponse({ text: "❌ Server connection error", type: "error" });
-    } finally {
-      setDeletingId(null);
-      setToDeleteId(null);
-    }
-  };
+			const data = await res.json();
+			if (res.ok) {
+				showResponse({
+					text:
+						toDeleteId === "all"
+							? `✅ ${t("success_delete_all")}`
+							: `✅ ${t("success_delete")}`,
+					type: "success",
+				});
+				fetchMessages();
+			} else {
+				showResponse({
+					text: `❌ Error deleting: ${data.message || "Failed"}`,
+					type: "error",
+				});
+			}
+		} catch {
+			showResponse({ text: `❌ ${t("error_server")}`, type: "error" });
+		} finally {
+			setDeletingId(null);
+			setToDeleteId(null);
+		}
+	};
 
-  return (
-    <>
-      <MouseHover />
-      <div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-300 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
-        </div>
-        <div className="container mx-auto px-4 py-12 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
-            >
-              <Sparkles size={16} />
-              <span>سیستم ارسال و مدیریت پیام‌ها</span>
-            </motion.div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                ارسال پیام
-              </span>
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              ارسال و مدیریت پیام‌های خود در یک محیط زیبا و کاربرپسند ✨
-            </p>
-          </motion.div>
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="lg:col-span-1"
-            >
-              <Card className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Send
-                      className="text-blue-600 dark:text-blue-400"
-                      size={24}
-                    />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-                    ارسال پیام جدید
-                  </h2>
-                </div>
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      عنوان پیام
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="عنوان پیام خود را وارد کنید..."
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        onBlur={() => setTouchedTitle(true)}
-                        className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                        aria-invalid={
-                          (touchedTitle || formTouched) && !title.trim()
-                        }
-                        aria-describedby="title-error"
-                      />
-                    </div>
-                    <AnimatePresence>
-                      {(touchedTitle || formTouched) && !title.trim() && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          id="title-error"
-                          className="text-red-600 text-sm mt-2 flex items-center gap-1"
-                          role="alert"
-                        >
-                          <AlertCircle size={16} />
-                          لطفا عنوان را وارد کنید
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      متن پیام
-                    </label>
-                    <div className="relative">
-                      <textarea
-                        placeholder="متن پیام خود را وارد کنید..."
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                        onBlur={() => setTouchedBody(true)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSubmit(e as unknown as React.FormEvent);
-                          }
-                        }}
-                        rows={4}
-                        className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none transition-all duration-200"
-                        aria-invalid={
-                          (touchedBody || formTouched) && !body.trim()
-                        }
-                        aria-describedby="body-error"
-                      />
-                    </div>
-                    <AnimatePresence>
-                      {(touchedBody || formTouched) && !body.trim() && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          id="body-error"
-                          className="text-red-600 text-sm mt-2 flex items-center gap-1"
-                          role="alert"
-                        >
-                          <AlertCircle size={16} />
-                          لطفا متن پیام را وارد کنید.
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-4 rounded-2xl font-bold text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <>
-                        <LoadingDots />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send size={20} />
-                        ارسال پیام
-                      </>
-                    )}
-                  </motion.button>
-                </form>
-              </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="lg:col-span-1"
-            >
-              <Card className="h-full">
-                <div className="p-6 bg-linear-to-r from-red-500/10 via-gray-50 to-blue-500/10 dark:from-red-500/40 dark:via-gray-700/40 dark:to-blue-500/40 rounded-t-2xl">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-500/10 rounded-lg ront">
-                        <MessageCircle
-                          className="text-blue-600 dark:text-blue-400"
-                          size={20}
-                        />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-                          پیام‌های ثبت‌شده
-                        </h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {messages.length} پیام
-                        </p>
-                      </div>
-                    </div>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setToDeleteId("all");
-                        setDeleteModalOpen(true);
-                      }}
-                      disabled={messages.length === 0 || deletingId === "all"}
-                      className="px-4 py-2 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                      {deletingId === "all" ? (
-                        <LoadingDots />
-                      ) : (
-                        <Trash2 size={16} />
-                      )}
-                      حذف همه
-                    </motion.button>
-                  </div>
-                </div>
-                <div
-                  ref={listRef}
-                  className="p-4 h-[500px] overflow-y-auto 
+	return (
+		<>
+			<MouseHover />
+			<div className="min-h-screen pt-16 transition-colors duration-700 relative z-10 bg-linear-to-br from-slate-100 via-slate-300 to-slate-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+				<div className="absolute inset-0 overflow-hidden">
+					<div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+					<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+				</div>
+				<div className="container mx-auto px-4 py-12 relative z-10">
+					<motion.div
+						initial={{ opacity: 0, y: -20 }}
+						animate={{ opacity: 1, y: 0 }}
+						className="text-center mb-12"
+					>
+						<motion.div
+							whileHover={{ scale: 1.02 }}
+							className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10  text-blue-600 dark:text-blue-400 text-sm mb-6"
+						>
+							<Sparkles size={16} />
+							<span>{t("subtitle")}</span>
+						</motion.div>
+						<h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-gray-100 mb-6 leading-tight">
+							<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+								{t("title")}
+							</span>
+						</h1>
+						<p className="text-gray-600 dark:text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+							{t("description")}
+						</p>
+					</motion.div>
+					<div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+						<motion.div
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							className="lg:col-span-1"
+						>
+							<Card className="p-8">
+								<div className="flex items-center gap-3 mb-6">
+									<div className="p-2 bg-blue-500/10 rounded-lg">
+										<Send
+											className="text-blue-600 dark:text-blue-400"
+											size={24}
+										/>
+									</div>
+									<h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+										{t("new_message")}
+									</h2>
+								</div>
+								<form onSubmit={handleSubmit} noValidate className="space-y-6">
+									<div>
+										<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+											{t("msg_title")}
+										</label>
+										<div className="relative">
+											<input
+												type="text"
+												placeholder={t("msg_title_placeholder")}
+												value={title}
+												onChange={(e) => setTitle(e.target.value)}
+												onBlur={() => setTouchedTitle(true)}
+												className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+												aria-invalid={
+													(touchedTitle || formTouched) && !title.trim()
+												}
+												aria-describedby="title-error"
+											/>
+										</div>
+										<AnimatePresence>
+											{(touchedTitle || formTouched) && !title.trim() && (
+												<motion.p
+													initial={{ opacity: 0, height: 0 }}
+													animate={{ opacity: 1, height: "auto" }}
+													exit={{ opacity: 0, height: 0 }}
+													id="title-error"
+													className="text-red-600 text-sm mt-2 flex items-center gap-1"
+													role="alert"
+												>
+													<AlertCircle size={16} />
+													{t("error_fill_fields")}
+												</motion.p>
+											)}
+										</AnimatePresence>
+									</div>
+									<div>
+										<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+											{t("msg_body")}
+										</label>
+										<div className="relative">
+											<textarea
+												placeholder={t("msg_body_placeholder")}
+												value={body}
+												onChange={(e) => setBody(e.target.value)}
+												onBlur={() => setTouchedBody(true)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter" && !e.shiftKey) {
+														e.preventDefault();
+														handleSubmit(e as unknown as React.FormEvent);
+													}
+												}}
+												rows={4}
+												className="w-full px-4 py-3 rounded-2xl bg-white/80 dark:bg-gray-700/80 focus:outline-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none transition-all duration-200"
+												aria-invalid={
+													(touchedBody || formTouched) && !body.trim()
+												}
+												aria-describedby="body-error"
+											/>
+										</div>
+										<AnimatePresence>
+											{(touchedBody || formTouched) && !body.trim() && (
+												<motion.p
+													initial={{ opacity: 0, height: 0 }}
+													animate={{ opacity: 1, height: "auto" }}
+													exit={{ opacity: 0, height: 0 }}
+													id="body-error"
+													className="text-red-600 text-sm mt-2 flex items-center gap-1"
+													role="alert"
+												>
+													<AlertCircle size={16} />
+													{t("error_fill_fields")}
+												</motion.p>
+											)}
+										</AnimatePresence>
+									</div>
+									<motion.button
+										whileHover={{ scale: 1.02 }}
+										whileTap={{ scale: 0.98 }}
+										type="submit"
+										disabled={loading}
+										className="w-full py-4 rounded-2xl font-bold text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+									>
+										{loading ? (
+											<>
+												<LoadingDots />
+												{t("sending")}
+											</>
+										) : (
+											<>
+												<Send size={20} />
+												{t("send")}
+											</>
+										)}
+									</motion.button>
+								</form>
+							</Card>
+						</motion.div>
+						<motion.div
+							initial={{ opacity: 0, x: 20 }}
+							animate={{ opacity: 1, x: 0 }}
+							className="lg:col-span-1"
+						>
+							<Card className="h-full">
+								<div className="p-6 bg-linear-to-r from-red-500/10 via-gray-50 to-blue-500/10 dark:from-red-500/40 dark:via-gray-700/40 dark:to-blue-500/40 rounded-t-2xl">
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-3">
+											<div className="p-2 bg-blue-500/10 rounded-lg ront">
+												<MessageCircle
+													className="text-blue-600 dark:text-blue-400"
+													size={20}
+												/>
+											</div>
+											<div>
+												<h2 className="text-xl font-bold text-gray-800 dark:text-white">
+													{t("saved_messages")}
+												</h2>
+												<p className="text-xs text-gray-500 dark:text-gray-400">
+													{messages.length} {t("saved_messages")}
+												</p>
+											</div>
+										</div>
+										<motion.button
+											whileHover={{ scale: 1.05 }}
+											whileTap={{ scale: 0.95 }}
+											onClick={() => {
+												setToDeleteId("all");
+												setDeleteModalOpen(true);
+											}}
+											disabled={messages.length === 0 || deletingId === "all"}
+											className="px-4 py-2 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold shadow-lg shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+										>
+											{deletingId === "all" ? (
+												<LoadingDots />
+											) : (
+												<Trash2 size={16} />
+											)}
+											{t("delete_all")}
+										</motion.button>
+									</div>
+								</div>
+								<div
+									ref={listRef}
+									className="p-4 h-[500px] overflow-y-auto
                   scrollbar-thin scrollbar-thumb-blue-600/80 dark:scrollbar-thumb-blue-400/70 
                   scrollbar-thumb-rounded scrollbar-track-transparent hover:scrollbar-thumb-blue-500/90 
                   dark:hover:scrollbar-thumb-blue-500/80 transition-all"
-                >
-                  {loading && messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-32">
-                      <div className="animate-spin rounded-full h-8 w-8 mb-3"></div>
-                      <p className="text-gray-500 dark:text-gray-400">
-                        Loading...
-                      </p>
-                    </div>
-                  ) : messages.length === 0 ? (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
-                    >
-                      <MessageCircle size={48} className="mb-3 opacity-50" />
-                      <p>هیچ پیامی وجود ندارد</p>
-                      <p className="text-sm mt-1">اولین پیام را ارسال کنید!</p>
-                    </motion.div>
-                  ) : (
-                    <div className="space-y-4 ">
-                      <AnimatePresence>
-                        {messages.map((msg, index) => (
-                          <motion.div
-                            key={msg.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="p-4 rounded-2xl bg-linear-to-r from-red-100/10 to-blue-100/15 dark:from-red-500/10 dark:via-gray-500/10 dark:to-blue-500/15 hover:shadow-lg transition-all group "
-                          >
-                            <div className="flex justify-between items-start gap-4 ">
-                              <div className="flex-1">
-                                <h3 className="font-bold text-gray-800 dark:text-white text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                  {msg.title}
-                                </h3>
-                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
-                                  {msg.body}
-                                </p>
-                              </div>
-                              <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => onDeleteClick(msg.id)}
-                                disabled={deletingId === msg.id}
-                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors shrink-0 disabled:opacity-50"
-                                title="Delete message"
-                              >
-                                {deletingId === msg.id ? (
-                                  <LoadingDots />
-                                ) : (
-                                  <Trash2 size={16} />
-                                )}
-                              </motion.button>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-      <AnimatePresence>
-        {response && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg  z-50 ${
-              response.type === "success"
-                ? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
-                : response.type === "error"
-                  ? "bg-red-50/90 dark:bg-red-900/90 text-red-800 dark:text-red-200"
-                  : "bg-blue-50/90 dark:bg-blue-900/90 text-blue-800 dark:text-blue-200"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              {response.type === "success" ? (
-                <CheckCircle
-                  className="text-green-600 dark:text-green-400"
-                  size={20}
-                />
-              ) : response.type === "error" ? (
-                <AlertCircle
-                  className="text-red-600 dark:text-red-400"
-                  size={20}
-                />
-              ) : (
-                <MessageCircle
-                  className="text-blue-600 dark:text-blue-400"
-                  size={20}
-                />
-              )}
-              <span className="flex-1 font-semibold">{response.text}</span>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                  setResponse(null);
-                }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
-              >
-                &times;
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <DeleteConfirmModal
-        isOpen={deleteModalOpen}
-        onCancel={cancelDelete}
-        onConfirm={confirmDelete}
-        confirmColor={"bg-red-600 hover:bg-red-700"}
-        message={
-          toDeleteId === "all"
-            ? "Are you sure you want to delete all messages? This action is irreversible."
-            : "Are you sure you want to delete this message?"
-        }
-      />
-    </>
-  );
+								>
+									{loading && messages.length === 0 ? (
+										<div className="flex flex-col items-center justify-center h-32">
+											<div className="animate-spin rounded-full h-8 w-8 mb-3"></div>
+											<p className="text-gray-500 dark:text-gray-400">
+												Loading...
+											</p>
+										</div>
+									) : messages.length === 0 ? (
+										<motion.div
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400"
+										>
+											<MessageCircle size={48} className="mb-3 opacity-50" />
+											<p>{t("no_messages")}</p>
+											<p className="text-sm mt-1">{t("first_message")}</p>
+										</motion.div>
+									) : (
+										<div className="space-y-4 ">
+											<AnimatePresence>
+												{messages.map((msg, index) => (
+													<motion.div
+														key={msg.id}
+														initial={{ opacity: 0, y: 10 }}
+														animate={{ opacity: 1, y: 0 }}
+														exit={{ opacity: 0, y: -10 }}
+														transition={{ delay: index * 0.1 }}
+														className="p-4 rounded-2xl bg-linear-to-r from-red-100/10 to-blue-100/15 dark:from-red-500/10 dark:via-gray-500/10 dark:to-blue-500/15 hover:shadow-lg transition-all group "
+													>
+														<div className="flex justify-between items-start gap-4 ">
+															<div className="flex-1">
+																<h3 className="font-bold text-gray-800 dark:text-white text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+																	{msg.title}
+																</h3>
+																<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
+																	{msg.body}
+																</p>
+															</div>
+															<motion.button
+																whileHover={{ scale: 1.1 }}
+																whileTap={{ scale: 0.9 }}
+																onClick={() => onDeleteClick(msg.id)}
+																disabled={deletingId === msg.id}
+																className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors shrink-0 disabled:opacity-50"
+																title="Delete message"
+															>
+																{deletingId === msg.id ? (
+																	<LoadingDots />
+																) : (
+																	<Trash2 size={16} />
+																)}
+															</motion.button>
+														</div>
+													</motion.div>
+												))}
+											</AnimatePresence>
+										</div>
+									)}
+								</div>
+							</Card>
+						</motion.div>
+					</div>
+				</div>
+			</div>
+			<AnimatePresence>
+				{response && (
+					<motion.div
+						initial={{ opacity: 0, y: 50 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: 50 }}
+						className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto rounded-2xl p-4 shadow-2xl backdrop-blur-lg  z-50 ${
+							response.type === "success"
+								? "bg-green-50/90 dark:bg-green-900/90 text-green-800 dark:text-green-200"
+								: response.type === "error"
+									? "bg-red-50/90 dark:bg-red-900/90 text-red-800 dark:text-red-200"
+									: "bg-blue-50/90 dark:bg-blue-900/90 text-blue-800 dark:text-blue-200"
+						}`}
+					>
+						<div className="flex items-center gap-3">
+							{response.type === "success" ? (
+								<CheckCircle
+									className="text-green-600 dark:text-green-400"
+									size={20}
+								/>
+							) : response.type === "error" ? (
+								<AlertCircle
+									className="text-red-600 dark:text-red-400"
+									size={20}
+								/>
+							) : (
+								<MessageCircle
+									className="text-blue-600 dark:text-blue-400"
+									size={20}
+								/>
+							)}
+							<span className="flex-1 font-semibold">{response.text}</span>
+							<motion.button
+								whileHover={{ scale: 1.1 }}
+								whileTap={{ scale: 0.9 }}
+								onClick={() => {
+									if (timeoutRef.current) clearTimeout(timeoutRef.current);
+									setResponse(null);
+								}}
+								className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-bold text-lg leading-none p-1"
+							>
+								&times;
+							</motion.button>
+						</div>
+					</motion.div>
+				)}
+			</AnimatePresence>
+			<DeleteConfirmModal
+				isOpen={deleteModalOpen}
+				onCancel={cancelDelete}
+				onConfirm={confirmDelete}
+				confirmColor={"bg-red-600 hover:bg-red-700"}
+				message={
+					toDeleteId === "all"
+						? t("confirm_delete_all")
+						: t("confirm_delete_single")
+				}
+			/>
+		</>
+	);
 }

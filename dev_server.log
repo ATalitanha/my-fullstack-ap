@@ -1,0 +1,216 @@
+
+> my-fullstack-app@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 620ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+
+○ Compiling / ...
+ HEAD / 200 in 10.7s (next.js: 10.2s, application-code: 480ms)
+ GET / 200 in 162ms (next.js: 14ms, application-code: 148ms)
+⨯ ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  [90m2 |[0m [36mimport[0m { [33mPrismaPg[0m } [36mfrom[0m [32m"@prisma/adapter-pg"[0m;
+  [90m3 |[0m [36mimport[0m pg [36mfrom[0m [32m"pg"[0m;
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { [33mPrismaClient[0m } [36mfrom[0m [32m"../../generated/client"[0m; [90m// مسیر جدید[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m
+  [90m6 |[0m [36mconst[0m connectionString = process.env.[33mDATABASE_URL[0m!;
+  [90m7 |[0m [36mconst[0m pool = [36mnew[0m pg.[33mPool[0m({ connectionString });
+
+
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+ GET /api/auth/refresh 500 in 4.2s (next.js: 4.0s, application-code: 179ms)
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+ GET / 500 in 33ms (next.js: 11ms, application-code: 22ms)
+[browser] Uncaught Error: ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/shared/lib/prisma.ts:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./src/shared/lib/prisma.ts:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+ GET / 500 in 25ms (next.js: 9ms, application-code: 16ms)
+[browser] Uncaught Error: ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/shared/lib/prisma.ts:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./src/shared/lib/prisma.ts:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+[browser] ./src/shared/lib/prisma.ts:4:1
+Module not found: Can't resolve '../../generated/client'
+  2 | import { PrismaPg } from "@prisma/adapter-pg";
+  3 | import pg from "pg";
+> 4 | import { PrismaClient } from "../../generated/client"; // مسیر جدید
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const connectionString = process.env.DATABASE_URL!;
+  7 | const pool = new pg.Pool({ connectionString });
+
+Import trace:
+  App Route:
+    ./src/shared/lib/prisma.ts
+    ./src/app/api/auth/refresh/route.ts
+
+https://nextjs.org/docs/messages/module-not-found

@@ -8,17 +8,17 @@ import HybridLoading from "@/app/loading";
 
 // داینامیک ایمپورت محتوای اصلی
 const UnitConverterContent = dynamic(
-  () => import("@/components/UnitsConverterContent"),
-  {
-    loading: () => <HybridLoading />,
-    ssr: false,
-  },
+	() => import("@/components/UnitsConverterContent"),
+	{
+		loading: () => <HybridLoading />,
+		ssr: false,
+	},
 );
 
 export default function UnitConverterPage() {
-  return (
-    <Suspense fallback={<HybridLoading />}>
-      <UnitConverterContent />
-    </Suspense>
-  );
+	return (
+		<Suspense fallback={<HybridLoading />}>
+			<UnitConverterContent />
+		</Suspense>
+	);
 }

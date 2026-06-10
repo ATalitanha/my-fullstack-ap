@@ -8,17 +8,17 @@ import HybridLoading from "@/app/loading";
 
 // داینامیک ایمپورت کامپوننت اصلی
 const CalculatorContent = dynamic(
-  () => import("@/components/CalculatorContent"),
-  {
-    loading: () => <HybridLoading />,
-    ssr: false, // غیرفعال کردن SSR برای کاهش حجم
-  },
+	() => import("@/components/CalculatorContent"),
+	{
+		loading: () => <HybridLoading />,
+		ssr: false, // غیرفعال کردن SSR برای کاهش حجم
+	},
 );
 
 export default function CalculatorPage() {
-  return (
-    <Suspense fallback={<HybridLoading />}>
-      <CalculatorContent />
-    </Suspense>
-  );
+	return (
+		<Suspense fallback={<HybridLoading />}>
+			<CalculatorContent />
+		</Suspense>
+	);
 }

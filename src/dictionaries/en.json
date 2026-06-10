@@ -1,168 +1,447 @@
 {
-  "app": {
-    "main": {
-      "links": {
-        "cal": "Calculator",
-        "messenger": "Text Messenger",
-        "todo": "To-Do List",
-        "notes": "Notes",
-        "Prices-table": "Gold & Currency Prices",
-        "dataRepo": "Data Repository",
-        "category": {
-          "tools": "Tools",
-          "communication": "Communication",
-          "finance": "Finance"
-        }
-      },
-      "change": "Changelog",
-      "BestTools": "Collection of the Best Tools",
-      "be": "to ",
-      "welcome": "Welcome",
-      "productivity": "A complete set of useful and smart tools to improve your daily productivity ✨",
-      "serchPlaceholder": "Search among tools...",
-      "visited": "Most Visited",
-      "new": "New",
-      "NoResults": "No results found",
-      "NoTools": "No tools found",
-      "All": "All"
-    },
-    "cal": {
-      "normalCal": "simple calculator",
-      "normalCaldis": "daily arithmetic and arithmetic operations",
-      "unitCal": "unit conversion",
-      "unitCaldis": "conversion between different measurement units",
-      "adCal": "advanced calculator",
-      "adCaldis": "scientific and complex calculations with professional qualifications",
-      "AdvComputTool": "advanced computational tools",
-      "calTool": "calculator tools",
-      "productivity": "a complete set of computational tools for your different needs ✨",
-      "ComputTool": "computational tools",
-      "useTool": "use tools",
-      "whyUse": "why use our computational tools ?",
-      "ModernDis": "modern and user friendly design",
-      "fastSpeed": "high speed and accuracy",
-      "VariousCap": "diverse capabilities",
-      "advancCal": {},
-      "calc": {},
-      "units": {}
-    },
-    "dashboard": {},
-    "loading": {},
-    "login": {},
-    "messenger": {},
-    "notes": {},
-    "Prices-table": {},
-    "signup": {},
-    "todo": {}
-  },
-  "components": {
-    "backMenu": {},
-    "CalculatorDisplay": {},
-    "CategorySelect": {},
-    "CategoryTabs": {},
-    "changeLog": {
-      "changes": "Changes",
-      "version": "Version"
-    },
-    "DeleteConfirmModal": {},
-    "HistoryList": {},
-    "LanguageSwitcher": {},
-    "loading": {},
-    "ThemeToggle": {},
-    "Trans": {},
-    "UnitSelect": {},
-    "layout": {
-      "Footer": {},
-      "Header": {}
-    },
-    "providers": {
-      "A11yAnnouncer": {},
-      "PageTransition": {},
-      "ThemeProvider": {}
-    },
-    "ui": {
-      "Button": {},
-      "dialog": {},
-      "dropdown-menu": {},
-      "header": {},
-      "switch": {},
-      "tabs": {},
-      "toast": {}
-    }
-  },
-  "changeLogs": {
-    "v0-1-0": ["Created calculator user interface", "Built history section"],
-    "v0-5-0": ["Built and configured website", "Using API for history"],
-    "v0-9-0": ["Launched for testing", "Changed color scheme"],
-    "v1-0-0": [
-      "Improved user interface",
-      "Fixed reported issues",
-      "Public launch"
-    ],
-    "v1-1-5": ["Changed user interface", "Fixed minor issues"],
-    "v1-6-0": ["Added changelog section", "Fixed minor issues"],
-    "v1-7-0": ["Changed user interface", "Fixed general issues"],
-    "v1-8-0": [
-      "Added parentheses",
-      "Changed error display",
-      "Improved user interface"
-    ],
-    "v2-0-0": [
-      "Added messenger section",
-      "Fixed minor issues",
-      "Improved user interface",
-      "Optimized for mobile",
-      "Increased speed"
-    ],
-    "v2-1-0": ["Added keyboard button functionality in calculator"],
-    "v3-0-0": [
-      "Added user account",
-      "Added notes section",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v3-1-0": [
-      "Optimized for Persian language",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v3-2-0": [
-      "Enhanced security",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v3-3-0": [
-      "Added to-do list",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v3-4-0": [
-      "Added unit conversion",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v3-9-0": [
-      "Added advanced calculator (beta)",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v4-0-0": [
-      "Added gold and currency prices display",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v4-2-0": [
-      "Changed homepage",
-      "Improved user interface",
-      "Fixed minor issues"
-    ],
-    "v5-0-0": [
-      "Modern and new design",
-      "Redesigned user interface",
-      "Optimized for mobile",
-      "Improved user interface",
-      "Fixed minor issues",
-      "Initial launch of new features"
-    ]
-  }
+	"app": {
+		"main": {
+			"links": {
+				"cal": "Calculator",
+				"messenger": "Text Messenger",
+				"todo": "To-Do List",
+				"notes": "Notes",
+				"Prices-table": "Gold & Currency Prices",
+				"dataRepo": "Data Repository",
+				"game": "Games",
+				"category": {
+					"tools": "Tools",
+					"communication": "Communication",
+					"finance": "Finance",
+					"entertainment": "Entertainment"
+				}
+			},
+			"change": "Changelog",
+			"BestTools": "Collection of the Best Tools",
+			"be": "to ",
+			"welcome": "Welcome",
+			"productivity": "A complete set of useful and smart tools to improve your daily productivity ✨",
+			"serchPlaceholder": "Search among tools...",
+			"visited": "Most Visited",
+			"new": "New",
+			"NoResults": "No results found",
+			"NoTools": "No tools found",
+			"All": "All"
+		},
+		"cal": {
+			"normalCal": "simple calculator",
+			"normalCaldis": "daily arithmetic and arithmetic operations",
+			"unitCal": "unit conversion",
+			"unitCaldis": "conversion between different measurement units",
+			"adCal": "advanced calculator",
+			"adCaldis": "scientific and complex calculations with professional qualifications",
+			"AdvComputTool": "advanced computational tools",
+			"calTool": "calculator tools",
+			"productivity": "a complete set of computational tools for your different needs ✨",
+			"ComputTool": "computational tools",
+			"useTool": "use tools",
+			"whyUse": "why use our computational tools ?",
+			"ModernDis": "modern and user friendly design",
+			"fastSpeed": "high speed and accuracy",
+			"VariousCap": "diverse capabilities",
+			"advancCal": {},
+			"calc": {
+				"notComplete": "Expression is incomplete.",
+				"error": "Calculation error",
+				"confirm_clear_title": "Clear History",
+				"confirm_clear_desc": "Are you sure you want to clear all calculation history?",
+				"cancel": "Cancel",
+				"clear": "Clear",
+				"history": "History",
+				"recent": "Recent Calculations",
+				"no_history": "No history yet",
+				"delete": "Delete",
+				"scientific": "Scientific Mode",
+				"calculate": "Calculate",
+				"loading_formula": "Loading formula...",
+				"expression_empty": "Expression is empty."
+			},
+			"units": {}
+		},
+		"dashboard": {},
+		"loading": {},
+		"login": {},
+		"messenger": {},
+		"notes": {
+			"title": "Notes",
+			"subtitle": "Personal Note Management",
+			"description": "Manage and organize your notes ✨",
+			"add_note": "Add New Note",
+			"edit_note": "Edit Note",
+			"note_title": "Note Title",
+			"note_title_placeholder": "Enter note title...",
+			"note_content": "Note Content",
+			"note_content_placeholder": "Write your note content...",
+			"my_notes": "My Notes",
+			"no_notes": "No notes yet",
+			"first_note": "Create your first note!",
+			"confirm_delete": "Are you sure you want to delete this note?",
+			"confirm_edit": "Are you sure you want to edit this note?",
+			"success_add": "Note added",
+			"success_update": "Note updated",
+			"success_delete": "Note deleted",
+			"error_title": "Please enter a title.",
+			"error_content": "Please enter note content."
+		},
+		"Prices-table": {
+			"title": "Live Prices",
+			"subtitle": "Real-time Market Data",
+			"description": "Track live prices of gold, currency, and cryptocurrencies ✨",
+			"loading": "Loading market data...",
+			"wait": "Please wait a moment",
+			"search_placeholder": "Search by name or symbol...",
+			"categories": {
+				"all": "All Categories",
+				"gold": "Gold & Coins",
+				"currency": "Currencies",
+				"cryptocurrency": "Cryptocurrencies"
+			},
+			"stats": {
+				"gold": "Gold & Coins",
+				"currency": "Currency",
+				"crypto": "Crypto",
+				"displayed": "Displayed"
+			},
+			"price": "Price",
+			"unit": "Unit",
+			"changes": "Changes",
+			"no_results": "No results found",
+			"no_results_desc": "No items found with \"{search}\"",
+			"market_info": "Market Information",
+			"market_info_desc": "Displayed data is received in real-time from reliable sources and may be delayed."
+		},
+		"signup": {
+			"title": "Sign Up",
+			"subtitle": "Create New Account",
+			"description": "Create your account and use all features ✨",
+			"username": "Username",
+			"username_placeholder": "Enter your username",
+			"email": "Email Address",
+			"password": "Password",
+			"password_placeholder": "Choose a strong password",
+			"submit": "Create Account",
+			"submitting": "Signing up...",
+			"have_account": "Already have an account?",
+			"login": "Log In",
+			"error_failed": "Signup failed"
+		},
+		"todo": {
+			"title": "To-Do List",
+			"subtitle": "Daily Task Management",
+			"description": "Organize and manage your tasks ✨",
+			"add_todo": "Add New Todo",
+			"edit_todo": "Edit Todo",
+			"todo_title": "Task Title",
+			"todo_placeholder": "What do you want to do...",
+			"update": "Update",
+			"add": "Add",
+			"cancel": "Cancel",
+			"submitting": "Submitting...",
+			"my_tasks": "My Tasks",
+			"tasks_left": "{count} tasks left",
+			"no_tasks": "No tasks yet",
+			"first_task": "Add your first task!",
+			"confirm_delete": "Are you sure you want to delete this task?",
+			"confirm_complete": "Are you sure you want to complete this task?",
+			"confirm_uncomplete": "Are you sure you want to uncomplete this task?",
+			"confirm_edit": "Do you want to edit this task?",
+			"success_add": "Todo added",
+			"success_update": "Todo updated",
+			"success_delete": "Todo deleted",
+			"success_complete": "Todo completed",
+			"success_uncomplete": "Todo uncompleted",
+			"error_title": "Please enter a title."
+		},
+		"messenger": {
+			"title": "Send Message",
+			"subtitle": "Message Delivery & Management System",
+			"description": "Send and manage your messages in a beautiful and user-friendly environment ✨",
+			"new_message": "Send New Message",
+			"msg_title": "Message Title",
+			"msg_title_placeholder": "Enter your message title...",
+			"msg_body": "Message Body",
+			"msg_body_placeholder": "Enter your message body...",
+			"send": "Send Message",
+			"sending": "Sending...",
+			"saved_messages": "Saved Messages",
+			"no_messages": "No messages available",
+			"first_message": "Send your first message!",
+			"delete_all": "Delete All",
+			"confirm_delete_all": "Are you sure you want to delete all messages? This action is irreversible.",
+			"confirm_delete_single": "Are you sure you want to delete this message?",
+			"error_fetch": "Error fetching messages",
+			"success_send": "Message sent successfully",
+			"success_delete": "Message deleted",
+			"success_delete_all": "All messages deleted",
+			"error_fill_fields": "Please fill out all fields",
+			"error_server": "Server connection error"
+		},
+		"dataRepo": {
+			"title": "Data Repository",
+			"subtitle": "Daily Data Treasury",
+			"description": "Store and manage formulas, equations, and daily data 📊",
+			"search_placeholder": "Search in title, content, or tags...",
+			"all": "All",
+			"all_sub": "All Subcategories",
+			"all_types": "All Types",
+			"add_new": "Add New Data",
+			"edit": "Edit Data",
+			"columns": {
+				"title": "Title",
+				"content": "Content",
+				"category": "Category",
+				"subcategory": "Subcategory",
+				"type": "Type",
+				"tags": "Tags",
+				"actions": "Actions"
+			},
+			"types": {
+				"TEXT": "Text",
+				"MATH": "Math",
+				"FORMULA": "Formula",
+				"EQUATION": "Equation",
+				"DEFINITION": "Definition",
+				"CODE": "Code",
+				"QUOTE": "Quote",
+				"OTHER": "Other"
+			},
+			"form": {
+				"title": "Title *",
+				"title_placeholder": "e.g., Sinus 30 degrees",
+				"content": "Content *",
+				"content_placeholder": "e.g., sin30 = 0.5",
+				"latex": "LaTeX Format (optional)",
+				"description": "Description (optional)",
+				"category": "Category *",
+				"subcategory": "Subcategory (optional)",
+				"type": "Type",
+				"favorite": "Mark as favorite",
+				"tags": "Tags (comma separated)",
+				"tags_placeholder": "math, trigonometry, sinus",
+				"save": "Save",
+				"saving": "Saving...",
+				"cancel": "Cancel",
+				"select": "Select"
+			},
+			"messages": {
+				"no_data": "No data found",
+				"first_data": "Add your first data",
+				"confirm_delete": "Are you sure you want to delete this data?",
+				"success_add": "New data added",
+				"success_update": "Data updated",
+				"success_delete": "Data deleted",
+				"error_fill": "Please fill in required fields"
+			}
+		},
+		"login": {
+			"title": "Login System",
+			"subtitle": "Account Login",
+			"description": "Log in to your account and use the features ✨",
+			"email": "Email Address",
+			"password": "Password",
+			"password_placeholder": "Enter your password",
+			"submit": "Log In",
+			"submitting": "Logging in...",
+			"no_account": "Don't have an account?",
+			"signup": "Sign Up",
+			"security_info": "Your information is protected by security standards",
+			"error_invalid": "Invalid email or password.",
+			"error_server": "A server connection error occurred."
+		},
+		"loading": {
+			"text": "Loading..."
+		},
+		"dashboard": {
+			"title": "Dashboard",
+			"subtitle": "Your Account",
+			"description": "Manage your account and access all features ✨",
+			"user_info": "User Information",
+			"user_info_desc": "View and manage account information",
+			"username": "Username",
+			"email": "Email Address",
+			"not_provided": "Not provided",
+			"status": "Account Status: Active",
+			"status_desc": "Your account is operating normally",
+			"quick_actions": "Quick Actions",
+			"edit_profile": "Edit Profile",
+			"change_password": "Change Password",
+			"management": "Account Management",
+			"logout": "Logout",
+			"recent_activities": "Recent Activities",
+			"activity_cal": "Calculations performed",
+			"activity_msg": "Messages sent",
+			"activity_conv": "Unit conversions performed"
+		},
+		"units": {
+			"title": "Unit Converter",
+			"placeholder": "Enter value",
+			"convert": "Convert",
+			"result_placeholder": "Result will be displayed here",
+			"invalid_input": "Invalid input",
+			"footer_text": "Supports length, weight, volume, temperature, and time units",
+			"categories": {
+				"length": "📏 Length",
+				"weight": "⚖️ Weight",
+				"volume": "🧪 Volume",
+				"temperature": "🌡️ Temperature",
+				"time": "⏱️ Time",
+				"speed": "🏎️ Speed",
+				"energy": "⚡ Energy",
+				"pressure": "🔧 Pressure",
+				"area": "🗺️ Area",
+				"light": "💡 Light",
+				"storage": "💾 Storage",
+				"power": "🔋 Power",
+				"frequency": "🎵 Frequency",
+				"angle": "📐 Angle"
+			}
+		},
+		"game": {
+			"title": "Games",
+			"subtitle": "Fun and Challenges",
+			"description": "A collection of engaging games to challenge your mind ✨",
+			"game_list": "Game List",
+			"play": "Play",
+			"games": {
+				"2048": {
+					"title": "2048",
+					"description": "Combine numbers to reach the 2048 tile!"
+				}
+			},
+			"2048": {
+				"score": "Score",
+				"best": "Best",
+				"new_game": "New Game",
+				"game_over": "Game Over!",
+				"win": "You Win!",
+				"try_again": "Try Again",
+				"subtitle": "Join the numbers!",
+				"instructions": "Use your arrow keys or WASD to move the tiles."
+			}
+		}
+	},
+	"components": {
+		"confirmModal": {
+			"default_message": "Are you sure?",
+			"confirm": "Confirm",
+			"cancel": "Cancel",
+			"delete": "Delete",
+			"edit": "Edit",
+			"complete": "Complete",
+			"uncomplete": "Uncomplete"
+		},
+		"backMenu": {},
+		"CalculatorDisplay": {},
+		"CategorySelect": {},
+		"CategoryTabs": {},
+		"changeLog": {
+			"changes": "Changes",
+			"version": "Version"
+		},
+		"DeleteConfirmModal": {},
+		"HistoryList": {},
+		"LanguageSwitcher": {},
+		"loading": {},
+		"ThemeToggle": {},
+		"Trans": {},
+		"UnitSelect": {},
+		"layout": {
+			"Footer": {},
+			"Header": {}
+		},
+		"providers": {
+			"A11yAnnouncer": {},
+			"PageTransition": {},
+			"ThemeProvider": {}
+		},
+		"ui": {
+			"Button": {},
+			"dialog": {},
+			"dropdown-menu": {},
+			"header": {},
+			"switch": {},
+			"tabs": {},
+			"toast": {}
+		}
+	},
+	"changeLogs": {
+		"v0-1-0": ["Created calculator user interface", "Built history section"],
+		"v0-5-0": ["Built and configured website", "Using API for history"],
+		"v0-9-0": ["Launched for testing", "Changed color scheme"],
+		"v1-0-0": [
+			"Improved user interface",
+			"Fixed reported issues",
+			"Public launch"
+		],
+		"v1-1-5": ["Changed user interface", "Fixed minor issues"],
+		"v1-6-0": ["Added changelog section", "Fixed minor issues"],
+		"v1-7-0": ["Changed user interface", "Fixed general issues"],
+		"v1-8-0": [
+			"Added parentheses",
+			"Changed error display",
+			"Improved user interface"
+		],
+		"v2-0-0": [
+			"Added messenger section",
+			"Fixed minor issues",
+			"Improved user interface",
+			"Optimized for mobile",
+			"Increased speed"
+		],
+		"v2-1-0": ["Added keyboard button functionality in calculator"],
+		"v3-0-0": [
+			"Added user account",
+			"Added notes section",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v3-1-0": [
+			"Optimized for Persian language",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v3-2-0": [
+			"Enhanced security",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v3-3-0": [
+			"Added to-do list",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v3-4-0": [
+			"Added unit conversion",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v3-9-0": [
+			"Added advanced calculator (beta)",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v4-0-0": [
+			"Added gold and currency prices display",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v4-2-0": [
+			"Changed homepage",
+			"Improved user interface",
+			"Fixed minor issues"
+		],
+		"v5-0-0": [
+			"Modern and new design",
+			"Redesigned user interface",
+			"Optimized for mobile",
+			"Improved user interface",
+			"Fixed minor issues",
+			"Initial launch of new features"
+		]
+	}
 }
